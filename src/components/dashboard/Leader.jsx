@@ -97,7 +97,7 @@ const Leader = () => {
     const fetchMeetingsForToday = async () => {
       try {
         const response = await api.get(
-          `http://localhost:5500/api/task/meetings/today/${user.id}`
+          `https://api.sevenunique.com/api/task/meetings/today/${user.id}`
         );
         setMeetingsToday(response.data);
       } catch (error) {

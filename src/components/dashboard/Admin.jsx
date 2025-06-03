@@ -123,7 +123,7 @@ const Admin = () => {
 
   useEffect(() => {
     api
-      .get("http://localhost:5500/api/task/todayevents?type=birthday") // <-- API endpoint
+      .get("https://api.sevenunique.com/api/task/todayevents?type=birthday") // <-- API endpoint
       .then((res) => {
         setBirthdaysToday(res.data); // 👈 make sure 'users' match backend response
       })

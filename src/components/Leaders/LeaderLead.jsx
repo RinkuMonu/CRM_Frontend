@@ -20,7 +20,7 @@ export default function LeaderLead() {
     const fetchData = async () => {
       try {
         const [dealsRes, membersRes] = await Promise.all([
-          api.get(`http://localhost:5500/api/task/getDeals/${leaderId}`),
+          api.get(`https://api.sevenunique.com/api/task/getDeals/${leaderId}`),
           getMembers_Leader()
         ]);
 
@@ -49,7 +49,7 @@ export default function LeaderLead() {
     }
 
     try {
-      const res = await api.post("http://localhost:5500/api/task/assignDeals", {
+      const res = await api.post("https://api.sevenunique.com/api/task/assignDeals", {
         dealID: selectedDeal,
         assigned_employee: employeeToAssign,
         deadline,
@@ -58,7 +58,7 @@ export default function LeaderLead() {
       if (res.success) {
         toast.success("✅ Deal assigned successfully!");
         const updatedDeals = await api.get(
-          `http://localhost:5500/api/task/getDeals/${leaderId}`
+          `https://api.sevenunique.com/api/task/getDeals/${leaderId}`
         );
         setDeals(updatedDeals.data);
         resetForm();

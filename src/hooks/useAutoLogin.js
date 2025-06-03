@@ -25,7 +25,7 @@ export const useAutoLogin = () => {
 
         (async () => {
             try {
-                const res = await api.get("http://localhost:5500/api/auth/refresh");
+                const res = await api.get("https://api.sevenunique.com/api/auth/refresh");
 
                 console.log("Auto-login response:", res);
 

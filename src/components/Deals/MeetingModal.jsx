@@ -48,7 +48,7 @@ const handleSave = async () => {
     };
 
     try {
-        const response = await api.post('http://localhost:5500/api/task/meetings/create', meetingData);
+        const response = await api.post('https://api.sevenunique.com/api/task/meetings/create', meetingData);
         toast.success('Meeting created successfully!');
 
         // Reset form fields

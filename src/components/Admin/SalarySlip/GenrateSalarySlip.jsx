@@ -36,7 +36,7 @@
 //     setFileUrl('');
 
 //     try {
-//       const res = await axios.post("http://localhost:5500/api/admin/genrate-salary-slip", {
+//       const res = await axios.post("https://api.sevenunique.com/api/admin/genrate-salary-slip", {
 //         employeeID: selectedEmployee,
 //         month,
 //         year,

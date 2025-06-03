@@ -85,7 +85,7 @@ function AdminTask() {
     }
 
     try {
-      const res = await api.post("http://localhost:5500/api/task", data, {
+      const res = await api.post("https://api.sevenunique.com/api/task", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

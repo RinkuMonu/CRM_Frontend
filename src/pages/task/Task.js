@@ -27,7 +27,7 @@ const Task = ({selectedEmployee,selectedDate}) => {
 
   const fetchTasks = async () => {
     try {
-      const res = await api.get(`http://localhost:5500/api/task/user-today/${_id}?date=${selectedDate || new Date().toISOString().split('T')[0]}`);
+      const res = await api.get(`https://api.sevenunique.com/api/task/user-today/${_id}?date=${selectedDate || new Date().toISOString().split('T')[0]}`);
       const taskData = res.data.tasks;
       const leadData = res.data.leads;
 
@@ -139,7 +139,7 @@ const Task = ({selectedEmployee,selectedDate}) => {
 
   const updateTaskStatus = async (taskId, status, remark = '') => {
     try {
-      await api.put('http://localhost:5500/api/task/update-status', {
+      await api.put('https://api.sevenunique.com/api/task/update-status', {
         taskId,
         Status: status,
         remark

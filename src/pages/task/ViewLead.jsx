@@ -31,7 +31,7 @@ export default function ViewLead() {
 
   const fetchLeads = async () => {
     try {
-      const res = await api.get(`http://localhost:5500/api/task/getlead/${id}`);
+      const res = await api.get(`https://api.sevenunique.com/api/task/getlead/${id}`);
        setLeads(res);
     } catch (error) {
       console.error("Error fetching leads:", error);
@@ -41,7 +41,7 @@ export default function ViewLead() {
   const fetchLeaders = async () => {
     try {
       const res = await api.get(
-        `http://localhost:5500/api/task/get-salesLeader`
+        `https://api.sevenunique.com/api/task/get-salesLeader`
       );
       setLeaders(res.data || []);
     } catch (err) {
@@ -76,7 +76,7 @@ export default function ViewLead() {
   // Submit Handlers
   const submitUpdate = async () => {
     try {
-      await api.put(`http://localhost:5500/api/task/updatelead`, {
+      await api.put(`https://api.sevenunique.com/api/task/updatelead`, {
         leadID: selectedLead._id,
         result: form.result,
         duration: form.duration,
@@ -94,7 +94,7 @@ export default function ViewLead() {
 
   const submitDeal = async () => {
     try {
-      await api.post(`http://localhost:5500/api/task/createDeals`, {
+      await api.post(`https://api.sevenunique.com/api/task/createDeals`, {
         leadID: selectedLead._id,
         value: form.value,
         assigned_leader: form.assigned_leader,
@@ -147,6 +147,7 @@ export default function ViewLead() {
                           <th>Contact No.</th>
                           <th>State</th>
                           <th>Interest</th>
+                          <th>Result</th>
                           <th>Action</th>
                         </tr>
                       </thead>
@@ -161,8 +162,8 @@ export default function ViewLead() {
                               <td className="text-center">
                                 {getInterestBadge(lead.interest)}
                               </td>
+                              <td>{getInterestBadge(lead.result)}</td>
                               <td className="text-center">
-                                {lead.result === "Pending" ? (
                                   <>
                                     <button
                                       className="btn btn-sm btn-outline-primary me-2"
@@ -170,15 +171,14 @@ export default function ViewLead() {
                                     >
                                       Update Lead
                                     </button>
+                                    {lead.result !== "Assigned" && 
                                     <button
                                       className="btn btn-sm btn-outline-success"
                                       onClick={() => openDealModal(lead)}
                                     >
                                       Assign Deal
-                                    </button>
+                                    </button>}
                                   </>
-                                
-                                ) : getInterestBadge(lead.result)}
                               </td>
                             </tr>
                           ))

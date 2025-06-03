@@ -18,7 +18,7 @@ export default function Events() {
 
   // Fetch events for the selected date
   const fetchEventsByDate = (date) => {
-    api.get(`http://localhost:5500/api/task/events/${date}`)  // Ensure your backend supports this endpoint
+    api.get(`https://api.sevenunique.com/api/task/events/${date}`)  // Ensure your backend supports this endpoint
       .then(response => {
         setEvents(response.data);  // Assuming response contains the events data
       })
@@ -63,7 +63,7 @@ export default function Events() {
     formData.append('description', newEvent.description);
     formData.append('image', newEvent.image);
 
-    api.post('http://localhost:5500/api/task/events', formData) // Replace with your API endpoint
+    api.post('https://api.sevenunique.com/api/task/events', formData) // Replace with your API endpoint
       .then(response => {
         console.log(response.data);
         

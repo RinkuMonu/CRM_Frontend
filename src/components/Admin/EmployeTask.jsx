@@ -34,7 +34,7 @@ function EmployeTask() {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const res = await api.get(`http://localhost:5500/api/task/get-allEmployee?type=employee`);
+        const res = await api.get(`https://api.sevenunique.com/api/task/get-allEmployee?type=employee`);
         setTeamMembers(res.data);
       } catch (error) {
         console.error("❌ Error fetching members:", error);
@@ -74,7 +74,7 @@ function EmployeTask() {
     }
 
     try {
-      const res = await api.post("http://localhost:5500/api/task", data, {
+      const res = await api.post("https://api.sevenunique.com/api/task", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

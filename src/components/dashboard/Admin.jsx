@@ -12,7 +12,7 @@ const Admin = () => {
   useEffect(() => {
     (async () => {
       const res = await getCounts();
-      if (res.success) dispatch(setCount(res.data));
+      if (res?.success) dispatch(setCount(res?.data));
     })();
   }, []);
 
@@ -143,10 +143,8 @@ const Admin = () => {
       return () => clearTimeout(timer);
     }
   }, [showAnimation, birthdaysToday]);
-  
-  
 
-  console.log("testing", birthdaysToday.data);
+  // console.log("testing", birthdaysToday?.data);
 
   const holidays = [
     {
@@ -285,10 +283,14 @@ const Admin = () => {
         </div>
         <div className="col-xl-4">
           <CountsCard title="Total Admins" icon="fa-user" count={admin} />
-          <CountsCard title="Total Team Department" icon="fa-user" count={team} />
+          <CountsCard
+            title="Total Team Department"
+            icon="fa-user"
+            count={team}
+          />
         </div>
       </div>
-      
+
       <div className="row mb-3">
         {/* <div className="col-md-4">
           <div className="card timeline-card shadow-sm rounded-0">
@@ -382,43 +384,37 @@ const Admin = () => {
         </div>
         {/* Birthday Section */}
         <div className="col-md-6">
-  
-
           <div>
- 
-          {showAnimation && birthdaysToday.data && (
-  <div
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100vw",
-      height: "100vh",
-      zIndex: 9999,
-    }}
-  >
-    <iframe
-      src="https://lottie.host/embed/2d8d036d-43ea-4820-9f17-b6631846aed5/uqTlmKSbkU.lottie"
-      style={{
-        width: "100%",
-        height: "100%",
-        border: "none",
-      }}
-      title="Birthday Animation"
-      allowFullScreen
-    ></iframe>
-    <audio src="./assets/icons/cl.mp3" autoPlay />
-  </div>
-)}
-
+            {showAnimation && birthdaysToday.data && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  zIndex: 9999,
+                }}
+              >
+                <iframe
+                  src="https://lottie.host/embed/2d8d036d-43ea-4820-9f17-b6631846aed5/uqTlmKSbkU.lottie"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                  }}
+                  title="Birthday Animation"
+                  allowFullScreen
+                ></iframe>
+                <audio src="./assets/icons/cl.mp3" autoPlay />
+              </div>
+            )}
 
             <div className="cardborder p-3 mb-3 rounded-4">
               {loading ? (
                 <p>Loading...</p>
               ) : birthdaysToday?.data ? (
-                
                 birthdaysToday.data?.map((employee, index) => (
-
                   <div
                     key={index}
                     className="d-flex justify-content-between align-items-center birthday-card mb-4 "
@@ -447,24 +443,25 @@ const Admin = () => {
                         {/* <p className="mb-0 employee-desc">{employee.dob}</p> */}
                       </div>
                     </div>
-               
-          
-          
                   </div>
-                  
                 ))
               ) : (
-                <div className="text-center mb-4 cardborder rounded-4 p-4 h-100">
+                <div className="text-center mb-4 cardborder rounded-4 p-4 h-100 d-flex flex-column align-items-center justify-content-center  bg-white">
                   <img
-                    src="https://example.com/alex.jpg"
-                    alt="No birthdays today"
+                    src="/bithday.jpg"
+                    alt="No birthdays"
+                    className="rounded-circle mb-3 shadow"
+                    width="200"
+                    height="200"
                     style={{
-                      width: "150px",
-                      height: "150px",
                       objectFit: "cover",
+                      opacity: 0.7,
+                      border: "4px solid #f0f0f0",
                     }}
                   />
-                  <p className="mt-2 text-muted">No birthdays today</p>
+                  <h5 className="fw-semibold text-secondary">
+                    No Birthdays Today 🎉
+                  </h5>
                 </div>
               )}
             </div>

@@ -16,10 +16,13 @@ const Salaries = () => {
       const res = await viewAllSalaries({});
       const { data } = res;
       setSalaries(data);
+      // console.log(data);
     };
 
     const fetchEmployees = async () => {
       const emps = await getEmployees();
+      // console.log(emps);
+      
       const leaders = await getLeaders();
       emps.data.forEach(
         (employee) => (empObj[employee.id] = [employee.name, employee.email])
@@ -80,35 +83,34 @@ const Salaries = () => {
               </button>
             </div>
             <div className="table-responsive">
-            <table className="table table-border roundedtable table-md center-text">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Salary</th>
-                  <th>Bonus</th>
-                </tr>
-              </thead>
-
-              <tbody className="sidebar-wrapper">
-                {salaries?.map((salary, idx) => (
-                  <tr
-                    className="hover-effect"
-                    onClick={() => history.push(`salary/${salary._id}`)}
-                  >
-                    <td>{idx + 1}</td>
-                    <td>{employeeMap?.[salary.employeeID]?.[0] || "N/A"}</td>
-                    <td>{employeeMap?.[salary.employeeID]?.[1] || "N/A"}</td>
-                    <td>{salary.salary}</td>
-                    <td>{salary.bonus}</td>
+              <table className="table table-border roundedtable table-md center-text">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Salary</th>
+                    <th>Bonus</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+
+                <tbody className="sidebar-wrapper">
+                  {salaries?.map((salary, idx) => (
+                    <tr
+                      className="hover-effect"
+                      onClick={() => history.push(`salary/${salary?._id}`)}
+                    >
+                      <td>{idx + 1}</td>
+                      <td>{employeeMap?.[salary?.employeeID]?.[0] || "N/A"}</td>
+                      <td>{employeeMap?.[salary?.employeeID]?.[1] || "N/A"}</td>
+                      <td>{salary?.salary}</td>
+                      <td>{salary?.bonus}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
-          
         </div>
       ) : (
         <Loading />

@@ -7,7 +7,16 @@ import "react-datepicker/dist/react-datepicker.css";
 // ========= TEMPLATE FUNCTIONS =========
 
 const templates = {
-  offer: ({ name, address, position, salary, ctc, startDate,reportingDate, manager }) => `
+  offer: ({
+    name,
+    address,
+    position,
+    salary,
+    ctc,
+    startDate,
+    reportingDate,
+    manager,
+  }) => `
     <div style="font-family: Arial, sans-serif; padding: 30px; color: #000;">
       <p>Date: ${startDate}</p>
       <p>${name},<br/>${address}</p>
@@ -78,7 +87,6 @@ const templates = {
   `,
 };
 
-
 // ========= MAIN COMPONENT ==========
 
 const AssignLetter = () => {
@@ -87,7 +95,8 @@ const AssignLetter = () => {
   const [letterType, setLetterType] = useState("offer");
   const [formData, setFormData] = useState({});
   const [downloadUrl, setDownloadUrl] = useState("");
-
+  const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -109,7 +118,16 @@ const AssignLetter = () => {
   const getRequiredFields = () => {
     switch (letterType) {
       case "offer":
-        return ["name", "address", "position", "salary", "ctc", "startDate" ,"reportingDate", "manager"];
+        return [
+          "name",
+          "address",
+          "position",
+          "salary",
+          "ctc",
+          "startDate",
+          "reportingDate",
+          "manager",
+        ];
       case "warning":
         return ["name", "reason", "date"];
       case "promotion":
@@ -127,15 +145,42 @@ const AssignLetter = () => {
     e.preventDefault();
 
     const requiredFields = getRequiredFields();
+    let hasError = false;
+    const newErrors = {};
+
+    // Check required
     for (const field of requiredFields) {
       if (!formData[field]) {
-        return toast.error(`Please fill ${field} field`);
+        newErrors[field] = `Please fill ${field}`;
+        hasError = true;
       }
     }
 
-    const letterHTML = templates[letterType](formData);
+    // Custom validation
+    if ("name" in formData && /[^a-zA-Z\s]/.test(formData.name)) {
+      newErrors.name = "Name should contain only letters";
+      hasError = true;
+    }
+
+    if ("salary" in formData && /[^0-9]/.test(formData.salary)) {
+      newErrors.salary = "Salary should contain only numbers";
+      hasError = true;
+    }
+
+    if ("ctc" in formData && /[^0-9]/.test(formData.ctc)) {
+      newErrors.ctc = "CTC should contain only numbers";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+
+    if (hasError) return;
 
     try {
+      setIsLoading(true);
+
+      const letterHTML = templates[letterType](formData);
+
       const res = await sendLetter({
         employeeID: selectedEmployee,
         letterHTML,
@@ -146,28 +191,42 @@ const AssignLetter = () => {
         toast.success("Letter sent successfully!");
         setFormData({});
         setSelectedEmployee("");
-
-        setDownloadUrl(res.filePath)
+        setDownloadUrl(res.filePath);
+      } else {
+        toast.error("Failed to send letter.");
       }
-      
-      
     } catch (err) {
       toast.error("Failed to send letter.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const renderFields = () => {
     const fields = getRequiredFields();
+
     return fields.map((field) => (
       <div key={field} className="form-group col-md-4">
-        <label>{field.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}</label>
+        <label>
+          {field
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, (str) => str.toUpperCase())}
+        </label>
         <input
-          className="form-control"
+          className={`form-control ${errors[field] ? "is-invalid" : ""}`}
           type={field.toLowerCase().includes("date") ? "date" : "text"}
           value={formData[field] || ""}
           onChange={(e) => handleInputChange(field, e.target.value)}
-          required
+          onKeyPress={(e) => {
+            if (field === "name" && /[^a-zA-Z\s]/.test(e.key))
+              e.preventDefault();
+            if ((field === "salary" || field === "ctc") && /[^0-9]/.test(e.key))
+              e.preventDefault();
+          }}
         />
+        {errors[field] && (
+          <small className="text-danger">{errors[field]}</small>
+        )}
       </div>
     ));
   };
@@ -186,6 +245,7 @@ const AssignLetter = () => {
                   className="form-control"
                   value={selectedEmployee}
                   onChange={(e) => setSelectedEmployee(e.target.value)}
+                  required
                 >
                   <option value="">Choose Employee</option>
                   {employees.map((emp) => (
@@ -217,23 +277,38 @@ const AssignLetter = () => {
 
               {/* Submit */}
               <div className="form-group col-md-4">
-                <button className="btn btn-primary btn-lg px-3 py-2 rounded-sm" type="submit">
-                  Send Letter
+                <button
+                  className="btn btn-primary btn-lg px-3 py-2 rounded-sm d-flex align-items-center justify-content-center gap-2"
+                  type="submit"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Sending...
+                    </>
+                  ) : (
+                    "Send Letter"
+                  )}
                 </button>
-                {downloadUrl && (
-  <div className="mt-4">
-    <a
-      href={downloadUrl}
-      download
-      target="_blank"
-      rel="noopener noreferrer"
-      className="btn btn-success"
-    >
-      📥 Download Letter
-    </a>
-  </div>
-)}
 
+                {downloadUrl && (
+                  <div className="mt-4">
+                    <a
+                      href={downloadUrl}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-success"
+                    >
+                      📥 Download Letter
+                    </a>
+                  </div>
+                )}
               </div>
             </form>
           </div>

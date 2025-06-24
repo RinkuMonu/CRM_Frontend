@@ -71,9 +71,9 @@ const LeaveView = () => {
       {applications ? (
         <div className="main-content">
           <section className="section">
-              <div className="section-header d-flex justify-content-between">
-                <h1>Leave Applications</h1>
-              </div>
+            <div className="section-header d-flex justify-content-between">
+              <h1>Leave Applications</h1>
+            </div>
 
             <div className="d-flex justify-content-center align-items-center w-100">
               <div className="form-group col-md-2">
@@ -145,53 +145,55 @@ const LeaveView = () => {
               </button>
             </div>
             <div className="table-responsive">
-            <table className="table table-md center-text">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Type</th>
-                  <th>Title</th>
-                  <th>Applied Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody className="sidebar-wrapper">
-                {applications?.map((application, idx) => (
-                  <tr
-                    className="hover-effect"
-                    onClick={() => history.push(`leaves/${application._id}`)}
-                  >
-                    <td>{idx + 1}</td>
-                    <td>
-                      {employeeMap?.[application.applicantID]?.[0] || "N/A"}
-                    </td>
-                    <td>
-                      {employeeMap?.[application.applicantID]?.[1] || "N/A"}
-                    </td>
-                    <td>{application?.type}</td>
-                    <td>{application.title}</td>
-                    <td>{application.appliedDate}</td>
-                    <td
-                      className={`${
-                        application.adminResponse === "Rejected"
-                          ? "text-danger"
-                          : application.adminResponse === "Pending"
-                          ? "text-primary"
-                          : "text-success"
-                      }`}
-                    >
-                      {application.adminResponse}
-                    </td>
+              <table className="table table-md center-text">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+
+                <tbody className="sidebar-wrapper">
+                  {applications?.map((application, idx) => (
+                    <tr className="hover-effect">
+                      <td>{idx + 1}</td>
+                      <td>
+                        {employeeMap?.[application.applicantID]?.[0] || "N/A"}
+                      </td>
+                      <td>
+                        {employeeMap?.[application.applicantID]?.[1] || "N/A"}
+                      </td>
+                      <td>{application?.type}</td>
+                      <td>{application.title}</td>
+                      <td>{application.appliedDate}</td>
+                      <td
+                        onClick={() =>
+                          history.push(`leaves/${application._id}`)
+                        }
+                        className={`cursor-pointer ${
+                          application.adminResponse === "Rejected"
+                            ? "text-danger"
+                            : application.adminResponse === "Pending"
+                            ? "text-primary"
+                            : "text-success"
+                        }`}
+                        style={{
+                          cursor: "pointer",
+                        }}
+                      >
+                        {application.adminResponse}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
-          
         </div>
       ) : (
         <Loading />

@@ -27,10 +27,11 @@ const Task = ({selectedEmployee,selectedDate}) => {
 
   const fetchTasks = async () => {
     try {
-      const res = await api.get(`https://api.sevenunique.com/api/task/user-today/${_id}?date=${selectedDate || new Date().toISOString().split('T')[0]}`);
+      const res = await api.get(`task/user-today/${_id}?date=${selectedDate || new Date().toISOString().split('T')[0]}`);
       const taskData = res.data.tasks;
       const leadData = res.data.leads;
-
+        // console.log(res);
+        
       const tasksWithLeads = taskData.map(task => ({
         ...task,
         leads: leadData.filter(lead => lead.taskID === task._id)
@@ -185,8 +186,11 @@ const Task = ({selectedEmployee,selectedDate}) => {
   };
 
   const TaskCard = ({ task, index }) => (
+    
     <Draggable draggableId={task._id} index={index}>
       {(provided, snapshot) => (
+        
+        
         <div
           className="card mb-3 p-2"
           ref={provided.innerRef}
@@ -200,7 +204,7 @@ const Task = ({selectedEmployee,selectedDate}) => {
           <div className="card-body">
             <h5 className="card-title fw-semibold">{task.title}</h5>
             <p className="text-muted small mb-1">{task.description}</p>
-            <p className="text-muted small mb-1">Assigned by: {task.assignedBy}</p>
+            <p className="text-muted small mb-1">Assigned by: {task.assignedBy.name}</p>
             <p className="text-muted small mb-1">Date: {new Date(task.createdAt).toLocaleDateString()}</p>
             <p className="text-muted small">Status: {task.Status}</p>
             {task.remark && (
@@ -219,7 +223,8 @@ const Task = ({selectedEmployee,selectedDate}) => {
             </div>
           </div>
         </div>
-      )}
+      )
+      }
     </Draggable>
   );
 

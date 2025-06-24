@@ -2,8 +2,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  // baseURL: `https://api.sevenunique.com/api`,
-  baseURL: `http://localhost:5500/api`,
+  baseURL: `https://api.sevenunique.com/api`, 
+  // baseURL: `http://localhost:5500/api`, 
   // baseURL: `http://192.168.1.76:5500/api`,
 });
 

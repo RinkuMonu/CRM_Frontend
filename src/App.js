@@ -280,7 +280,7 @@ const ProtectedRoute = ({ children, ...rest }) => {
 
 const AdminRoute = ({ children, ...rest }) => {
   const { user } = useSelector((state) => state.authSlice);
-  console.log("isAuth", user);
+  // console.log("isAuth", user);
 
   const accessToken = localStorage.getItem('accessToken');
   

@@ -6,8 +6,9 @@ import "../../assets/css/style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import api from "../../http";
 import { Link } from "react-router-dom";
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes } from "react-icons/fa";
 import Task from "../../pages/task/Task";
+import { toast } from "react-toastify";
 
 function EmployeTask() {
   const { user } = useSelector((state) => state.authSlice);
@@ -34,7 +35,9 @@ function EmployeTask() {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const res = await api.get(`https://api.sevenunique.com/api/task/get-allEmployee?type=employee`);
+        const res = await api.get(
+          `https://api.sevenunique.com/api/task/get-allEmployee?type=employee`
+        );
         setTeamMembers(res.data);
       } catch (error) {
         console.error("❌ Error fetching members:", error);
@@ -49,12 +52,33 @@ function EmployeTask() {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
+
+    if (!selectedFile) {
+      setFile(null);
+      return;
+    }
+
+    const allowedTypes = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+      "application/vnd.ms-excel", // .xls
+    ];
+
+    if (!allowedTypes.includes(selectedFile.type)) {
+      toast.error("❌ Only Excel files (.xlsx or .xls) are allowed.");
+      e.target.value = ""; // Reset the input
+      setFile(null);
+      return;
+    }
+
     setFile(selectedFile);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!file) {
+      toast.error("Please attach an Excel file before submitting.");
+      return;
+    }
     const updatedFormData = {
       ...formData,
       createdBy: userId,
@@ -81,6 +105,7 @@ function EmployeTask() {
       });
 
       setTask([...tasks, res.data]);
+      toast.success("Task added successfully!");
       setShowModal(false);
       setFormData({
         title: "",
@@ -105,10 +130,16 @@ function EmployeTask() {
           <div className="container">
             <div className="row">
               <div className="col-md-12">
-                <div className="card cardborder overflow-hidden p-0 rounded-3" style={{ boxShadow: "none" }}>
+                <div
+                  className="card cardborder overflow-hidden p-0 rounded-3"
+                  style={{ boxShadow: "none" }}
+                >
                   <div className="card-header d-flex justify-content-between">
                     <h4>Leader Leads</h4>
-                    <Button className="badge rounded bg-label-primary px-4 py-2" onClick={() => setShowModal(true)}>
+                    <Button
+                      className="badge rounded bg-label-primary px-4 py-2"
+                      onClick={() => setShowModal(true)}
+                    >
                       <i className="fas fa-plus mr-2"></i> Add Task
                     </Button>
                   </div>
@@ -162,7 +193,10 @@ function EmployeTask() {
                 </div>
               </div>
               {showtask && (
-                <Task selectedEmployee={selectedEmployee} selectedDate={selectedDate} />
+                <Task
+                  selectedEmployee={selectedEmployee}
+                  selectedDate={selectedDate}
+                />
               )}
             </div>
           </div>
@@ -173,7 +207,12 @@ function EmployeTask() {
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header>
           <Modal.Title>Add New Task</Modal.Title>
-          <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowModal(false)}>
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            onClick={() => setShowModal(false)}
+          >
             <FaTimes />
           </button>
         </Modal.Header>
@@ -236,8 +275,12 @@ function EmployeTask() {
               <Form.Control
                 type="file"
                 name="file"
+                accept=".xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 onChange={handleFileChange}
               />
+              <Form.Text className="text-muted">
+                {file ? `Selected file: ${file.name}` : "No file selected"}
+              </Form.Text>
             </Form.Group>
 
             <Button variant="primary" type="submit">

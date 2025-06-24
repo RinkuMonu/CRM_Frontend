@@ -16,6 +16,8 @@ const Team = () => {
   const dispatch = useDispatch();
   const { team } = useSelector(state => state.teamSlice);
   const { teamMembers } = useSelector(state => state.userSlice);
+  console.log(team);
+  
 
   const [loading, setLoading] = useState(true);
   const [freeApiCalled, setFreeApiCalled] = useState(false);
@@ -89,9 +91,9 @@ const Team = () => {
               </div>
               <div className="row">
                 <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
+                {/* <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
                 <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
+                <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} /> */}
               </div>
 
               <div className="card">
@@ -114,10 +116,10 @@ const Team = () => {
                           <th>Leader</th>
                           <td>
                             { 
-                              team.leader ?
+                              team?.leader ?
                                 <button  className='badge btn badge-primary' onClick={modalLeaderAction} style={{padding:'0px 10px 0px 0px'}}>
-                                <img src={team.leader.image} className='avatar avatar-sm mr-2' alt="Person" width="96" height="96"/>
-                                {team.leader.name}
+                                <img src={team?.leader?.image} className='avatar avatar-sm mr-2' alt="Person" width="96" height="96"/>
+                                {team?.leader?.name}
                             </button>
                             :
                             <button onClick={modalLeadersAction} className='badge badge-light btn' style={{padding:'0px 10px 0px 0px'}}>

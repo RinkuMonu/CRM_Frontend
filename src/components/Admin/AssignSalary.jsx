@@ -10,6 +10,7 @@ const AssignSalary = () => {
   const [formData, setFormData] = useState(initialState);
   const [selectedEmployee, setSelectedEmployee] = useState();
   const [employees, setEmployees] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -33,18 +34,39 @@ const AssignSalary = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
     const { salary, bonus, reasonForBonus } = formData;
-    if (!salary || !bonus || !reasonForBonus)
-      return toast.error("All Field Required");
-    formData["employeeID"] = selectedEmployee;
-    const res = await assignSalary(formData);
-    const { success } = res;
-    console.log(res);
-    if (success) {
-      toast.success("Salary Assigned!");
+
+    if (!salary || !bonus || !reasonForBonus) {
+      toast.error("All fields are required");
+      return;
     }
 
-    setFormData(initialState);
+    try {
+      setIsLoading(true); // 🔄 Start loading
+
+      const payload = { ...formData, employeeID: selectedEmployee };
+      const res = await assignSalary(payload);
+      const { success, message } = res;
+
+      if (success) {
+        toast.success("Salary Assigned!");
+        setFormData(initialState);
+      } else {
+        toast.error(message || "Something went wrong");
+      }
+    } catch (error) {
+      console.error("Error assigning salary:", error);
+      toast.error("Server Error. Please try again.");
+    } finally {
+      setIsLoading(false); // ✅ Stop loading
+    }
+  };
+
+  const allowOnlyNumbers = (e) => {
+    if (/[a-zA-Z]/.test(e.key)) {
+      e.preventDefault();
+    }
   };
 
   return (
@@ -53,7 +75,7 @@ const AssignSalary = () => {
         <section className="section">
           <HeaderSection title="Salary" />
           <div className="">
-            <div className="card-body p-0" style={{shadow:"none"}}>
+            <div className="card-body p-0" style={{ shadow: "none" }}>
               <form className="row" onSubmit={onSubmit} id="addUserForm">
                 <div className="form-group col-md-4">
                   <label>Employees</label>
@@ -82,7 +104,8 @@ const AssignSalary = () => {
                     <input
                       onChange={inputEvent}
                       value={formData.salary}
-                      type="number"
+                      onKeyPress={allowOnlyNumbers}
+                      type="text"
                       id="salary"
                       name="salary"
                       className="form-control"
@@ -100,8 +123,9 @@ const AssignSalary = () => {
                     </div>
                     <input
                       onChange={inputEvent}
+                      onKeyPress={allowOnlyNumbers}
                       value={formData.bonus}
-                      type="number"
+                      type="text"
                       id="bonus"
                       name="bonus"
                       className="form-control"
@@ -130,11 +154,23 @@ const AssignSalary = () => {
 
                 <div className="form-group text-center col-md-12">
                   <button
-                    className="btn btn-primary btn-lg"
+                    className="btn btn-primary btn-lg d-flex align-items-center justify-content-center gap-2"
                     type="submit"
                     style={{ width: "30vh" }}
+                    disabled={isLoading}
                   >
-                    Assign Salary
+                    {isLoading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Assigning...
+                      </>
+                    ) : (
+                      "Assign Salary"
+                    )}
                   </button>
                 </div>
               </form>

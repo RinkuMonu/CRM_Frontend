@@ -5,6 +5,8 @@ import RowAddMember from '../../../../components/rows/row-add-member';
 const MembersModal = ({close}) =>
 {
     const {freeEmployees} = useSelector(state=>state.userSlice);
+    console.log(freeEmployees);
+    
     return(
         <Modal close={close} title="Add Member">
         <table className="table table-striped table-md center-text table-striped">

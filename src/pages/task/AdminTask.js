@@ -6,7 +6,7 @@ import "../../assets/css/style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import api, { getMembers_Leader } from "../../http"; // Assuming this function exists to fetch team members
 import { Link } from "react-router-dom";
-import { FaTimes } from 'react-icons/fa'
+import { FaTimes } from "react-icons/fa";
 import Task from "./Task";
 function AdminTask() {
   const { user } = useSelector((state) => state.authSlice);
@@ -85,7 +85,7 @@ function AdminTask() {
     }
 
     try {
-      const res = await api.post("https://api.sevenunique.com/api/task", data, {
+      const res = await api.post("api/task", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -106,10 +106,7 @@ function AdminTask() {
   };
 
   const searchEmployeeTask = async () => {
-
-   
-      setShowtask(prev => !prev); // toggles true ↔ false
-    
+    setShowtask((prev) => !prev); // toggles true ↔ false
   };
 
   const cards = [
@@ -219,87 +216,88 @@ function AdminTask() {
                   </div>
                 </div>
               </div>
-              {
-                showtask ?<div className="col-md-12">
-                <div
-                  className="card cardborder overflow-hidden p-0 rounded-3 "
-                  style={{ boxShadow: "none" }}
-                >
-                  <div className="card-header">
-                    <h4>Letest Leads</h4>
-                  </div>
-                  <div className="card-body mt-3">
-                    <div className="row gy-4">
-                      {cards.map((card, index) => (
-                        <div className="col-md-6 col-xl-3" key={index}>
-                          <div className="card position-relative shadow-sm rounded-4">
-                            {/* Edit Button */}
-                            <Link
-                              to={"/viewlead"}
-                              className="btn btn-sm  position-absolute top-0 end-0 m-2"
-                            >
-                              {/* <i class="bi bi-pencil-square fs-6"></i> */}
-                              View Lead
-                            </Link>
-                            <div
-                              className="position-absolute d-flex align-items-center justify-content-center rounded-circle"
-                              style={{
-                                top: "-20px",
-                                left: "20px",
-                                width: "40px",
-                                height: "40px",
-                                backgroundColor: card.bgColor,
-                                boxShadow:
-                                  "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
-                              }}
-                            >
-                              <i className={`${card.icon} text-white`}></i>
-                            </div>
-                            <div className="card-body pt-4 mt-3">
-                              <h5 className="card-title fw-semibold">
-                                {card.title}
-                              </h5>
-                              <div className="text-muted small mb-1">
-                                <i className="fas fa-crosshairs me-1 text-secondary" />
-                                {card.team}
+              {showtask ? (
+                <div className="col-md-12">
+                  <div
+                    className="card cardborder overflow-hidden p-0 rounded-3 "
+                    style={{ boxShadow: "none" }}
+                  >
+                    <div className="card-header">
+                      <h4>Letest Leads</h4>
+                    </div>
+                    <div className="card-body mt-3">
+                      <div className="row gy-4">
+                        {cards.map((card, index) => (
+                          <div className="col-md-6 col-xl-3" key={index}>
+                            <div className="card position-relative shadow-sm rounded-4">
+                              {/* Edit Button */}
+                              <Link
+                                to={"/viewlead"}
+                                className="btn btn-sm  position-absolute top-0 end-0 m-2"
+                              >
+                                {/* <i class="bi bi-pencil-square fs-6"></i> */}
+                                View Lead
+                              </Link>
+                              <div
+                                className="position-absolute d-flex align-items-center justify-content-center rounded-circle"
+                                style={{
+                                  top: "-20px",
+                                  left: "20px",
+                                  width: "40px",
+                                  height: "40px",
+                                  backgroundColor: card.bgColor,
+                                  boxShadow:
+                                    "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px",
+                                }}
+                              >
+                                <i className={`${card.icon} text-white`}></i>
                               </div>
-                              <div className="text-muted small">
-                                <i className="fas fa-shield-alt me-1 text-secondary" />
-                                {card.timeLeft}
-                              </div>
-                              <div className="d-flex mt-2 pt-3 px-2 justify-content-between align-items-center mt-3 text-muted small fw-semibold">
-                                <span>Team Member</span>
-                                <span>Progress</span>
-                              </div>
-                              <div className="d-flex align-items-center mt-2 pt-3 px-3 border-top">
-                                {card.members.map((img, i) => (
-                                  <img
-                                    key={i}
-                                    src={img}
-                                    className="rounded-circle me-2"
-                                    alt="member"
-                                    width="28"
-                                    height="28"
-                                    style={{
-                                      objectFit: "cover",
-                                      marginLeft: "-10px",
-                                    }}
-                                  />
-                                ))}
-                                <span className="ms-auto fw-semibold text-muted">
-                                  {card.progress}
-                                </span>
+                              <div className="card-body pt-4 mt-3">
+                                <h5 className="card-title fw-semibold">
+                                  {card.title}
+                                </h5>
+                                <div className="text-muted small mb-1">
+                                  <i className="fas fa-crosshairs me-1 text-secondary" />
+                                  {card.team}
+                                </div>
+                                <div className="text-muted small">
+                                  <i className="fas fa-shield-alt me-1 text-secondary" />
+                                  {card.timeLeft}
+                                </div>
+                                <div className="d-flex mt-2 pt-3 px-2 justify-content-between align-items-center mt-3 text-muted small fw-semibold">
+                                  <span>Team Member</span>
+                                  <span>Progress</span>
+                                </div>
+                                <div className="d-flex align-items-center mt-2 pt-3 px-3 border-top">
+                                  {card.members.map((img, i) => (
+                                    <img
+                                      key={i}
+                                      src={img}
+                                      className="rounded-circle me-2"
+                                      alt="member"
+                                      width="28"
+                                      height="28"
+                                      style={{
+                                        objectFit: "cover",
+                                        marginLeft: "-10px",
+                                      }}
+                                    />
+                                  ))}
+                                  <span className="ms-auto fw-semibold text-muted">
+                                    {card.progress}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>:
-              <Task selectedEmployee={selectedEmployee}/>
-              }
+              ) : (
+                <Task selectedEmployee={selectedEmployee} />
+              )}
             </div>
           </div>
         </section>
@@ -332,7 +330,12 @@ function AdminTask() {
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header>
           <Modal.Title>Add New Task</Modal.Title>
-          <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowModal(false)}>
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            onClick={() => setShowModal(false)}
+          >
             <FaTimes /> {/* Place the icon inside the button */}
           </button>
         </Modal.Header>
@@ -395,6 +398,7 @@ function AdminTask() {
               <Form.Control
                 type="file"
                 name="file"
+                accept="*/*"
                 onChange={handleFileChange}
               />
             </Form.Group>

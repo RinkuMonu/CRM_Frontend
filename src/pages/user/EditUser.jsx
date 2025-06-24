@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useHistory ,useParams } from 'react-router-dom';
-
+import { useHistory, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import HeaderSection from "../../components/HeaderSection";
 import { updateUser, getUser } from "../../http";
 import Modal from "../../components/modal/Modal";
+import { FaUserEdit } from "react-icons/fa";
 
 const EditUser = () => {
   const initialState = {
@@ -16,55 +16,93 @@ const EditUser = () => {
     address: "",
     profile: "",
     status: "",
+    adminPassword: "",
   };
 
   const [imagePreview, setImagePreview] = useState("/assets/icons/user.png");
   const [formData, setFormData] = useState(initialState);
+  const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [updateFormData, setUpdatedFormData] = useState({});
   const [userType, setUserType] = useState("User");
+  const [isChanged, setIsChanged] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { id } = useParams();
-  const navigate = useHistory(); // ✅ Required for redirect
+  const navigate = useHistory();
 
   useEffect(() => {
     (async () => {
       const res = await getUser(id);
       if (res.success) {
-        setUserType(res.data.type);
-        setFormData(res.data);
-        setImagePreview(res.data.image);
+        setUserType(res?.data?.type);
+        setFormData(res?.data);
+        setImagePreview(res?.data?.image);
+        console.log(imagePreview);
       }
     })();
   }, [id]);
 
+  const validateField = (name, value) => {
+    let error = "";
+    if (!value || value.trim() === "") {
+      error = `${name[0].toUpperCase() + name.slice(1)} is required`;
+    } else {
+      if (name === "name" && !/^[a-zA-Z ]+$/.test(value)) {
+        error = "Only letters and spaces allowed in name";
+      }
+      if (name === "mobile" && !/^[6-9]\d{9}$/.test(value)) {
+        error = "Mobile number must start with 6-9 and be 10 digits";
+      }
+    }
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
   const inputEvent = (e) => {
     const { name, value } = e.target;
+    if (name === "name" && /[^a-zA-Z ]/.test(value)) return;
+    if (name === "mobile") {
+      if (!/^\d*$/.test(value)) return;
+      if (value.length > 10) return;
+      if (value.length === 1 && !/^[6-9]$/.test(value)) return;
+    }
+    validateField(name, value);
     setFormData((old) => ({ ...old, [name]: value }));
     setUpdatedFormData((old) => ({ ...old, [name]: value }));
+    setIsChanged(true);
+  };
+
+  const hasErrors = () => {
+    return Object.values(errors).some((error) => error);
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-
+    if (hasErrors()) {
+      toast.error("Please fix form errors before submitting.");
+      return;
+    }
     if (updateFormData.type && !showModal) return setShowModal(true);
-
+    setLoading(true);
     const fd = new FormData();
     Object.keys(updateFormData).forEach((key) => {
       fd.append(key, updateFormData[key]);
     });
-
     const { success, message } = await updateUser(id, fd);
+    setLoading(false);
     if (success) {
       toast.success(message);
-      setTimeout(() => navigate.push("/employees"), 1500); // ✅ Redirect after success
+      setTimeout(() => window.history.back(), 1500);
     }
   };
 
   const captureImage = (e) => {
     const file = e.target.files[0];
+    setImagePreview(URL.createObjectURL(file));
+    if (!file) return;
     setFormData((old) => ({ ...old, profile: file }));
     setUpdatedFormData((old) => ({ ...old, profile: file }));
+    setIsChanged(true);
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -74,7 +112,6 @@ const EditUser = () => {
   };
 
   const modalAction = () => setShowModal(!showModal);
-
   return (
     <>
       {showModal && (
@@ -139,6 +176,7 @@ const EditUser = () => {
               <form className="row" onSubmit={onSubmit} id="updateUserForm">
                 <div className="form-group col-md-12 text-center">
                   <div className="input-group justify-content-center">
+                    {/* Hidden File Input */}
                     <input
                       type="file"
                       id="profile"
@@ -147,13 +185,27 @@ const EditUser = () => {
                       onChange={captureImage}
                       accept="image/*"
                     />
-                    <label htmlFor="profile">
+
+                    {/* Label wraps image + edit icon */}
+                    <label
+                      htmlFor="profile"
+                      className="position-relative cursor-pointer"
+                    >
                       <img
                         className="rounded"
                         src={imagePreview}
-                        width="120"
-                        alt=""
+                        width={120}
+                        height={120}
+                        alt="Profile"
                       />
+
+                      {/* Edit Icon */}
+                      <div
+                        className="position-absolute bg-secondary px-2 py-2 rounded-circle d-flex justify-content-center align-items-center"
+                        style={{ bottom: 0, right: 0 }}
+                      >
+                        <FaUserEdit className="text-white" size={20} />
+                      </div>
                     </label>
                   </div>
                 </div>
@@ -172,9 +224,16 @@ const EditUser = () => {
                       type="text"
                       id="name"
                       name="name"
-                      className="form-control"
+                      className={`form-control ${
+                        errors.name ? "is-invalid" : ""
+                      }`}
                     />
                   </div>
+                  {errors.name && (
+                    <div className="invalid-feedback d-block">
+                      {errors.name}
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-group col-md-4">
@@ -229,9 +288,16 @@ const EditUser = () => {
                       type="tel"
                       id="mobile"
                       name="mobile"
-                      className="form-control"
+                      className={`form-control ${
+                        errors.mobile ? "is-invalid" : ""
+                      }`}
                     />
                   </div>
+                  {errors.mobile && (
+                    <div className="invalid-feedback d-block">
+                      {errors.mobile}
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-group col-md-3">
@@ -300,11 +366,23 @@ const EditUser = () => {
 
                 <div className="form-group col-md-3">
                   <button
-                    className="btn btn-primary btn-lg rounded-sm"
+                    className="btn btn-primary btn-lg rounded-sm d-flex align-items-center justify-content-center gap-2"
                     type="submit"
                     style={{ width: "30vh" }}
+                    disabled={!isChanged || loading}
                   >
-                    Update {userType}
+                    {loading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        <span>Please wait...</span>
+                      </>
+                    ) : (
+                      `Update ${userType}`
+                    )}
                   </button>
                 </div>
               </form>

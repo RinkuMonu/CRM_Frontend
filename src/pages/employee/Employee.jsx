@@ -40,6 +40,8 @@ const Employee = () => {
     (async () => {
       const res = await getUser(id);
       if (res.success) setUser(res.data);
+      console.log(res?.data?.image);
+      
     })();
   }, [id]);
 

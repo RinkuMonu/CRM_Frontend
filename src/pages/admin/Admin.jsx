@@ -16,10 +16,11 @@ const Admin = () =>
     useEffect(()=>{
         (async ()=>{
             const res= await getUser(id);
-            if(res.success)
-                setUser(res.data);
+            if(res?.success)
+                setUser(res?.data);
         })();
     },[id])
+    
 
 
     return(

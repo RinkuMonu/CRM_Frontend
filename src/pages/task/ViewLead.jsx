@@ -155,10 +155,10 @@ export default function ViewLead() {
                         {leads.length > 0 ? (
                           leads.map((lead, i) => (
                             <tr key={i}>
-                              <td>{lead.taskID?.title || "N/A"}</td>
-                              <td>{lead.name}</td>
-                              <td>{lead.Contact_No}</td>
-                              <td>{lead.State}</td>
+                              <td>{lead?.taskID?.title || "N/A"}</td>
+                              <td>{lead?.name}</td>
+                              <td>{lead?.Contact_No}</td>
+                              <td>{lead?.State}</td>
                               <td className="text-center">
                                 {getInterestBadge(lead.interest)}
                               </td>

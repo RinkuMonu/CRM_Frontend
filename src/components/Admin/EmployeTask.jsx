@@ -75,10 +75,10 @@ function EmployeTask() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) {
-      toast.error("Please attach an Excel file before submitting.");
-      return;
-    }
+    // if (!file) {
+    //   toast.error("Please attach an Excel file before submitting.");
+    //   return;
+    // }
     const updatedFormData = {
       ...formData,
       createdBy: userId,

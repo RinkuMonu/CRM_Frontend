@@ -2,8 +2,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL: `https://api.sevenunique.com/api`, 
-  // baseURL: `http://localhost:5500/api`, 
+  baseURL: `https://api.sevenunique.com/api`,
+  // baseURL: `http://localhost:5500/api`,
   // baseURL: `http://192.168.1.76:5500/api`,
 });
 
@@ -82,7 +82,7 @@ export const viewEmployeeAttendanceAdmin = (data) =>
   api.post("admin/all-employee-attendance", data);
 // for recepstion
 export const getAllTodayInRequests = (data) =>
-  api.get("admin/view-reception-attendance");
+  api.get("admin/view-reception-attendance", { params: data });
 export const approveInRequest = (data) =>
   api.post("admin/view-reception-approve", data);
 export const getAllOutRegularizeRequests = (data) =>

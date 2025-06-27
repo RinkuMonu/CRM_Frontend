@@ -40,7 +40,6 @@ const LoginForm = () => {
       // ✅ Store in Redux
       dispatch(setAuth(res.user));
       toast.success("Login successful");
-
       window.location.reload();
 
     } else {

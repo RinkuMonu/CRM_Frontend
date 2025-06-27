@@ -7,12 +7,15 @@ import Loading from "../Loading";
 const Salary = () => {
   const { user } = useSelector((state) => state.authSlice);
   const [salary, setSalary] = useState();
+console.log(user.user);
+console.log(salary);
+
 
   useEffect(() => {
     const obj = {
       employeeID: user.id,
     };
-    console.log(user.id);
+    // console.log(user.id);
     const fetchData = async () => {
       const res = await viewEmployeeSalary(obj);
       const { success, data } = res;
@@ -60,11 +63,11 @@ const Salary = () => {
                     </thead>
                     <tbody>
                       <tr>
-                        <td>{user.name}</td>
+                        <td>{user?.user?.name}</td>
 
-                        <td>{user.email}</td>
-                        <td>{user.mobile}</td>
-                        <td>{user.address}</td>
+                        <td>{user?.user?.email}</td>
+                        <td>{user?.user?.mobile}</td>
+                        <td>{user?.user?.permanent_address}</td>
                         <td> Rs. {salary?.salary}</td>
                         <td> Rs. {salary?.bonus}</td>
                         <td>{salary?.reasonForBonus}</td>

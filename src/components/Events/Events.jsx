@@ -34,8 +34,8 @@ export default function Events() {
     if (!newEvent.date.trim()) newErrors.date = "Date is required";
     if (!newEvent.time.trim()) newErrors.time = "Time is required";
     if (!newEvent.location.trim()) newErrors.location = "Location is required";
-    if (!newEvent.description.trim())
-      newErrors.description = "Description is required";
+    // if (!newEvent.description.trim())
+    // newErrors.description = "Description is required";
     // if (!newEvent.image) newErrors.image = "Image is required";
 
     setErrors(newErrors);
@@ -109,13 +109,16 @@ export default function Events() {
           description: "",
           image: null,
         }); // Reset form
-        toast.success(response?.message);
+        toast.success(response?.message, {
+          position: "top-center",
+        });
+
         setErrors({}); // reset errors
+        setloading(false);
         // Optionally close modal programmatically
-        setTimeout(() => {
-          document.getElementById("exampleModal").classList.remove("show");
-          setloading(false);
-        }, 1500);
+        // setTimeout(() => {
+        //    document.getElementById("exampleModal").classList.remove("show");
+        // }, 1500);
       })
       .catch((error) => {
         console.error("Error adding event:", error);
@@ -165,24 +168,24 @@ export default function Events() {
                     </div>
                   </div>
                 )}
-                <div className="card rounded-4">
+                <div className="card rounded-3">
                   <div className="card-body">
                     {/* Render filtered events for the selected date */}
                     {events?.length > 0 ? (
                       events.map((event, index) => (
-                        <div key={index} className="row align-items-stretch">
-                          <div className="col-md-6 d-flex justify-content-center align-items-center">
+                        <div key={index} className="row align-items-stretch ">
+                          <div className="col-md-6 d-flex justify-content-center align-items-center my-3  bg-secondary-subtle  " >
                             {event?.image ? (
                               <img
                                 src={`${event?.image}`}
                                 alt=""
-                                className="img-fluid rounded-4 w-100 h-100 object-fit-cover"
+                                className="img-fluid rounded-5 w-100 h-100 object-fit-cover p-3 "
                               />
                             ) : (
                               <FcLandscape size={50} />
                             )}
                           </div>
-                          <div className="col-md-6 d-flex flex-column justify-content-between gap-4 py-3">
+                          <div className="col-md-6 d-flex flex-column justify-content-between gap-4 py-3 my-3 bg-secondary-subtle">
                             <div className="toptitle">
                               <span className="badge bg-label-info rounded-5">
                                 <i className="bi bi-calendar2-event-fill me-2"></i>{" "}
@@ -237,6 +240,7 @@ export default function Events() {
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
+        data-bs-backdrop="false"
       >
         <div className="modal-dialog modal-lg">
           <div className="modal-content">

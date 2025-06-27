@@ -1,49 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import {
   markInAttendance,
   markOutAttendance,
   viewEmployeeAttendance,
-  regularizeRequest
-} from '../../http';
-import Loading from '../Loading';
+  regularizeRequest,
+} from "../../http";
+import Loading from "../Loading";
 
 const Attendance = () => {
-  const { user } = useSelector(state => state.authSlice);
+  const { user } = useSelector((state) => state.authSlice);
 
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
 
   const [attendance, setAttendance] = useState([]);
   const [inMarked, setInMarked] = useState(false);
   const [outMarked, setOutMarked] = useState(false);
   const [showRegularizeModal, setShowRegularizeModal] = useState(false);
-  const [regularizeReason, setRegularizeReason] = useState('');
+  const [regularizeReason, setRegularizeReason] = useState("");
 
   useEffect(() => {
     const dt = new Date();
     const iso = dt.toISOString().split("T")[0];
     setFromDate(iso);
     setToDate(iso);
-  
+
     const fetch = async () => {
       const res = await viewEmployeeAttendance({
         employeeID: user.user.id,
         fromDate: iso,
-        toDate: iso
+        toDate: iso,
       });
-  
+
       if (res.success && Array.isArray(res.data)) {
-        const today = res.data.find(att => {
+        const today = res.data.find((att) => {
           return (
             att.date === dt.getDate() &&
             att.month === dt.getMonth() + 1 &&
             att.year === dt.getFullYear()
           );
         });
-  
+
         if (today?.inTime) setInMarked(true);
         if (today?.outTime) setOutMarked(true);
         setAttendance(res.data);
@@ -51,13 +51,16 @@ const Attendance = () => {
         setAttendance([]); // fallback
       }
     };
-  
+
     fetch();
-  }, []);
+  }, [inMarked]);
 
   const handleMarkIn = async () => {
     try {
-      const res = await markInAttendance({ employeeID: user.user.id });
+      const res = await markInAttendance({
+        employeeID: user.user.id,
+        date: new Date(),
+      });
       if (res.success) {
         toast.success(res.message);
         setInMarked(true);
@@ -71,13 +74,18 @@ const Attendance = () => {
 
   const handleMarkOut = async () => {
     try {
-      const res = await markOutAttendance({ employeeID: user.user.id });
+      const res = await markOutAttendance({
+        employeeID: user.user.id,
+        date: new Date(),
+      });
 
       if (res.success) {
         toast.success(res.message);
         setOutMarked(true);
       } else if (res.needRegularize) {
-        toast.info(res.message || "Please fill reason to regularize early OUT.");
+        toast.info(
+          res.message || "Please fill reason to regularize early OUT."
+        );
         setShowRegularizeModal(true);
       } else {
         toast.error(res.message || "Failed to mark out.");
@@ -96,10 +104,10 @@ const Attendance = () => {
     try {
       const res = await regularizeRequest({
         employeeID: user.user.id,
-        regularizeReason
+        regularizeReason,
       });
-        console.log(res);
-        
+      console.log(res);
+
       if (res.success) {
         toast.success("Regularize request sent to HR!");
         setShowRegularizeModal(false);
@@ -117,7 +125,7 @@ const Attendance = () => {
       employeeID: user.user.id,
       fromDate,
       toDate,
-      status: statusFilter
+      status: statusFilter,
     };
     const res = await viewEmployeeAttendance(obj);
     setAttendance(res.data);
@@ -183,7 +191,10 @@ const Attendance = () => {
               </select>
             </div>
             <div className="col-md-3 mt-3 d-flex align-items-end">
-              <button onClick={searchAttendance} className="btn btn-primary w-100">
+              <button
+                onClick={searchAttendance}
+                className="btn btn-primary w-100"
+              >
                 Search
               </button>
             </div>
@@ -207,11 +218,15 @@ const Attendance = () => {
                   <td>{att.date + "/" + att.month + "/" + att.year}</td>
                   <td>{att.day}</td>
                   <td>
-                    <span className={`badge ${
-                      att.present === 'Present' ? 'badge-success' :
-                      att.present === 'Half-day' ? 'badge-info' :
-                      'badge-danger'
-                    }`}>
+                    <span
+                      className={`badge ${
+                        att.present === "Present"
+                          ? "badge-success"
+                          : att.present === "Half-day"
+                          ? "badge-info"
+                          : "badge-danger"
+                      }`}
+                    >
                       {att.present}
                     </span>
                   </td>
@@ -246,8 +261,18 @@ const Attendance = () => {
                 ></textarea>
               </div>
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowRegularizeModal(false)}>Cancel</button>
-                <button className="btn btn-primary" onClick={submitRegularizeRequest}>Submit</button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setShowRegularizeModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={submitRegularizeRequest}
+                >
+                  Submit
+                </button>
               </div>
             </div>
           </div>

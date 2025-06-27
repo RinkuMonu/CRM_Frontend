@@ -165,7 +165,7 @@ const Navigation = () => {
             >
               <img
                 alt="image"
-                src="/assets/icons/user-1.jpg"
+                src={user?.user?.image||"/assets/icons/user-1.jpg"}
                 className="rounded-circle "
                 style={{ width: "40px", height: "40px" }}
               />
@@ -174,7 +174,7 @@ const Navigation = () => {
                   className="m-0 text-muted text-sm"
                   style={{ fontSize: "12px" }}
                 >
-                  Welcom Back
+                  Welcome Back
                 </p>
                 <h6
                   className="d-sm-none d-lg-inline-block mb-0"
@@ -185,7 +185,7 @@ const Navigation = () => {
               </div>
             </a>
             <div className="dropdown-menu dropdown-menu-right">
-              <div className="dropdown-title">Logged in 5 min ago</div>
+              {/* <div className="dropdown-title">Logged in 5 min ago</div> */}
               <NavLink
                 to="features-profile.html"
                 className="dropdown-item has-icon"

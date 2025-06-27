@@ -18,7 +18,9 @@ const Admin = () => {
   }, []);
 
   const { counts } = useSelector((state) => state.mainSlice);
+  const { user } = useSelector((state) => state.authSlice?.user);
   const { admin, employee, leader, team } = counts;
+
   const [state, setState] = React.useState({
     series: [
       {
@@ -358,13 +360,13 @@ const Admin = () => {
                 <div className="col-7">
                   <div className="text-primary p-3">
                     <h5 className="text-primary">Welcome Back !</h5>
-                    <p>Developer Dashboard</p>
+                    <p>{user?.name}</p>
                   </div>
                 </div>
                 <div className="col-5 align-self-end">
                   <img
                     src="./assets/icons/undraw_hello_ccwj.svg"
-                    alt="Profile"
+                    alt="Banner"
                     className="img-fluid"
                   />
                 </div>
@@ -376,7 +378,7 @@ const Admin = () => {
                 <div className="col-sm-5">
                   <div className="avatar-md profile-user-wid mb-4">
                     <img
-                      src="./assets/icons/user-1.jpg"
+                      src={user?.image || "./assets/icons/user-1.jpg"}
                       alt="User Avatar"
                       className="img-thumbnail rounded-circle"
                     />
@@ -385,7 +387,7 @@ const Admin = () => {
                     className="font-size-15 text-truncate mb-0"
                     style={{ fontSize: "16px" }}
                   >
-                    John Deo
+                    {user?.name}
                   </h5>
                   <p
                     className="text-muted mb-0 text-truncate"
@@ -409,13 +411,13 @@ const Admin = () => {
                           className="text-muted mb-0"
                           style={{ fontSize: "13px" }}
                         >
-                          john.smith@company.com
+                          {user?.email}
                         </p>
                         <p
                           className="text-muted mb-0"
                           style={{ fontSize: "13px" }}
                         >
-                          +91 2837 283793
+                          {user?.mobile}
                         </p>
                       </div>
                     </div>
@@ -562,8 +564,8 @@ const Admin = () => {
                   </div>
                 ))}
               </div>
-              <div className="d-flex justify-content-between">
-                <div className="text-center mt-4">
+              <div className="d-flex justify-content-between  ">
+                <div className="text-center mt-4 ">
                   <button
                     onClick={() => {
                       setHoliday(holiday - 3);
@@ -575,15 +577,25 @@ const Admin = () => {
                     <i className="fas fa-eye me-1"></i> View Less
                   </button>
                 </div>
-                <div className="text-center mt-4">
+                <div className="text-center mt-4 border "
+                style={{
+                  borderRadius:"9px"
+
+                }}
+                >
                   <button
                     onClick={() => {
                       setHoliday(holiday + 3);
                       setPriview(preview + 3);
                     }}
-                    className={`btn btn-orange btn-lg px-4 py-2 animated-button hover-scale  ${
+                    className={`btn btn-orange btn-lg px-4 py-2 animated-button hover-scale  border${
                       holidays.length <= holiday && "d-none"
                     }`}
+                    // style={
+                    //   {
+                    //     border: "1px solid gray"
+                    //   }
+                    // }
                   >
                     <i className="fas fa-eye me-1"></i> View More Holidays
                   </button>
@@ -647,7 +659,7 @@ const Admin = () => {
                       <div>
                         <p className="mb-0 employee-name">{employee.name}</p>
                         <p className="mb-0 employee-desc">
-                          Has birthday today.
+                          Has {employee?.type} today.
                         </p>
                         <p className="mb-0 employee-desc">{employee.quote}</p>
                         {/* <p className="mb-0 employee-desc">{employee.dob}</p> */}

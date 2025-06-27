@@ -83,7 +83,6 @@ export default function Events() {
   // Submit new event to API
   const handleEventSubmit = (e) => {
     e.preventDefault();
-    setloading(true);
     if (!validateForm()) return;
     const formData = new FormData();
     formData.append("title", newEvent.title);
@@ -93,6 +92,7 @@ export default function Events() {
     formData.append("location", newEvent.location);
     formData.append("description", newEvent.description);
     formData.append("image", newEvent?.image);
+    setloading(true);
 
     api
       .post("task/events", formData) // Replace with your API endpoint

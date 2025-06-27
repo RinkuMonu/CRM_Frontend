@@ -319,7 +319,7 @@ const EditUser = () => {
                   </div>
                 </div>
 
-                <div className="form-group col-md-3">
+                {/* <div className="form-group col-md-3">
                   <label>User Type</label>
                   <select
                     name="type"
@@ -331,7 +331,7 @@ const EditUser = () => {
                     <option>Leader</option>
                     <option>Admin</option>
                   </select>
-                </div>
+                </div> */}
 
                 <div className="form-group col-md-3">
                   <label>User Status</label>

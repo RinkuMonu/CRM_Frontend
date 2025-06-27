@@ -67,7 +67,7 @@ const LeaveApplications = () => {
                   className="form-control select2"
                 >
                   <option>Select</option>
-                  <option></option>
+                  <option>Sick Leave</option>
                   <option>Casual Leave</option>
                   <option>Emergency Leave</option>
                 </select>

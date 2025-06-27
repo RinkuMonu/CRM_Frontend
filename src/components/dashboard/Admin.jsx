@@ -7,6 +7,7 @@ import { setCount } from "../../store/main-slice";
 import CountsCard from "./CountsCard";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
+
 const Admin = () => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -120,10 +121,22 @@ const Admin = () => {
 
   const [birthdaysToday, setBirthdaysToday] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [holiday, setHoliday] = useState(3);
+  const [preview, setPriview] = useState(0);
   useEffect(() => {
     api
-      .get("https://api.sevenunique.com/api/task/todayevents?type=birthday") // <-- API endpoint
+      .get("task/todayevents?type=birthday") // <-- API endpoint
+      .then((res) => {
+        setBirthdaysToday(res.data); // 👈 make sure 'users' match backend response
+      })
+      .catch((err) => {
+        console.error("Error fetching birthday data:", err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+  useEffect(() => {
+    api
+      .get("task/todayevents?type=birthday") // <-- API endpoint
       .then((res) => {
         setBirthdaysToday(res.data); // 👈 make sure 'users' match backend response
       })
@@ -136,7 +149,7 @@ const Admin = () => {
   const [showAnimation, setShowAnimation] = useState(true); // start with animation visible
 
   useEffect(() => {
-    if (showAnimation && birthdaysToday?.data) {
+    if (showAnimation && birthdaysToday) {
       const timer = setTimeout(() => {
         setShowAnimation(false); // close after 5 seconds
       }, 5000);
@@ -148,28 +161,190 @@ const Admin = () => {
 
   const holidays = [
     {
-      title: "Diwali",
-      date: "02-12-2023",
-      duration: "7 Days only",
-      icon: "./assets/icons/diwali.png",
+      title: "New Year's Day",
+      date: "01-01-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-calendar2-week" />,
     },
     {
-      title: "Christmas",
-      date: "25-12-2023",
+      title: "Guru Gobind Singh Jayanti",
+      date: "06-01-2025",
       duration: "1 Day only",
-      icon: "./assets/icons/diwali.png",
+      icon: <i className="bi bi-person-bounding-box" />,
     },
     {
-      title: "New Year",
-      date: "01-01-2024",
+      title: "Swami Vivekananda Jayanti",
+      date: "12-01-2025",
       duration: "1 Day only",
-      icon: "./assets/icons/diwali.png",
+      icon: <i className="bi bi-award" />,
+    },
+    {
+      title: "Makar Sankranti",
+      date: "14-01-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-sunrise-fill" />,
+    },
+    {
+      title: "Republic Day",
+      date: "26-01-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-flag-fill" />,
+    },
+    {
+      title: "Vasant Panchami",
+      date: "10-02-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-flower3" />,
+    },
+    {
+      title: "Women's Day",
+      date: "08-03-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-gender-female" />,
     },
     {
       title: "Holi",
-      date: "14-03-2025",
+      date: "17-03-2025",
       duration: "2 Days only",
-      icon: "./assets/icons/bucket.png",
+      icon: <i className="bi bi-bucket-fill" />,
+    },
+    {
+      title: "Good Friday",
+      date: "29-03-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-cross" />,
+    },
+    {
+      title: "Eid-ul-Fitr",
+      date: "10-04-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-moon-stars-fill" />,
+    },
+    {
+      title: "Ambedkar Jayanti",
+      date: "14-04-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-book" />,
+    },
+    {
+      title: "Ram Navami",
+      date: "18-04-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-person-standing" />,
+    },
+    {
+      title: "Labour Day",
+      date: "01-05-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-tools" />,
+    },
+    {
+      title: "Buddha Purnima",
+      date: "23-05-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-fire" />,
+    },
+    {
+      title: "Bakrid",
+      date: "17-06-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-moon-fill" />,
+    },
+    {
+      title: "Muharram",
+      date: "17-07-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-droplet-fill" />,
+    },
+    {
+      title: "Independence Day",
+      date: "15-08-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-flag" />,
+    },
+    {
+      title: "Raksha Bandhan",
+      date: "19-08-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-heart-fill" />,
+    },
+    {
+      title: "Teachers' Day",
+      date: "05-09-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-journal-bookmark-fill" />,
+    },
+    {
+      title: "Milad-un-Nabi",
+      date: "16-09-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-star-fill" />,
+    },
+    {
+      title: "Mahalaya Amavasya",
+      date: "30-09-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-circle-half" />,
+    },
+    {
+      title: "Gandhi Jayanti",
+      date: "02-10-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-person-check" />,
+    },
+    {
+      title: "Dussehra",
+      date: "12-10-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-crosshair" />,
+    },
+    {
+      title: "Halloween",
+      date: "31-10-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-emoji-dizzy-fill" />,
+    },
+    {
+      title: "Kannada Rajyotsava",
+      date: "01-11-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-bookmark-star-fill" />,
+    },
+    {
+      title: "Diwali",
+      date: "03-11-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-brightness-high-fill" />,
+    },
+    {
+      title: "Bhai Dooj",
+      date: "06-11-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-people-fill" />,
+    },
+    {
+      title: "Chhath Puja",
+      date: "07-11-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-water" />,
+    },
+    {
+      title: "Govardhan Puja",
+      date: "15-11-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-cloud-fog2-fill" />,
+    },
+    {
+      title: "Constitution Day",
+      date: "26-11-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-journal-code" />,
+    },
+    {
+      title: "Christmas Day",
+      date: "25-12-2025",
+      duration: "1 Day only",
+      icon: <i className="bi bi-gift-fill" />,
     },
   ];
 
@@ -252,7 +427,7 @@ const Admin = () => {
         </div>
         <div className="col-xl-4">
           <CountsCard title="Total Employees" icon="fa-user" count={employee} />
-          <CountsCard title="Total Leaders" icon="fa-user" count={leader} />
+          <CountsCard title="Team Leaders" icon="fa-user" count={leader} />
           {/* <div
             class="rounded-3 p-2 shadow-sm d-flex flex-column justify-content-between"
             style={{ backgroundColor: "#f8f9fa" }}
@@ -283,11 +458,7 @@ const Admin = () => {
         </div>
         <div className="col-xl-4">
           <CountsCard title="Total Admins" icon="fa-user" count={admin} />
-          <CountsCard
-            title="Total Team Department"
-            icon="fa-user"
-            count={team}
-          />
+          <CountsCard title="Team Department" icon="fa-user" count={team} />
         </div>
       </div>
 
@@ -320,72 +491,111 @@ const Admin = () => {
         </div> */}
         {/* Holiday Section */}
         <div className="col-md-6">
-          <div className="card cardborder rounded-4">
-            <div class="employees-card">
-              <h2 class="employees-title d-flex align-items-center">
-                {" "}
-                <img
-                  src="./assets/icons/sunbed.png"
-                  alt="holiday"
-                  class="me-3"
-                  width="40"
-                  height="40"
-                  style={{ objectFit: "cover" }}
-                />
-                Company holiday
-              </h2>
-
-              {holidays.map((holiday, index) => (
-                <div
-                  key={index}
-                  className={`d-flex justify-content-between align-items-center ${
-                    index !== holidays.length - 1
-                      ? "border-bottom pb-3 mb-3"
-                      : "pt-2"
-                  }`}
-                >
-                  <div className="d-flex align-items-center gap-3">
-                    <img
-                      src={holiday.icon}
-                      alt={holiday.title}
-                      className={
-                        holiday.title === "Holi"
-                          ? "rounded-circle"
-                          : "img-fluid"
-                      }
-                      width="40"
-                      height="40"
-                      style={{ objectFit: "cover" }}
-                    />
-                    <div>
-                      <p
-                        className="mb-0 employee-name"
-                        style={{ fontSize: "0.875rem" }}
-                      >
-                        {holiday.title}
-                      </p>
-                      <p
-                        className="mb-0 employee-desc"
-                        style={{
-                          fontSize: "0.75rem",
-                          whiteSpace: "normal",
-                          maxWidth: "none",
-                        }}
-                      >
-                        {holiday.date}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="red-text mb-0">{holiday.duration}</p>
+          <div
+            className="card cardborder rounded-4 shadow-sm"
+            style={{ border: "none" }}
+          >
+            <div className="employees-card p-4">
+              <div className="d-flex align-items-center mb-4">
+                <div className="icon-wrapper bg-warning bg-opacity-10 p-3 rounded-circle me-3">
+                  <img
+                    src="./assets/icons/sunbed.png"
+                    alt="holiday"
+                    width="28"
+                    height="28"
+                    style={{ objectFit: "contain" }}
+                  />
                 </div>
-              ))}
+                <h2 className="employees-title mb-0 fw-bold text-dark">
+                  Company Holidays
+                </h2>
+              </div>
+
+              <div className="holiday-list">
+                {holidays.slice(preview, holiday).map((holiday, index) => (
+                  <div
+                    key={index}
+                    className={`d-flex justify-content-between align-items-center holiday-item ${
+                      index !== holidays.length - 1
+                        ? "border-bottom pb-3 mb-3"
+                        : "pt-2"
+                    }`}
+                    style={{ transition: "all 0.3s ease" }}
+                  >
+                    <div className="d-flex align-items-center gap-3">
+                      <div className="holiday-icon-wrapper bg-light p-2 rounded">
+                        {/* <img
+                          src={holiday.icon}
+                          alt={holiday.title}
+                          className={
+                            holiday.title === "Holi"
+                              ? "rounded-circle"
+                              : "img-fluid"
+                          }
+                          width="36"
+                          height="36"
+                          style={{ objectFit: "cover" }}
+                        /> */}
+                        {holiday.icon}
+                      </div>
+                      <div>
+                        <p
+                          className="mb-0 fw-semibold text-dark"
+                          style={{ fontSize: "0.9rem" }}
+                        >
+                          {holiday.title}
+                        </p>
+                        <p
+                          className="mb-0 text-muted"
+                          style={{
+                            fontSize: "0.75rem",
+                          }}
+                        >
+                          <i className="far fa-calendar-alt me-1"></i>{" "}
+                          {holiday.date}
+                        </p>
+                      </div>
+                    </div>
+                    <span className="badge bg-danger bg-opacity-10 text-danger py-2 px-3 rounded-pill">
+                      {holiday.duration}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="d-flex justify-content-between">
+                <div className="text-center mt-4">
+                  <button
+                    onClick={() => {
+                      setHoliday(holiday - 3);
+                      setPriview(preview - 3);
+                    }}
+                    disabled={holiday == 3}
+                    className={`btn btn-orange btn-lg px-4 py-2 animated-button hover-scale `}
+                  >
+                    <i className="fas fa-eye me-1"></i> View Less
+                  </button>
+                </div>
+                <div className="text-center mt-4">
+                  <button
+                    onClick={() => {
+                      setHoliday(holiday + 3);
+                      setPriview(preview + 3);
+                    }}
+                    className={`btn btn-orange btn-lg px-4 py-2 animated-button hover-scale  ${
+                      holidays.length <= holiday && "d-none"
+                    }`}
+                  >
+                    <i className="fas fa-eye me-1"></i> View More Holidays
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         {/* Birthday Section */}
         <div className="col-md-6">
           <div>
-            {showAnimation && birthdaysToday.data && (
+            {showAnimation && birthdaysToday && (
               <div
                 style={{
                   position: "fixed",
@@ -413,8 +623,8 @@ const Admin = () => {
             <div className="cardborder p-3 mb-3 rounded-4">
               {loading ? (
                 <p>Loading...</p>
-              ) : birthdaysToday?.data ? (
-                birthdaysToday.data?.map((employee, index) => (
+              ) : birthdaysToday ? (
+                birthdaysToday?.map((employee, index) => (
                   <div
                     key={index}
                     className="d-flex justify-content-between align-items-center birthday-card mb-4 "
@@ -427,7 +637,7 @@ const Admin = () => {
                   >
                     <div className="d-flex align-items-center gap-3">
                       <img
-                        src={`https://storage.googleapis.com/a1aa/image/c2bd0146-dff9-4b60-9b6e-215fbdd1dfa5.jpg`} // 👈 Adjust this path if needed
+                        src={`${employee.image || "/bithday.jpg"}`} // 👈 Adjust this path if needed
                         alt={employee.name}
                         className="rounded-circle"
                         width="48"

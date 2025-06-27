@@ -26,8 +26,10 @@ const EmployeeAttendance = () => {
         const empRes = await getEmployees();
         const leaderRes = await getLeaders();
         const all = [...empRes.data, ...leaderRes.data];
+        console.log(all);
+        
         setEmployees(all);
-        if (all.length > 0) setSelectedEmployee(all[0].id); // default 1st employee
+        if (all.length > 0) setSelectedEmployee(all.id); // default 1st employee
       } catch {
         toast.error("Failed to fetch employee list");
       }
@@ -72,7 +74,7 @@ const EmployeeAttendance = () => {
                 value={selectedEmployee}
                 onChange={(e) => setSelectedEmployee(e.target.value)}
               >
-                <option value="">Select Employee</option>
+                <option value="" disabled>Select Employee</option>
                 {employees.map((emp) => (
                   <option key={emp._id} value={emp.id}>{emp.name}</option>
                 ))}

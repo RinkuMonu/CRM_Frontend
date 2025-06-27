@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getEmployees, getLeaders, viewLeaves } from "../../http";
 import { useHistory } from "react-router-dom";
 import Loading from "../Loading";
+import { toast } from "react-toastify";
 
 const LeaveView = () => {
   const [type, setType] = useState();
@@ -41,126 +42,115 @@ const LeaveView = () => {
   const searchLeaveApplications = async () => {
     const obj = {};
 
-    if (selectedEmployee) {
-      obj["applicantID"] = selectedEmployee;
-    }
+    if (selectedEmployee) obj["applicantID"] = selectedEmployee;
+    if (type) obj["type"] = type;
+    if (status) obj["adminResponse"] = status;
+    if (appliedDate) obj["appliedDate"] = appliedDate;
 
-    if (type) {
-      obj["type"] = type;
-    }
-    if (status) {
-      obj["adminResponse"] = status;
-    }
-    if (appliedDate) {
-      obj["appliedDate"] = appliedDate;
-    }
-
-    console.log(obj);
+    console.log("Search Payload:", obj); // debug
 
     const res = await viewLeaves(obj);
     const { data } = res;
     setApplications(data);
-
-    setAppliedDate("");
-    setType("");
-    setStatus("");
+    if (res.length === 0) {
+      toast.error("no leave found");
+    }
   };
 
   return (
     <>
-      {applications ? (
-        <div className="main-content">
-          <section className="section">
-            <div className="section-header d-flex justify-content-between">
-              <h1>Leave Applications</h1>
-            </div>
+      <div className="main-content">
+        <section className="section">
+          <div className="section-header d-flex justify-content-between">
+            <h1>Leave Applications</h1>
+          </div>
 
-            <div className="d-flex justify-content-center align-items-center w-100">
-              <div className="form-group col-md-2">
-                <label>Employee</label>
-                <select
-                  className="form-control select2"
-                  value={selectedEmployee}
-                  onChange={(e) => setSelectedEmployee(e.target.value)}
-                >
-                  <option value="">Employees</option>
-                  {employees?.map((employee) => (
-                    <option key={employee._id} value={employee.id}>
-                      {employee.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group col-md-2">
-                <label>Leave Type</label>
-                <select
-                  name="type"
-                  onChange={(e) => setType(e.target.value)}
-                  className="form-control select2"
-                >
-                  <option>Select</option>
-                  <option>Sick Leave</option>
-                  <option>Casual Leave</option>
-                  <option>Emergency Leave</option>
-                </select>
-              </div>
-              <div className="form-group col-md-2">
-                <label>Status</label>
-                <select
-                  name="type"
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="form-control select2"
-                >
-                  <option>Select</option>
-                  <option>Pending</option>
-                  <option>Approved</option>
-                  <option>Rejected</option>
-                </select>
-              </div>
-
-              <div className="form-group col-md-4">
-                <label>Applied Date</label>
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <div className="input-group-text">
-                      <i class="fa fa-calendar"></i>
-                    </div>
-                  </div>
-                  <input
-                    onChange={(e) => setAppliedDate(e.target.value)}
-                    type="date"
-                    id="startDate"
-                    name="startDate"
-                    className="form-control"
-                  ></input>
-                </div>
-              </div>
-
-              <button
-                onClick={searchLeaveApplications}
-                className="btn btn-lg btn-primary col"
+          <div className="d-flex justify-content-center align-items-center w-100">
+            <div className="form-group col-md-2">
+              <label>Employee</label>
+              <select
+                className="form-control select2"
+                value={selectedEmployee}
+                onChange={(e) => setSelectedEmployee(e.target.value)}
               >
-                Search
-              </button>
+                <option value="">Employees</option>
+                {employees?.map((employee) => (
+                  <option key={employee._id} value={employee.id}>
+                    {employee.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            <div className="table-responsive">
-              <table className="table table-md center-text">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Type</th>
-                    <th>Title</th>
-                    <th>Applied Date</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
 
-                <tbody className="sidebar-wrapper">
-                  {applications?.map((application, idx) => (
-                    <tr className="hover-effect">
+            <div className="form-group col-md-2">
+              <label>Leave Type</label>
+              <select
+                name="type"
+                onChange={(e) => setType(e.target.value)}
+                className="form-control select2"
+              >
+                <option>Select</option>
+                <option>Sick Leave</option>
+                <option>Casual Leave</option>
+                <option>Emergency Leave</option>
+              </select>
+            </div>
+            <div className="form-group col-md-2">
+              <label>Status</label>
+              <select
+                name="type"
+                onChange={(e) => setStatus(e.target.value)}
+                className="form-control select2"
+              >
+                <option>Select</option>
+                <option>Pending</option>
+                <option>Approved</option>
+                <option>Rejected</option>
+              </select>
+            </div>
+
+            <div className="form-group col-md-4">
+              <label>Applied Date</label>
+              <div className="input-group">
+                <div className="input-group-prepend">
+                  <div className="input-group-text">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                </div>
+                <input
+                  onChange={(e) => setAppliedDate(e.target.value)}
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  className="form-control"
+                ></input>
+              </div>
+            </div>
+
+            <button
+              onClick={searchLeaveApplications}
+              className="btn btn-lg btn-primary col"
+            >
+              Search
+            </button>
+          </div>
+          <div className="table-responsive">
+            <table className="table table-md center-text">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Type</th>
+                  <th>Title</th>
+                  <th>Applied Date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody className="sidebar-wrapper">
+                {applications?.length > 0 ? (
+                  applications.map((application, idx) => (
+                    <tr key={application._id} className="hover-effect">
                       <td>{idx + 1}</td>
                       <td>
                         {employeeMap?.[application.applicantID]?.[0] || "N/A"}
@@ -182,22 +172,34 @@ const LeaveView = () => {
                             ? "text-primary"
                             : "text-success"
                         }`}
-                        style={{
-                          cursor: "pointer",
-                        }}
+                        style={{ cursor: "pointer" }}
                       >
                         {application.adminResponse}
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </div>
-      ) : (
-        <Loading />
-      )}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="7">
+                      <div
+                        className="d-flex justify-content-center align-items-center"
+                        style={{ minHeight: "150px" }}
+                      >
+                        <div className="text-center">
+                          <i className="fas fa-calendar-times fa-2x text-muted mb-2"></i>
+                          <p className="text-muted font-weight-bold mb-0">
+                            No leave applications found
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </>
   );
 };

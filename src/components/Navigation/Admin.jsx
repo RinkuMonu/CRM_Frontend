@@ -7,7 +7,8 @@ import { dLogout } from "../../http/index";
 import { setAuth } from "../../store/auth-slice";
 
 const Admin = () => {
-  const { name, image } = useSelector((state) => state.authSlice.user);
+  const { user } = useSelector((state) => state.authSlice?.user);
+
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -430,15 +431,18 @@ const Admin = () => {
         <div className="fixed-profile p-3  bg-white mt-3 Bottom-profile">
           <div className="hstack gap-3">
             <img
-              src="https://storage.googleapis.com/a1aa/image/a30f4b0f-bf59-42e4-9877-79dc397bc7ec.jpg"
-              alt="Jenny Stacy"
+              src={
+                user?.image ||
+                "https://storage.googleapis.com/a1aa/image/a30f4b0f-bf59-42e4-9877-79dc397bc7ec.jpg"
+              }
+              alt="admin"
               className="rounded-circle object-fit-cover"
               width={32}
               height={32}
             />
             <div className="small">
-              <strong className="text-dark d-block">{name}</strong>
-              <span className="text-secondary">Developer</span>
+              <strong className="text-dark d-block">{user?.name}</strong>
+              <span className="text-small">{user?.email}</span>
             </div>
             <NavLink to="/" onClick={logout} className="ms-auto me-2 ">
               <i class="bi bi-power text-danger fw-semibold"></i>

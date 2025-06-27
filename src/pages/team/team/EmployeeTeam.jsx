@@ -83,9 +83,9 @@ const EmployeeTeam = () => {
               <div className="section-header  d-flex justify-content-between">
                 <h1>Team</h1>
               </div>
-              <div className="row">
+              {/* <div className="row">
                 <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
-              </div>
+              </div> */}
 
               <div className="card">
                 <div className="card-body row">

@@ -11,7 +11,7 @@ const AssestApplications = () => {
   const [appliedDate, setAppliedDate] = useState();
   const [applications, setApplications] = useState();
   const history = useHistory();
-console.log(type);
+  console.log(type);
 
   useEffect(() => {
     const obj = {
@@ -61,36 +61,38 @@ console.log(type);
               </div>
             </div>
 
-            <div className="d-flex justify-content-center align-items-center w-100">
-              <div className="form-group col-md-2">
-                <label>Assest type</label>
-                <select
-                  name="type"
-                  onChange={(e) => setType(e.target.value)}
-                  className="form-control select2"
-                >
-                  <option disabled>Select</option>
-                  <option>Upgrade</option>
-                  <option>new Assest</option>
-                  <option>Repair</option>
-                  <option>other</option>
-                </select>
-              </div>
-              <div className="form-group col-md-2">
-                <label>Status</label>
-                <select
-                  name="type"
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="form-control select2"
-                >
-                  <option>Select</option>
-                  <option>Pending</option>
-                  <option>Approved</option>
-                  <option>Rejected</option>
-                </select>
+            <div className="d-flex  align-items-center w-100">
+              <div className="col-10 d-flex  flex-end">
+                <div className="form-group col-md-2">
+                  <label>Assest type</label>
+                  <select
+                    name="type"
+                    onChange={(e) => setType(e.target.value)}
+                    className="form-control select2"
+                  >
+                    <option>Select</option>
+                    <option>Upgrade</option>
+                    <option>new Assest</option>
+                    <option>Repair</option>
+                    <option>other</option>
+                  </select>
+                </div>
+                <div className="form-group col-md-2">
+                  <label>Status</label>
+                  <select
+                    name="type"
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="form-control select2"
+                  >
+                    <option>Select</option>
+                    <option>Pending</option>
+                    <option>Approved</option>
+                    <option>Rejected</option>
+                  </select>
+                </div>
               </div>
 
-              <div className="form-group col-md-4">
+              {/* <div className="form-group col-md-4">
                 <label>Applied Date</label>
                 <div className="input-group">
                   <div className="input-group-prepend">
@@ -106,11 +108,11 @@ console.log(type);
                     className="form-control"
                   ></input>
                 </div>
-              </div>
+              </div> */}
 
               <button
                 onClick={searchLeaveApplications}
-                className="btn btn-lg btn-primary col"
+                className="btn btn-lg btn-primary "
               >
                 Search
               </button>

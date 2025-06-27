@@ -82,10 +82,10 @@ const AddUser = () => {
     try {
       const isExempted = experience === "Fresher" || experience === "Intern";
 
-      if (!data.profile) {
-        toast.error("Please choose profile image");
-        return;
-      }
+      // if (!data.profile) {
+      //   toast.error("Please choose profile image");
+      //   return;
+      // }
 
       if (data.type === "Admin" && !showModal) {
         setShowModal(true);

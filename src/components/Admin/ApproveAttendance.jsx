@@ -17,12 +17,8 @@ const ApproveAttendance = () => {
       const [year, month, date] = selectedDate.split("-");
 
       const res = await getAllTodayInRequests({
-        year,
-        month,
-        date,
+        date: new Date(selectedDate),
       });
-      // console.log(year, month, date);
-
       if (res.success) {
         const updatedData = res.data.map((r) => ({
           ...r,

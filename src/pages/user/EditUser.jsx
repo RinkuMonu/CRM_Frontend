@@ -37,6 +37,8 @@ const EditUser = () => {
       if (res.success) {
         setUserType(res?.data?.type);
         setFormData(res?.data);
+        // console.log(res);
+        
         setImagePreview(res?.data?.image);
         console.log(imagePreview);
       }
@@ -338,11 +340,11 @@ const EditUser = () => {
                   <select
                     name="status"
                     onChange={inputEvent}
-                    value={formData.status}
+                    value={formData.status.toLowerCase()}
                     className="form-control select2"
                   >
-                    <option>Active</option>
-                    <option>Banned</option>
+                    <option values="active">active</option>
+                    <option value="banned">banned</option>
                   </select>
                 </div>
 

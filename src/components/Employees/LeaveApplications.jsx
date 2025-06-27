@@ -26,6 +26,8 @@ const LeaveApplications = () => {
   }, []);
 
   const searchLeaveApplications = async () => {
+    console.log(appliedDate);
+
     const obj = {
       applicantID: user.id,
     };
@@ -51,68 +53,67 @@ const LeaveApplications = () => {
 
   return (
     <>
-      {applications ? (
-        <div className="main-content">
-          <section className="section">
-              <div className="section-header ps-0">
-                <h1>Leave Applications</h1>
-            </div>
+      <div className="main-content">
+        <section className="section">
+          <div className="section-header ps-0">
+            <h1>Leave Applications</h1>
+          </div>
 
-            <div className="row ">
-              <div className="form-group col-md-4">
-                <label>Assest Type</label>
-                <select
-                  name="type"
-                  onChange={(e) => setType(e.target.value)}
-                  className="form-control select2"
-                >
-                  <option>Select</option>
-                  <option>Sick Leave</option>
-                  <option>Casual Leave</option>
-                  <option>Emergency Leave</option>
-                </select>
-              </div>
-              <div className="form-group col-md-4">
-                <label>Status</label>
-                <select
-                  name="type"
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="form-control select2"
-                >
-                  <option>Select</option>
-                  <option>Pending</option>
-                  <option>Approved</option>
-                  <option>Rejected</option>
-                </select>
-              </div>
-
-              <div className="form-group col-md-4">
-                <label>Applied Date</label>
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <div className="input-group-text">
-                      <i class="fa fa-calendar"></i>
-                    </div>
-                  </div>
-                  <input
-                    onChange={(e) => setAppliedDate(e.target.value)}
-                    type="date"
-                    id="startDate"
-                    name="startDate"
-                    className="form-control"
-                  ></input>
-                </div>
-              </div>
-
-              <button
-                onClick={searchLeaveApplications}
-                className="btn btn-lg btn-primary col-md-2 mx-2"
+          <div className="row ">
+            <div className="form-group col-md-4">
+              <label>Type</label>
+              <select
+                name="type"
+                onChange={(e) => setType(e.target.value)}
+                className="form-control select2"
               >
-                Search
-              </button>
+                <option value=""> Select</option>
+                <option>Sick Leave</option>
+                <option>Casual Leave</option>
+                <option>Emergency Leave</option>
+              </select>
             </div>
-          </section>
-          <div className="card cardborder overflow-hidden  rounded-3 mt-3">
+            <div className="form-group col-md-4">
+              <label>Status</label>
+              <select
+                name="type"
+                onChange={(e) => setStatus(e.target.value)}
+                className="form-control select2"
+              >
+                <option value="">Select</option>
+                <option>Pending</option>
+                <option>Approved</option>
+                <option>Rejected</option>
+              </select>
+            </div>
+
+            <div className="form-group col-md-4">
+              <label>Applied Date</label>
+              <div className="input-group">
+                <div className="input-group-prepend">
+                  <div className="input-group-text">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                </div>
+                <input
+                  onChange={(e) => setAppliedDate(e.target.value)}
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  className="form-control"
+                ></input>
+              </div>
+            </div>
+
+            <button
+              onClick={searchLeaveApplications}
+              className="btn btn-lg btn-primary col-md-2 mx-2"
+            >
+              Search
+            </button>
+          </div>
+        </section>
+        <div className="card cardborder overflow-hidden  rounded-3 mt-3">
           <div className="table-responsive t-3">
             <table className="table border roundedtable table-md center-text">
               <thead>
@@ -124,40 +125,46 @@ const LeaveApplications = () => {
                   <th>Status</th>
                 </tr>
               </thead>
+
               <tbody className="sidebar-wrapper">
-                {applications?.map((application, idx) => (
-                  <tr
-                    className="hover-effect"
-                    onClick={() =>
-                      history.push(`userLeaveApplications/${application._id}`)
-                    }
-                  >
-                    <td>{idx + 1}</td>
-                    <td>{application.type}</td>
-                    <td>{application.title}</td>
-                    <td>{application.appliedDate}</td>
-                    <td
-                      className={`${
-                        application.adminResponse === "Rejected"
-                          ? "text-danger"
-                          : application.adminResponse === "Pending"
-                          ? "text-primary"
-                          : "text-success"
-                      }`}
+                {applications?.length > 0 ? (
+                  applications?.map((application, idx) => (
+                    <tr
+                      key={application._id}
+                      className="hover-effect"
+                      onClick={() =>
+                        history.push(`userLeaveApplications/${application._id}`)
+                      }
                     >
-                      {application.adminResponse}
+                      <td>{idx + 1}</td>
+                      <td>{application.type}</td>
+                      <td>{application.title}</td>
+                      <td>{application.appliedDate}</td>
+                      <td
+                        className={`${
+                          application.adminResponse === "Rejected"
+                            ? "text-danger"
+                            : application.adminResponse === "Pending"
+                            ? "text-primary"
+                            : "text-success"
+                        }`}
+                      >
+                        {application.adminResponse}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="text-center">
+                      No records found.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
-          </div>
-          
         </div>
-      ) : (
-        <Loading />
-      )}
+      </div>
     </>
   );
 };

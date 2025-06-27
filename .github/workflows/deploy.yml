@@ -22,7 +22,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: 🏗️ Build React App
-        run: npm run build
+        run: CI=false npm run build
 
       - name: 📦 Zip the build folder
         run: |

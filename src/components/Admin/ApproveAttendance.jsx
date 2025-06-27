@@ -1,27 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import Loading from '../Loading';
-import { getAllTodayInRequests, approveInRequest } from '../../http';
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Loading from "../Loading";
+import { getAllTodayInRequests, approveInRequest } from "../../http";
 
 const ApproveAttendance = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterDate, setFilterDate] = useState(() => {
     const today = new Date();
-    return today.toISOString().split('T')[0];
+    return today.toISOString().split("T")[0];
   });
 
   const fetchTodayInRequests = async (selectedDate) => {
     try {
       setLoading(true);
-      const [year, month, date] = selectedDate.split('-');
+      const [year, month, date] = selectedDate.split("-");
 
-      const res = await getAllTodayInRequests({ year, month, date });
+      const res = await getAllTodayInRequests({
+        year,
+        month,
+        date,
+      });
+      // console.log(year, month, date);
+
       if (res.success) {
         const updatedData = res.data.map((r) => ({
           ...r,
-          selectedPresent: 'Present'
+          selectedPresent: "Present",
         }));
+        // toast.success("fitered");
         setRequests(updatedData);
       } else {
         setRequests([]);
@@ -39,7 +46,7 @@ const ApproveAttendance = () => {
       const res = await approveInRequest({
         attendanceID: id,
         present,
-        type: "in"
+        type: "in",
       });
       if (res.success) {
         toast.success(res.message);
@@ -96,13 +103,13 @@ const ApproveAttendance = () => {
                     <td>{`${att.date}/${att.month}/${att.year}`}</td>
                     <td>
                       {att.inTime
-                        ? new Date(att.inTime).toLocaleTimeString('en-IN', {
-                            hour: 'numeric',
-                            minute: '2-digit',
-                            second: '2-digit',
+                        ? new Date(att.inTime).toLocaleTimeString("en-IN", {
+                            hour: "numeric",
+                            minute: "2-digit",
+                            second: "2-digit",
                             hour12: true,
                           })
-                        : '-'}
+                        : "-"}
                     </td>
                     <td>
                       <select

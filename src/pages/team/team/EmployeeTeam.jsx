@@ -85,9 +85,6 @@ const EmployeeTeam = () => {
               </div>
               <div className="row">
                 <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employees' icon='fa-user' count={team.information.employee} />
               </div>
 
               <div className="card">

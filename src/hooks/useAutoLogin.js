@@ -29,7 +29,7 @@ export const useAutoLogin = () => {
 
                 console.log("Auto-login response:", res);
 
-                if (res.success) {
+                if (res?.success) {
                     dispatch(setAuth({
                         user: res.user,
                         isAuth: true

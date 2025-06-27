@@ -40,7 +40,7 @@ const Employee = () => {
     (async () => {
       const res = await getUser(id);
       if (res.success) setUser(res.data);
-      console.log(res?.data?.image);
+      // console.log(res);
       
     })();
   }, [id]);
@@ -59,7 +59,7 @@ const Employee = () => {
           {/* Profile Overview */}
           <div className="text-center mb-4">
             <img
-              src={user.image || "/assets/icons/user-1.jpg"}
+              src={user?.image || "/assets/icons/user-1.jpg"}
               alt="Profile"
               className="rounded-circle border border-3 shadow"
               width="130"

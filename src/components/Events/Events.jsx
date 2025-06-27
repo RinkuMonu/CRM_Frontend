@@ -4,8 +4,12 @@ import Calendar from "./Calendar"; // Assuming this is your calendar component
 import api from "../../http";
 import { toast } from "react-toastify";
 import { FcLandscape } from "react-icons/fc";
+import { useSelector } from "react-redux";
 
 export default function Events() {
+  const { user } = useSelector((state) => state.authSlice);
+  console.log(user?.user?.type);
+
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [errors, setErrors] = useState({});
@@ -79,7 +83,6 @@ export default function Events() {
   // Submit new event to API
   const handleEventSubmit = (e) => {
     e.preventDefault();
-    setloading(true);
     if (!validateForm()) return;
     const formData = new FormData();
     formData.append("title", newEvent.title);
@@ -89,6 +92,7 @@ export default function Events() {
     formData.append("location", newEvent.location);
     formData.append("description", newEvent.description);
     formData.append("image", newEvent?.image);
+    setloading(true);
 
     api
       .post("task/events", formData) // Replace with your API endpoint
@@ -143,22 +147,24 @@ export default function Events() {
             </div>
             <div className="col-md-8">
               <div className="sideevnts">
-                <div className="d-flex justify-content-between align-items-center">
-                  <h1>{selectedDate ? selectedDate : "Select a date"}</h1>
-                  <div className="fvrtevent">
-                    <span className="badge bg-label-primary rounded-5 me-3">
-                      <i className="bi bi-star-fill me-2"></i>Favorite
-                    </span>
-                    <span
-                      className="badge bg-label-warning rounded-5 cursor-pointer"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                      style={{ cursor: "pointer" }}
-                    >
-                      <i className="bi bi-calendar2-event me-2"></i>Add Event
-                    </span>
+                {user?.user?.type == "Admin" && (
+                  <div className="d-flex justify-content-between align-items-center">
+                    <h1>{selectedDate ? selectedDate : "Select a date"}</h1>
+                    <div className="fvrtevent">
+                      <span className="badge bg-label-primary rounded-5 me-3">
+                        <i className="bi bi-star-fill me-2"></i>Favorite
+                      </span>
+                      <span
+                        className="badge bg-label-warning rounded-5 cursor-pointer"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        style={{ cursor: "pointer" }}
+                      >
+                        <i className="bi bi-calendar2-event me-2"></i>Add Event
+                      </span>
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="card rounded-4">
                   <div className="card-body">
                     {/* Render filtered events for the selected date */}

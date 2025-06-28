@@ -682,7 +682,10 @@ const Leader = () => {
                       >
                         <div className="d-flex align-items-center gap-3">
                           <img
-                            src={`${employee.image || "/bithday.jpg"}`} // 👈 Adjust this path if needed
+                            src={
+                              `https://api.sevenunique.com/storage/${employee?.image}` ||
+                              "./assets/icons/user-1.jpg"
+                            } // 👈 Adjust this path if needed
                             alt={employee.name}
                             className="rounded-circle"
                             width="48"

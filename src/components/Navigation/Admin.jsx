@@ -50,7 +50,7 @@ const Admin = () => {
             />
           </div>
           {/* Search */}
-          <div className="mb-4 position-relative">
+          {/* <div className="mb-4 position-relative">
             <input
               type="text"
               className="form-control ps-5"
@@ -58,7 +58,7 @@ const Admin = () => {
               style={{ background: "#ededed" }}
             />
             <i className="fas fa-search position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary"></i>
-          </div>
+          </div> */}
           <hr style={{ width: "100%", border: "1px dashed #a9a7a7" }} />
           <ul className="nav flex-column sidebar-menu small fw-medium">
             <li className="nav-item">

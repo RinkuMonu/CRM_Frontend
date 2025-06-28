@@ -27,17 +27,17 @@ const Navigation = () => {
     <>
       {/* <div className="navbar-bg"></div> */}
       <nav
-        className="navbar navbar-expand-lg"
+        className="navbar navbar-expand-lg navbar-right flex justify-content-end"
         style={{
           position: "fixed",
           padding: "24px",
           background: "#fff",
-        //   boxShadow: "rgba(33, 35, 38, 0.1) 0px 10px 10px -10px",
+          //   boxShadow: "rgba(33, 35, 38, 0.1) 0px 10px 10px -10px",
           margin: "11px 20px",
           borderRadius: "20px",
         }}
       >
-        <form className="form-inline mr-auto">
+        {/* <form className="form-inline mr-auto">
           <ul className="navbar-nav align-items-center">
             <li>
               <NavLink
@@ -62,9 +62,9 @@ const Navigation = () => {
               <input type="text" className="py-2 ps-3  pr-5 border search-header rounded-3" placeholder="Search" style={{fontSize:"14px"}}/>
             </li>
           </ul>
-        </form>
-        <ul className="navbar-nav navbar-right">
-        <li>
+        </form> */}
+        <ul className="navbar-nav navbar-right ">
+          <li>
             <hr
               className="border border-1 opacity-5"
               style={{
@@ -75,7 +75,7 @@ const Navigation = () => {
               }}
             />
           </li>
-          <li className="dropdown dropdown-list-toggle">
+          {/* <li className="dropdown dropdown-list-toggle">
             <a
               href="#"
               data-toggle="dropdown"
@@ -144,7 +144,7 @@ const Navigation = () => {
                 </NavLink>
               </div>
             </div>
-          </li>
+          </li> */}
           <li>
             <hr
               className="border border-1 opacity-5"
@@ -165,7 +165,7 @@ const Navigation = () => {
             >
               <img
                 alt="image"
-                src={user?.user?.image||"/assets/icons/user-1.jpg"}
+                src={user?.user?.image || "/assets/icons/user-1.jpg"}
                 className="rounded-circle "
                 style={{ width: "40px", height: "40px" }}
               />

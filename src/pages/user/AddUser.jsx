@@ -103,6 +103,7 @@ const AddUser = () => {
         setShowModal(false);
         reset();
         setImagePreview("/assets/icons/user.png");
+        window.location.href = "/employees";
       } else {
         toast.error(res.message || "Something went wrong");
       }

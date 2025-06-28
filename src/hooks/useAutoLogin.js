@@ -6,7 +6,9 @@ import api from "../http";
 export const useAutoLogin = () => {
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
-    const { isAuth } = useSelector((state) => state.authSlice);
+    const { isAuth } = useSelector((state) => state.authSlice || {});
+    // console.log(isAuth);
+    
 
     useEffect(() => {
         // If already authenticated, no need to auto-login

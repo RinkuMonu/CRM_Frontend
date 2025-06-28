@@ -18,7 +18,7 @@ const Admin = () => {
   }, []);
 
   const { counts } = useSelector((state) => state.mainSlice);
-  const { user } = useSelector((state) => state.authSlice?.user);
+  const { user } = useSelector((state) => state.authSlice.user || {});
   const { admin, employee, leader, team } = counts;
 
   const [state, setState] = React.useState({
@@ -136,7 +136,7 @@ const Admin = () => {
       })
       .finally(() => setLoading(false));
   }, []);
- 
+
   const [showAnimation, setShowAnimation] = useState(true); // start with animation visible
 
   useEffect(() => {
@@ -465,90 +465,93 @@ const Admin = () => {
           </div>
 
           {/* Birthdays Card */}
-        <div className="col-md-6">
-          <div>
-            {showAnimation && birthdaysToday && (
-              <div
-                style={{
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  width: "100vw",
-                  height: "100vh",
-                  zIndex: 9999,
-                }}
-              >
-                <iframe
-                  src="https://lottie.host/embed/2d8d036d-43ea-4820-9f17-b6631846aed5/uqTlmKSbkU.lottie"
+          <div className="col-md-6">
+            <div>
+              {showAnimation && birthdaysToday && (
+                <div
                   style={{
-                    width: "100%",
-                    height: "100%",
-                    border: "none",
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100vw",
+                    height: "100vh",
+                    zIndex: 9999,
                   }}
-                  title="Birthday Animation"
-                  allowFullScreen
-                ></iframe>
-                <audio src="./assets/icons/cl.mp3" autoPlay />
-              </div>
-            )}
-
-            <div className="cardborder p-3 mb-3 rounded-4">
-              {loading ? (
-                <p>Loading...</p>
-              ) : birthdaysToday ? (
-                birthdaysToday?.map((employee, index) => (
-                  <div
-                    key={index}
-                    className="d-flex justify-content-between align-items-center birthday-card mb-4 "
+                >
+                  <iframe
+                    src="https://lottie.host/embed/2d8d036d-43ea-4820-9f17-b6631846aed5/uqTlmKSbkU.lottie"
                     style={{
-                      backgroundImage:
-                        "url(./assets/icons/freepik__adjust__63979.png)",
-                      backgroundSize: "cover",
-                      backgroundRepeat: "no-repeat",
+                      width: "100%",
+                      height: "100%",
+                      border: "none",
                     }}
-                  >
-                    <div className="d-flex align-items-center gap-3">
-                      <img
-                        src={`${employee.image || "/bithday.jpg"}`} // 👈 Adjust this path if needed
-                        alt={employee.name}
-                        className="rounded-circle"
-                        width="48"
-                        height="48"
-                        style={{ objectFit: "cover" }}
-                      />
-                      <div>
-                        <p className="mb-0 employee-name">{employee.name}</p>
-                        <p className="mb-0 employee-desc">
-                          Has {employee?.type} today.
-                        </p>
-                        <p className="mb-0 employee-desc">{employee.quote}</p>
-                        {/* <p className="mb-0 employee-desc">{employee.dob}</p> */}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center mb-4 cardborder rounded-4 p-4 h-100 d-flex flex-column align-items-center justify-content-center  bg-white">
-                  <img
-                    src="/bithday.jpg"
-                    alt="No birthdays"
-                    className="rounded-circle mb-3 shadow"
-                    width="200"
-                    height="200"
-                    style={{
-                      objectFit: "cover",
-                      opacity: 0.7,
-                      border: "4px solid #f0f0f0",
-                    }}
-                  />
-                  <h5 className="fw-semibold text-secondary">
-                    No Birthdays Today 🎉
-                  </h5>
+                    title="Birthday Animation"
+                    allowFullScreen
+                  ></iframe>
+                  <audio src="./assets/icons/cl.mp3" autoPlay />
                 </div>
               )}
+
+              <div className="cardborder p-3 mb-3 rounded-4">
+                {loading ? (
+                  <p>Loading...</p>
+                ) : birthdaysToday ? (
+                  birthdaysToday?.map((employee, index) => (
+                    <div
+                      key={index}
+                      className="d-flex justify-content-between align-items-center birthday-card mb-4 "
+                      style={{
+                        backgroundImage:
+                          "url(./assets/icons/freepik__adjust__63979.png)",
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
+                      }}
+                    >
+                      <div className="d-flex align-items-center gap-3">
+                        <img
+                          src={
+                            `https://api.sevenunique.com/storage/${employee?.image}` ||
+                            "./assets/icons/user-1.jpg"
+                          }
+                          alt={employee.name}
+                          className="rounded-circle"
+                          width="48"
+                          height="48"
+                          style={{ objectFit: "cover" }}
+                        />
+                        <div>
+                          <p className="mb-0 employee-name">{employee.name}</p>
+                          <p className="mb-0 employee-desc">
+                            Has {employee?.type} today.
+                          </p>
+                          <p className="mb-0 employee-desc">{employee.quote}</p>
+                          {/* <p className="mb-0 employee-desc">{employee.dob}</p> */}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center mb-4 cardborder rounded-4 p-4 h-100 d-flex flex-column align-items-center justify-content-center  bg-white">
+                    <img
+                      src="/bithday.jpg"
+                      alt="No birthdays"
+                      className="rounded-circle mb-3 shadow"
+                      width="200"
+                      height="200"
+                      style={{
+                        objectFit: "cover",
+                        opacity: 0.7,
+                        border: "4px solid #f0f0f0",
+                      }}
+                    />
+                    <h5 className="fw-semibold text-secondary">
+                      No Birthdays Today 🎉
+                    </h5>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
     </>

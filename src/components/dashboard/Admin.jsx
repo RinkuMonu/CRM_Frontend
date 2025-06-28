@@ -130,6 +130,7 @@ const Admin = () => {
       .get("task/todayevents?type=birthday") // <-- API endpoint
       .then((res) => {
         setBirthdaysToday(res.data); // 👈 make sure 'users' match backend response
+        console.log(res.data);
       })
       .catch((err) => {
         console.error("Error fetching birthday data:", err);
@@ -393,7 +394,7 @@ const Admin = () => {
                     className="text-muted mb-0 text-truncate"
                     style={{ fontSize: "14px" }}
                   >
-                    UI/UX Designer
+                    {user?.desgination}
                   </p>
                 </div>
 
@@ -577,11 +578,11 @@ const Admin = () => {
                     <i className="fas fa-eye me-1"></i> View Less
                   </button>
                 </div>
-                <div className="text-center mt-4 border "
-                style={{
-                  borderRadius:"9px"
-
-                }}
+                <div
+                  className="text-center mt-4 border "
+                  style={{
+                    borderRadius: "9px",
+                  }}
                 >
                   <button
                     onClick={() => {
@@ -649,7 +650,10 @@ const Admin = () => {
                   >
                     <div className="d-flex align-items-center gap-3">
                       <img
-                        src={`${employee.image || "/bithday.jpg"}`} // 👈 Adjust this path if needed
+                        src={
+                          `https://api.sevenunique.com/storage/${employee?.image}` ||
+                          "./assets/icons/user-1.jpg"
+                        }
                         alt={employee.name}
                         className="rounded-circle"
                         width="48"

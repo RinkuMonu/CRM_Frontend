@@ -38,6 +38,7 @@ const Leaders = () =>
                             <th>Mobile</th>
                             <th>Status</th>
                             <th>Leading Team</th>
+                            <th>Document Status</th>
                             <th>Action</th>
                           </tr>
                         </thead>

@@ -22,7 +22,7 @@ const Salaries = () => {
     const fetchEmployees = async () => {
       const emps = await getEmployees();
       // console.log(emps);
-      
+
       const leaders = await getLeaders();
       emps.data.forEach(
         (employee) => (empObj[employee.id] = [employee.name, employee.email])
@@ -91,20 +91,26 @@ const Salaries = () => {
                     <th>Email</th>
                     <th>Salary</th>
                     <th>Bonus</th>
+                    <th>Click to edit</th>
                   </tr>
                 </thead>
 
                 <tbody className="sidebar-wrapper">
                   {salaries?.map((salary, idx) => (
-                    <tr
-                      className="hover-effect"
-                      onClick={() => history.push(`salary/${salary?._id}`)}
-                    >
+                    <tr className="hover-effect">
                       <td>{idx + 1}</td>
                       <td>{employeeMap?.[salary?.employeeID]?.[0] || "N/A"}</td>
                       <td>{employeeMap?.[salary?.employeeID]?.[1] || "N/A"}</td>
                       <td>{salary?.salary}</td>
                       <td>{salary?.bonus}</td>
+                      <td>
+                        <button
+                          onClick={() => history.push(`salary/${salary?._id}`)}
+                          className="bg-success px-4  border rounded py-1 fw-bold "
+                        >
+                          Edit
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

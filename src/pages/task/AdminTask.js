@@ -194,8 +194,8 @@ function AdminTask() {
                           onChange={(e) => setSelectedEmployee(e.target.value)}
                           required
                         >
-                          <option value="">Select Team Member</option>
-                          {teamMembers.map((member) => (
+                          <option value="" >Select Team Member</option>
+                          {teamMembers?.map((member) => (
                             <option key={member.id} value={member.id}>
                               {member.name}
                             </option>
@@ -269,7 +269,7 @@ function AdminTask() {
                                   <span>Progress</span>
                                 </div>
                                 <div className="d-flex align-items-center mt-2 pt-3 px-3 border-top">
-                                  {card.members.map((img, i) => (
+                                  {card?.members?.map((img, i) => (
                                     <img
                                       key={i}
                                       src={img}
@@ -373,7 +373,7 @@ function AdminTask() {
                 required
               >
                 <option value="">Select Team Member</option>
-                {teamMembers.map((member) => (
+                {teamMembers?.map((member) => (
                   <option key={member.id} value={member.id}>
                     {member.name}
                   </option>

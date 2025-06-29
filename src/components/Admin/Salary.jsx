@@ -14,75 +14,86 @@ const SalaryView = () => {
   const { id } = useParams();
   const [salary, setSalary] = useState();
   const [employee, setEmployee] = useState();
-  const initialState = { salary: "", bonus: "", reasonForBonus: "" };
-  const [formData, setFormData] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
+
+  const initialState = {
+    salary: "",
+    bonus: "",
+    reasonForBonus: "",
+    inc: "",
+  };
+  const [formData, setFormData] = useState(initialState);
 
   const history = useHistory();
 
   useEffect(() => {
     const fetchData = async () => {
-      const obj = {
-        _id: id,
-      };
+      const obj = { _id: id };
       const res = await viewAllSalaries(obj);
       const empRes = await getEmployee(res.data[0].employeeID);
       const leaderRes = await getLeader(res.data[0].employeeID);
-      // console.log(leaderRes);
-      console.log(empRes);
-      // if (!leaderRes.ok) {
-      //   setTimeout(() => {
-      //     toast.error(leaderRes.message);
-      //     window.history.back();
-      //   }, 3000);
-      // }
 
       if (empRes.success) setEmployee(empRes.data);
       if (leaderRes.success) setEmployee(leaderRes.data);
+
       setSalary(res.data[0]);
     };
     fetchData();
-  }, []);
+  }, [id]);
 
   const inputEvent = (e) => {
-    console.log(formData);
     const { name, value } = e.target;
-    setFormData((old) => {
-      return {
-        ...old,
-        [name]: value,
-      };
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const { salary, bonus, reasonForBonus } = formData;
 
-    if (!salary || !bonus) {
-      return toast.error("All fields are required");
+    const incrementStr = formData.inc?.trim();
+    if (!incrementStr) {
+      return toast.error("Please enter increment % before submitting");
     }
 
-    if (isNaN(salary) || isNaN(bonus)) {
-      return toast.error("Salary and Bonus must be numbers");
+    const increment = Number(incrementStr);
+    const bonus =
+      formData.bonus !== ""
+        ? Number(formData.bonus)
+        : Number(salary?.bonus || 0);
+
+    if (isNaN(increment) || isNaN(bonus)) {
+      return toast.error("Increment and Bonus must be valid numbers");
     }
+
+    const baseSalary = Number(salary?.salary || 0);
+    const newSalary = Math.round(baseSalary + (baseSalary * increment) / 100);
+
+    const payload = {
+      employeeID: employee?.id,
+      salary: newSalary,
+      bonus,
+      reasonForBonus: formData.reasonForBonus || "",
+    };
 
     try {
       setIsLoading(true);
-
-      formData["employeeID"] = employee.id;
-
-      const res = await updateSalary(formData);
+      const res = await updateSalary(payload);
       if (res.success) {
         toast.success("Salary Updated!");
         setTimeout(() => window.history.back(), 1500);
+        setFormData(initialState);
       }
-      setFormData(initialState);
     } catch (error) {
       toast.error("Failed to update salary");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const calculateNewSalary = () => {
+    const base = Number(salary?.salary || 0);
+    const inc = Number(formData.inc || 0);
+    if (isNaN(inc)) return base;
+    return Math.round(base + (base * inc) / 100);
   };
 
   return (
@@ -142,24 +153,15 @@ const SalaryView = () => {
               <div className="card-body pr-5 pl-5 m-1">
                 <form className="row" onSubmit={onSubmit} id="addUserForm">
                   <div className="form-group col-md-6">
-                    <label>Enter Salary</label>
+                    <label className="">
+                      <span> Current Salary</span> <span>(read only)</span>
+                    </label>
                     <div className="input-group">
-                      <div className="input-group-prepend">
-                        <div className="input-group-text">
-                          <i className="fas fa-pen"></i>
-                        </div>
-                      </div>
                       <input
-                        onChange={inputEvent}
-                        onKeyPress={(e) => {
-                          if (!/[0-9]/.test(e.key)) e.preventDefault();
-                        }}
-                        value={formData.salary}
+                        value={salary?.salary || ""}
                         type="text"
-                        id="salary"
-                        name="salary"
                         className="form-control"
-                        required
+                        disabled
                       />
                     </div>
                   </div>
@@ -174,20 +176,68 @@ const SalaryView = () => {
                       </div>
                       <input
                         onChange={inputEvent}
-                        onKeyPress={(e) => {
-                          if (!/[0-9]/.test(e.key)) e.preventDefault();
-                        }}
-                        value={formData.bonus}
+                        onKeyPress={(e) =>
+                          !/[0-9]/.test(e.key) && e.preventDefault()
+                        }
+                        value={formData.bonus || ""}
                         type="text"
-                        id="bonus"
                         name="bonus"
                         className="form-control"
-                        required
+                        placeholder={salary?.bonus || "0"}
                       />
                     </div>
                   </div>
 
-                  <div className="form-group col-md-12 ">
+                  <div className="form-group col-md-6">
+                    <label>Increment (%)</label>
+                    <div className="input-group">
+                      <div className="input-group-prepend">
+                        <div className="input-group-text">
+                          <i className="fas fa-pen"></i>
+                        </div>
+                      </div>
+                      <input
+                        onChange={inputEvent}
+                        onKeyPress={(e) =>
+                          !/[0-9]/.test(e.key) && e.preventDefault()
+                        }
+                        value={formData.inc || ""}
+                        type="text"
+                        name="inc"
+                        className="form-control"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-6">
+                    <label>
+                      New Salary
+                      <span> (read only)</span>
+                    </label>
+                    <div className="input-group ">
+                      {/* <div className="input-group-prepend">
+                        <div className="input-group-text">
+                          <i className="fas fa-pen"></i>
+                        </div>
+                      </div> */}
+                      <input
+                        value={
+                          formData.inc && salary?.salary
+                            ? Math.round(
+                                (Number(formData.inc) / 100) *
+                                  Number(salary.salary) +
+                                  Number(salary.salary)
+                              )
+                            : ""
+                        }
+                        type="text"
+                        disabled
+                        className="form-control bg-info-subtle"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-12">
                     <label>Enter Reason</label>
                     <div className="input-group">
                       <div className="input-group-prepend">
@@ -197,9 +247,8 @@ const SalaryView = () => {
                       </div>
                       <input
                         onChange={inputEvent}
-                        value={formData.reasonForBonus}
+                        value={formData.reasonForBonus || ""}
                         type="text"
-                        id="reasonForBonus"
                         name="reasonForBonus"
                         className="form-control"
                       />

@@ -152,7 +152,7 @@ const Admin = () => {
   const [showAnimation, setShowAnimation] = useState(true); // start with animation visible
 
   useEffect(() => {
-    if (showAnimation && birthdaysToday) {
+    if (showAnimation && birthdaysToday?.length > 0) {
       const timer = setTimeout(() => {
         setShowAnimation(false); // close after 5 seconds
       }, 5000);
@@ -518,11 +518,10 @@ const Admin = () => {
                 {holidays.slice(preview, holiday).map((holiday, index) => (
                   <div
                     key={index}
-                    className={`d-flex justify-content-between align-items-center holiday-item ${
-                      index !== holidays.length - 1
-                        ? "border-bottom pb-3 mb-3"
-                        : "pt-2"
-                    }`}
+                    className={`d-flex justify-content-between align-items-center holiday-item ${index !== holidays.length - 1
+                      ? "border-bottom pb-3 mb-3"
+                      : "pt-2"
+                      }`}
                     style={{ transition: "all 0.3s ease" }}
                   >
                     <div className="d-flex align-items-center gap-3">
@@ -589,14 +588,13 @@ const Admin = () => {
                       setHoliday(holiday + 3);
                       setPriview(preview + 3);
                     }}
-                    className={`btn btn-orange btn-lg px-4 py-2 animated-button hover-scale  border${
-                      holidays.length <= holiday && "d-none"
-                    }`}
-                    // style={
-                    //   {
-                    //     border: "1px solid gray"
-                    //   }
-                    // }
+                    className={`btn btn-orange btn-lg px-4 py-2 animated-button hover-scale  border${holidays.length <= holiday && "d-none"
+                      }`}
+                  // style={
+                  //   {
+                  //     border: "1px solid gray"
+                  //   }
+                  // }
                   >
                     <i className="fas fa-eye me-1"></i> View More Holidays
                   </button>
@@ -608,7 +606,7 @@ const Admin = () => {
         {/* Birthday Section */}
         <div className="col-md-6">
           <div>
-            {showAnimation && birthdaysToday && (
+            {showAnimation && birthdaysToday?.length > 0 && (
               <div
                 style={{
                   position: "fixed",
@@ -636,7 +634,7 @@ const Admin = () => {
             <div className="cardborder p-3 mb-3 rounded-4">
               {loading ? (
                 <p>Loading...</p>
-              ) : birthdaysToday ? (
+              ) : birthdaysToday?.length > 0 ? (
                 birthdaysToday?.map((employee, index) => (
                   <div
                     key={index}

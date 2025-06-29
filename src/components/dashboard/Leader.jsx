@@ -37,7 +37,7 @@ const Leader = () => {
   const [showAnimation, setShowAnimation] = useState(true); // start with animation visible
 
   useEffect(() => {
-    if (showAnimation && birthdaysToday) {
+    if (showAnimation && birthdaysToday?.length > 0) {
       const timer = setTimeout(() => {
         setShowAnimation(false); // close after 5 seconds
       }, 4000);
@@ -434,9 +434,8 @@ const Leader = () => {
                   {holidays.slice(preview, holiday).map((holiday, index) => (
                     <div
                       key={index}
-                      className={`d-flex justify-content-between align-items-center py-3 ${
-                        index !== holidays.length - 1 ? "border-bottom" : ""
-                      }`}
+                      className={`d-flex justify-content-between align-items-center py-3 ${index !== holidays.length - 1 ? "border-bottom" : ""
+                        }`}
                     >
                       <div className="d-flex align-items-center">
                         <div className="me-3">{holiday.icon}</div>
@@ -617,13 +616,12 @@ const Leader = () => {
 
                           <td>
                             <span
-                              className={`badge bg-${
-                                deal.status === "won"
-                                  ? "success"
-                                  : deal.status === "Loss"
+                              className={`badge bg-${deal.status === "won"
+                                ? "success"
+                                : deal.status === "Loss"
                                   ? "danger"
                                   : "warning"
-                              }`}
+                                }`}
                             >
                               {deal.status}
                             </span>
@@ -640,7 +638,7 @@ const Leader = () => {
             </div>
             <div className="col-md-6">
               <div>
-                {showAnimation && birthdaysToday && (
+                {showAnimation && birthdaysToday?.length > 0 && (
                   <div
                     style={{
                       position: "fixed",
@@ -668,7 +666,7 @@ const Leader = () => {
                 <div className="cardborder p-3 mb-3 rounded-4">
                   {loading ? (
                     <p>Loading...</p>
-                  ) : birthdaysToday ? (
+                  ) : birthdaysToday?.length > 0 ? (
                     birthdaysToday?.map((employee, index) => (
                       <div
                         key={index}

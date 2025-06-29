@@ -63,6 +63,7 @@ import Events from './components/Events/Events';
 import EmployeTask from './components/Admin/EmployeTask';
 import GenrateSalarySlip from './components/Admin/SalarySlip/GenrateSalarySlip';
 import { useEffect } from 'react';
+import ContactUs from './components/Contact us/contact';
 
 const App = () => {
   const { loading } = useAutoLogin();
@@ -224,6 +225,9 @@ const App = () => {
         </AdminRoute>
         <MultiRoleRoute allowedRoles={['Admin', 'Leader', 'Employee']} exact path='/events'>
           <Events />
+        </MultiRoleRoute>
+        <MultiRoleRoute allowedRoles={['Admin', 'Leader', 'Employee']} exact path='/contact_us'>
+          <ContactUs />
         </MultiRoleRoute>
         
         {/* Catch-all redirect to login if no routes match */}

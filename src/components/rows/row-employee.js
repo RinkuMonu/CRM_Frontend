@@ -3,7 +3,27 @@ import { NavLink } from "react-router-dom";
 
 const RowEmployee = ({ index, data }) => {
   const { user } = useSelector((state) => state.authSlice);
+
   // console.log(user)
+  function areAllDocumentsPresent(user) {
+    const requiredDocs = [
+      "employee_adhar_image",
+      "employee_pan_image",
+      "mother_adhar_image",
+      "father_adhar_image",
+      "tenth_marksheet_img",
+      "twelth_marksheet_img",
+      "Policeverification",
+    ];
+
+    return requiredDocs.every((doc) => {
+      return user[doc] && user[doc].trim() !== "";
+    });
+    
+  }
+  
+  
+
   return (
     <tr>
       <td>{index}</td>
@@ -21,7 +41,7 @@ const RowEmployee = ({ index, data }) => {
         </div>
       </td>
 
-      {user.user.type === "Admin" ? (
+      {user?.user?.type === "Admin" ? (
         <td>
           {data.team ? (
             <NavLink
@@ -41,9 +61,27 @@ const RowEmployee = ({ index, data }) => {
       ) : (
         ""
       )}
+
+      {/* document  */}
+      {user?.user?.type === "Admin" ? (
+        <td>
+          <span
+            className={`p-2  badge rounded ${
+              areAllDocumentsPresent(data)
+                ? "bg-label-success"
+                : "bg-label-danger"
+            }`}
+          >
+            {areAllDocumentsPresent(data) ? "Uploaded" : "notUpload"}
+          </span>
+        </td>
+      ) : (
+        ""
+      )}
+
       {user.user.type === "Admin" ? (
         <td>
-          <NavLink to={`/employee/${data.id}`} className="btn bg-label-warning">
+          <NavLink to={`/employee/${data.id}`} className="p-2 rounded badge bg-label-warning">
             Detail
           </NavLink>
         </td>

@@ -67,8 +67,8 @@ const Employee = () => {
           <li><NavLink className="nav-link" to="/applyforadmin"><i className="fas fa-pen"></i> <span>Apply For Assest</span></NavLink></li>
 
           <li className="menu-header">Settings</li>
-          <li><NavLink className="nav-link" to="/home"><i className="fab fa-teamspeak"></i> <span>Contact me</span></NavLink></li>
-          <li><NavLink className="nav-link" to="/home"><i className="fas fa-info-circle"></i> <span>About me</span></NavLink></li>
+          <li><NavLink className="nav-link" to="/contact_us"><i className="fab fa-teamspeak"></i> <span>Contact me</span></NavLink></li>
+          {/* <li><NavLink className="nav-link" to="/home"><i className="fas fa-info-circle"></i> <span>About me</span></NavLink></li> */}
           <li><NavLink onClick={logout} className="nav-link" to="/home"><i className="fas fa-sign-out-alt"></i> <span>Logout</span></NavLink></li>
         </ul>
 

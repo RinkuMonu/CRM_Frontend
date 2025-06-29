@@ -391,12 +391,12 @@ const Admin = () => {
                       : "text-secondary"
                   }`
                 }
-                to="/home"
+                to="/contact_us"
               >
                 <i className="fab fa-teamspeak"></i> Contact Us
               </NavLink>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink
                 className={({ isActive }) =>
                   `nav-link ${
@@ -409,7 +409,7 @@ const Admin = () => {
               >
                 <i className="fas fa-info-circle"></i> About Us
               </NavLink>
-            </li>
+            </li> */}
             <li className="nav-item">
               <NavLink
                 className={({ isActive }) =>

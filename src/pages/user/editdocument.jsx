@@ -68,7 +68,7 @@ const EditDocumentsPage = () => {
                 <h3 className="mb-4 text-primary">📁 Upload Employee Documents</h3>
                 <div className="row g-4">
                     {fields.map(([label, name]) =>
-                        !user[name] ? ( // ✅ Only show field if user has not uploaded it yet
+                        !user[name] ? ( //   Only show field if user has not uploaded it yet
                             <div className="col-md-6" key={name}>
                                 <label className="form-label fw-semibold text-dark">
                                     {label}

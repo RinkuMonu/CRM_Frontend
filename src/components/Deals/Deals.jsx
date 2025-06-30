@@ -48,7 +48,7 @@ const Deals = ({ selectedEmployee }) => {
         params.append('endDate', endDate.toISOString().split('T')[0]);
       }
 
-      const res = await api.get(`https://api.sevenunique.com/api/task/getDealss/${id}?${params.toString()}`);
+      const res = await api.get(`/task/getDealss/${id}?${params.toString()}`);
       const dealsData = res.data;
 
       const updatedData = {
@@ -123,12 +123,12 @@ const Deals = ({ selectedEmployee }) => {
     }));
 
     try {
-      await api.put('https://api.sevenunique.com/api/task/updateDeals', {
+      await api.put('/task/updateDeals', {
         dealId: draggableId,
         newStage: finish.id,
       });
       
-      toast.success(`✅ Deal status updated to ${finish.title}`);
+      toast.success(`  Deal status updated to ${finish.title}`);
       
       if (finish.id === "next_meeting") {
         setSelectedDealId(draggableId);

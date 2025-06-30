@@ -32,12 +32,12 @@ const LoginForm = () => {
     const { success } = res;
 
     if (success) {
-      // ✅ Save user data in localStorage
+      //   Save user data in localStorage
       localStorage.setItem("user", JSON.stringify(res.user));
       localStorage.setItem("accessToken", JSON.stringify(res.accessToken));
       localStorage.setItem("refreshToken", JSON.stringify(res.refreshToken));
 
-      // ✅ Store in Redux
+      //   Store in Redux
       dispatch(setAuth(res.user));
       toast.success("Login successful");
       window.location.reload();

@@ -1,9 +1,8 @@
-
-body{
+body {
     background-color: #f8f9fa !important;
 }
 
-.modal-social{
+.modal-social {
     /* background-color: red !important; */
     z-index: 2000;
     position: absolute;
@@ -12,3 +11,13 @@ body{
     text-align: center;
     justify-items: center;
 }
+/* 
+@media (max-width: 576px) {
+    .modal-content {
+        padding: 1rem;
+    }
+
+    .modal-body .form-label {
+        font-size: 0.9rem;
+    }
+} */

@@ -64,11 +64,12 @@ import EmployeTask from './components/Admin/EmployeTask';
 import GenrateSalarySlip from './components/Admin/SalarySlip/GenrateSalarySlip';
 import { useEffect } from 'react';
 import ContactUs from './components/Contact us/contact';
+import EditDocumentsPage from './pages/user/editdocument';
 
 const App = () => {
   const { loading } = useAutoLogin();
   const { isAuth, user } = useSelector((state) => state.authSlice);
-  
+
   // Check for accessToken in localStorage on component mount
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
@@ -208,6 +209,9 @@ const App = () => {
         <AdminRoute path='/edituser/:id'>
           <EditUser />
         </AdminRoute>
+        <AdminRoute path='/editdocument/:id'>
+          <EditDocumentsPage />
+        </AdminRoute>
         <AdminRoute path='/editteam/:id'>
           <EditTeam />
         </AdminRoute>
@@ -229,7 +233,7 @@ const App = () => {
         <MultiRoleRoute allowedRoles={['Admin', 'Leader', 'Employee']} exact path='/contact_us'>
           <ContactUs />
         </MultiRoleRoute>
-        
+
         {/* Catch-all redirect to login if no routes match */}
         <Route path="*">
           <Redirect to="/login" />
@@ -243,7 +247,7 @@ const GuestRoute = ({ children, ...rest }) => {
   const { isAuth } = useSelector((state) => state.authSlice);
   console.log("isAuth", isAuth);
   const accessToken = localStorage.getItem('accessToken');
-  
+
   return (
     <Route {...rest} render={({ location }) => {
       return isAuth || accessToken ? (
@@ -260,7 +264,7 @@ const ProtectedRoute = ({ children, ...rest }) => {
   console.log("isAuth", isAuth);
 
   const accessToken = localStorage.getItem('accessToken');
-  
+
   return (
     <Route {...rest} render={({ location }) => {
       return isAuth || accessToken ? (
@@ -287,7 +291,7 @@ const AdminRoute = ({ children, ...rest }) => {
   // console.log("isAuth", user);
 
   const accessToken = localStorage.getItem('accessToken');
-  
+
   return (
     <Route {...rest} render={({ location }) => {
       if (!accessToken) {
@@ -300,7 +304,7 @@ const AdminRoute = ({ children, ...rest }) => {
           />
         );
       }
-      
+
       return user && user.user?.type === 'Admin' ? (
         <>
           <SideBar />
@@ -325,7 +329,7 @@ const LeaderRoute = ({ children, ...rest }) => {
   console.log("isAuth", user);
 
   const accessToken = localStorage.getItem('accessToken');
-  
+
   return (
     <Route {...rest} render={({ location }) => {
       if (!accessToken) {
@@ -338,7 +342,7 @@ const LeaderRoute = ({ children, ...rest }) => {
           />
         );
       }
-      
+
       return user && user.user?.type === 'Leader' ? (
         <>
           <SideBar />
@@ -363,7 +367,7 @@ const EmployeeRoute = ({ children, ...rest }) => {
   console.log("isAuth", user);
 
   const accessToken = localStorage.getItem('accessToken');
-  
+
   return (
     <Route {...rest} render={({ location }) => {
       if (!accessToken) {
@@ -376,7 +380,7 @@ const EmployeeRoute = ({ children, ...rest }) => {
           />
         );
       }
-      
+
       return user && (user.user?.type === 'Employee' || user.user?.type === 'Leader') ? (
         <>
           <SideBar />
@@ -416,7 +420,7 @@ const MultiRoleRoute = ({ allowedRoles = [], children, ...rest }) => {
             />
           );
         }
-        
+
         if (user && allowedRoles.includes(user.user?.type)) {
           return (
             <>

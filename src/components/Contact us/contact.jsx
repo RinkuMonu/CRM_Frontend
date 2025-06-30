@@ -62,15 +62,19 @@ const ContactUsStatic = () => {
                 <div className="d-flex align-items-center mb-3">
                   <EnvelopeFill size={16} className="text-muted me-2" />
                   <div>
-                    <strong>Email:</strong> info@7unique.in
+                    <strong>Email:</strong>{" "}
+                    <a href="mailto:info@7unique.in" className="text-blue-600 underline">
+                      info@7unique.in
+                    </a>
                   </div>
+
                 </div>
                 <div className="d-flex align-items-center">
                   <Globe2 size={16} className="text-muted me-2" />
                   <div>
                     <strong>Website:</strong>{" "}
                     <a
-                      href="https://www.7unique.in"
+                      href="https://www.sevenunique.com"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -115,7 +119,10 @@ const ContactUsStatic = () => {
                 <div className="d-flex align-items-center">
                   <EnvelopeFill size={16} className="text-muted me-2" />
                   <div>
-                    <strong>Email:</strong> support@7unique.in
+                    <strong>Email:</strong> {""}
+                    <a href="mailto:support@7unique.in" className="text-blue-600 underline">
+                      support@7unique.in
+                    </a>
                   </div>
                 </div>
               </Card.Text>
@@ -192,7 +199,7 @@ const ContactUsStatic = () => {
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3561.2631829043708!2d75.86723457531065!3d26.799747364936287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396dc94baba6edad%3A0xd9cda1cfd0d224a!2sSevenUnique%20Tech%20Solutions%20Pvt.%20Ltd.%20%7C%20Web%20%26%20App%20Development.!5e0!3m2!1sen!2sin!4v1751095886152!5m2!1sen!2sin"
                 width="100%"
                 height="450"
-                style={{border:0}}
+                style={{ border: 0 }}
                 allowfullscreen=""
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"

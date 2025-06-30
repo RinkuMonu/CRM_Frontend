@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { getUser, updateUser } from "../../http";
 import { FaUser, FaPhone, FaCalendarAlt, FaLock, FaPiggyBank, FaHome, FaIdCard, FaEnvelope, FaMapMarkerAlt, FaUserEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -8,10 +9,22 @@ import { NavLink } from "react-router-dom";
 const Employee = () => {
   const [user, setUser] = useState({});
   const [editSection, setEditSection] = useState(null);
-  const [formData, setFormData] = useState({});
-  const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
   const { id } = useParams();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+    setValue,
+    trigger
+  } = useForm({
+    defaultValues: {}
+  });
+
+  const experience = watch("experience");
 
   useEffect(() => {
     fetchUser();
@@ -19,264 +32,22 @@ const Employee = () => {
 
   const fetchUser = async () => {
     const res = await getUser(id);
-    if (res?.success) setUser(res.data);
+    if (res?.success) {
+      setUser(res.data);
+      reset(res.data);
+    }
   };
 
   const handleEdit = (section) => {
     setEditSection(section);
-    setFormData({ ...user });
-    setErrors({});
   };
 
-  const validateField = (name, value) => {
-    const today = new Date().toISOString().split('T')[0];
-    const maxDOB = "2010-12-31";
-    const isExperienced = formData.experience === "Experiance";
-
-    const patterns = {
-      name: {
-        required: true,
-        pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
-      },
-      email: {
-        required: true,
-        pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        message: "Invalid email address"
-      },
-      mobile: {
-        required: true,
-        pattern: /^[6-9]\d{9}$/,
-        message: "Must be 10 digits starting with 6-9"
-      },
-      alternate_number: {
-        required: false,
-        pattern: /^[6-9]\d{9}$/,
-        message: "Must be 10 digits starting with 6-9"
-      },
-      password: {
-        required: name === 'password',
-        minLength: 6,
-        message: "Password must be at least 6 characters"
-      },
-      desgination: {
-        required: true,
-        pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
-      },
-      account_number: {
-        required: true,
-        validate: (value) => /^\d{9,18}$/.test(value) || "Must be 9-18 digits",
-        message: "Must be 9-18 digits"
-      },
-      ifsc: {
-        required: true,
-        pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-        message: "Invalid IFSC format"
-      },
-      bank_name: {
-        required: true,
-        pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
-      },
-      father_name: {
-        required: true,
-        pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
-      },
-      mother_name: {
-        required: true,
-        pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
-      },
-      current_address: {
-        required: true,
-        message: "Current address is required"
-      },
-      permanent_address: {
-        required: true,
-        message: "Permanent address is required"
-      },
-      DOB: {
-        required: true,
-        max: maxDOB,
-        message: "Must be at least 15 years old"
-      },
-      DOJ: {
-        required: true,
-        max: today,
-        message: "Joining date cannot be in future"
-      },
-      nominee_name: {
-        required: true,
-        pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
-      },
-      nominee_relation: {
-        required: true,
-        pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
-      },
-      nominee_mobile: {
-        required: true,
-        pattern: /^[6-9]\d{9}$/,
-        message: "Must be 10 digits starting with 6-9"
-      },
-      nominee_age: {
-        required: true,
-        validate: (val) => parseInt(val) >= 15 || "Age must be at least 15"
-      },
-      Un_no: {
-        required: isExperienced,
-        pattern: /^\d{12}$/,
-        message: "Must be 12 digits"
-      },
-      Esi_no: {
-        required: isExperienced,
-        pattern: /^\d+$/,
-        message: "Must be numbers only"
-      },
-      company_name: {
-        required: isExperienced,
-        message: "Company name is required"
-      },
-      total_experience: {
-        required: isExperienced,
-        message: "Total experience is required"
-      },
-      reason_of_leaving: {
-        required: isExperienced,
-        message: "Reason for leaving is required"
-      },
-      gender: {
-        required: true,
-        message: "Gender is required"
-      },
-      branch: {
-        required: true,
-        message: "Department is required"
-      },
-      type: {
-        required: true,
-        message: "User type is required"
-      },
-      status: {
-        required: true,
-        message: "Status is required"
-      },
-      experience: {
-        required: true,
-        message: "Experience is required"
-      }
-    };
-
-    if (patterns[name]?.required && !value) {
-      return patterns[name]?.message;
-    }
-
-    if (value && patterns[name]?.pattern && !patterns[name].pattern.test(value)) {
-      return patterns[name].message;
-    }
-
-    if (value && patterns[name]?.minLength && value.length < patterns[name].minLength) {
-      return patterns[name].message;
-    }
-
-    if (value && patterns[name]?.validate && !patterns[name].validate(value)) {
-      return patterns[name].message;
-    }
-
-    return null;
-  };
-
-  const handleNameInput = (e, fieldName) => {
-    const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
-    handleChange({ target: { name: fieldName, value } });
-  };
-
-  const handleMobileInput = (e, fieldName) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length === 1 && !/^[6-9]$/.test(value)) return;
-    if (value.length > 10) value = value.slice(0, 10);
-    handleChange({ target: { name: fieldName, value } });
-  };
-
-  const handleNumberInput = (e, fieldName, maxLength = 10) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, maxLength);
-    handleChange({ target: { name: fieldName, value } });
-  };
-
-  const handleIFSCInput = (e) => {
-    const value = e.target.value.toUpperCase();
-    handleChange({ target: { name: "ifsc", value } });
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    const updated = {
-      ...formData,
-      [name]: value,
-    };
-
-    const isChangingExperienceToExperienced = name === "experience" && value === "Experiance";
-
-    const errorsToUpdate = { ...errors };
-
-    // Validate current field
-    const currentFieldError = validateField(name, value);
-    if (currentFieldError) {
-      errorsToUpdate[name] = currentFieldError;
-    } else {
-      delete errorsToUpdate[name];
-    }
-
-    // Validate additional fields if experience is changing to "Experiance"
-    if (isChangingExperienceToExperienced) {
-      const requiredFields = [
-        "company_name",
-        "total_experience",
-        "reason_of_leaving",
-        "Un_no",
-        "Esi_no"
-      ];
-
-      requiredFields.forEach((field) => {
-        const err = validateField(field, updated[field]);
-        if (err) {
-          errorsToUpdate[field] = err;
-        } else {
-          delete errorsToUpdate[field];
-        }
-      });
-    }
-
-    setFormData(updated);
-    setErrors(errorsToUpdate);
-  };
-
-  const handleSave = async () => {
-    // Validate all fields in the current section
-    const sectionFields = Object.keys(formData).filter(
-      field => getSectionKey(field) === editSection
-    );
-    console.log(sectionFields);
-
-    const newErrors = {};
-    sectionFields.forEach(field => {
-      const error = validateField(field, formData[field]);
-      if (error) newErrors[field] = error;
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      toast.error("Please fix the errors before saving");
-      return;
-    }
+  const handleSave = async (data) => {
+    // Get only the changed fields in this section
     const updatedFields = {};
-    sectionFields.forEach(field => {
-      if (formData[field] !== user[field]) {
-        updatedFields[field] = formData[field];
+    Object.keys(data).forEach(key => {
+      if (getSectionKey(key) === editSection && data[key] !== user[key]) {
+        updatedFields[key] = data[key];
       }
     });
 
@@ -290,7 +61,6 @@ const Employee = () => {
       if (res.success) {
         setUser(prev => ({ ...prev, ...updatedFields }));
         setEditSection(null);
-        setErrors({});
         toast.success("Profile updated successfully");
       } else {
         toast.error(res.message || "Failed to update profile");
@@ -302,8 +72,7 @@ const Employee = () => {
 
   const handleCancel = () => {
     setEditSection(null);
-    setFormData({});
-    setErrors({});
+    reset(user);
   };
 
   const handleImageUpload = async (e) => {
@@ -334,8 +103,8 @@ const Employee = () => {
   const renderField = (label, name, type = "text", options = null) => {
     const isEditing = editSection === getSectionKey(name);
     const value = user[name] || "";
-    const isExperienced = formData.experience === "Experiance";
-    const isFresherOrIntern = formData.experience === "Fresher" || formData.experience === "Intern";
+    const isExperienced = experience === "Experiance";
+    const isFresherOrIntern = experience === "Fresher" || experience === "Intern";
 
     // Hide certain fields for Intern/Fresher
     const shouldHideField = isFresherOrIntern &&
@@ -348,58 +117,224 @@ const Employee = () => {
     if (shouldHideField && !isEditing && !value) return null;
 
     if (isEditing) {
-      const inputProps = {
-        className: `form-control ${errors[name] ? 'is-invalid' : ''}`,
-        name,
-        value: formData[name] ?? "",
-        onChange: handleChange,
-        onKeyDown: (e) => e.key === "Enter" && e.preventDefault()
+      const validationRules = {
+        name: {
+          required: "Name is required",
+          pattern: {
+            value: /^[a-zA-Z\s]*$/,
+            message: "Only letters allowed"
+          }
+        },
+        email: {
+          required: "Email is required",
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: "Invalid email address"
+          }
+        },
+        mobile: {
+          required: "Mobile number is required",
+          pattern: {
+            value: /^[6-9]\d{9}$/,
+            message: "Must be 10 digits starting with 6-9"
+          }
+        },
+        alternate_number: {
+          pattern: {
+            value: /^[6-9]\d{9}$/,
+            message: "Must be 10 digits starting with 6-9"
+          }
+        },
+        password: {
+          minLength: {
+            value: 6,
+            message: "Password must be at least 6 characters"
+          }
+        },
+        desgination: {
+          required: "Designation is required",
+          pattern: {
+            value: /^[a-zA-Z\s]*$/,
+            message: "Only letters allowed"
+          }
+        },
+        account_number: {
+          required: "Account number is required",
+          pattern: {
+            value: /^\d{9,18}$/,
+            message: "Must be 9-18 digits"
+          }
+        },
+        ifsc: {
+          required: "IFSC code is required",
+          pattern: {
+            value: /^[A-Z]{4}0[A-Z0-9]{6}$/,
+            message: "Invalid IFSC format"
+          }
+        },
+        bank_name: {
+          required: "Bank name is required",
+          pattern: {
+            value: /^[a-zA-Z\s]*$/,
+            message: "Only letters allowed"
+          }
+        },
+        father_name: {
+          required: "Father's name is required",
+          pattern: {
+            value: /^[a-zA-Z\s]*$/,
+            message: "Only letters allowed"
+          }
+        },
+        mother_name: {
+          required: "Mother's name is required",
+          pattern: {
+            value: /^[a-zA-Z\s]*$/,
+            message: "Only letters allowed"
+          }
+        },
+        current_address: {
+          required: "Current address is required"
+        },
+        permanent_address: {
+          required: "Permanent address is required"
+        },
+        DOB: {
+          required: "Date of birth is required",
+          max: {
+            value: "2010-12-31",
+            message: "Must be at least 15 years old"
+          }
+        },
+        DOJ: {
+          required: "Joining date is required",
+          max: {
+            value: new Date().toISOString().split('T')[0],
+            message: "Joining date cannot be in future"
+          }
+        },
+        nominee_name: {
+          required: "Nominee name is required",
+          pattern: {
+            value: /^[a-zA-Z\s]*$/,
+            message: "Only letters allowed"
+          }
+        },
+        nominee_relation: {
+          required: "Nominee relation is required",
+          pattern: {
+            value: /^[a-zA-Z\s]*$/,
+            message: "Only letters allowed"
+          }
+        },
+        nominee_mobile: {
+          required: "Nominee mobile is required",
+          pattern: {
+            value: /^[6-9]\d{9}$/,
+            message: "Must be 10 digits starting with 6-9"
+          }
+        },
+        nominee_age: {
+          required: "Nominee age is required",
+          min: {
+            value: 15,
+            message: "Age must be at least 15"
+          }
+        },
+        Un_no: {
+          required: isExperienced && "PF UN number is required",
+          pattern: {
+            value: /^\d{12}$/,
+            message: "Must be 12 digits"
+          }
+        },
+        Esi_no: {
+          required: isExperienced && "ESI number is required",
+          pattern: {
+            value: /^\d+$/,
+            message: "Must be numbers only"
+          }
+        },
+        company_name: {
+          required: isExperienced && "Company name is required"
+        },
+        total_experience: {
+          required: isExperienced && "Total experience is required"
+        },
+        reason_of_leaving: {
+          required: isExperienced && "Reason for leaving is required"
+        },
+        gender: {
+          required: "Gender is required"
+        },
+        branch: {
+          required: "Department is required"
+        },
+        type: {
+          required: "User type is required"
+        },
+        status: {
+          required: "Status is required"
+        },
+        experience: {
+          required: "Experience is required"
+        }
       };
 
-      // Special handling for different field types
-      if (name === "name" || name === "nominee_name" || name === "nominee_relation" ||
-        name === "father_name" || name === "mother_name" || name === "bank_name" ||
-        name === "desgination") {
-        inputProps.onChange = (e) => handleNameInput(e, name);
-      } else if (name === "mobile" || name === "alternate_number" || name === "nominee_mobile") {
-        inputProps.onChange = (e) => handleMobileInput(e, name);
-        inputProps.maxLength = 10;
-      } else if (
-        name === "account_number" ||
-        name === "Un_no" ||
-        name === "Esi_no" ||
-        name === "nominee_age"
-      ) {
-        inputProps.onChange = (e) =>
-          handleNumberInput(
-            e,
-            name,
-            name === "Un_no"
-              ? 12
-              : name === "Esi_no"
-                ? 17
-                : name === "account_number"
-                  ? 18
-                  : 2
-          );
-      } else if (name === "ifsc") {
-        inputProps.onChange = handleIFSCInput;
-      }
+      const inputProps = register(name, validationRules[name] || {});
 
-      // Date fields max constraints
-      if (name === "DOB") {
-        inputProps.max = "2010-12-31";
-      } else if (name === "DOJ") {
-        inputProps.max = new Date().toISOString().split('T')[0];
-      }
+      // Special handling for different field types
+      const handleNameInput = (e) => {
+        const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+        setValue(name, value);
+        trigger(name);
+      };
+
+      const handleMobileInput = (e) => {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length === 1 && !/^[6-9]$/.test(value)) return;
+        if (value.length > 10) value = value.slice(0, 10);
+        setValue(name, value);
+        trigger(name);
+      };
+
+      const handleNumberInput = (e, maxLength = 10) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, maxLength);
+        setValue(name, value);
+        trigger(name);
+      };
+
+      const handleIFSCInput = (e) => {
+        const value = e.target.value.toUpperCase();
+        setValue(name, value);
+        trigger(name);
+      };
+
+      const onChangeHandlers = {
+        name: handleNameInput,
+        nominee_name: handleNameInput,
+        nominee_relation: handleNameInput,
+        father_name: handleNameInput,
+        mother_name: handleNameInput,
+        bank_name: handleNameInput,
+        desgination: handleNameInput,
+        mobile: handleMobileInput,
+        alternate_number: handleMobileInput,
+        nominee_mobile: handleMobileInput,
+        account_number: (e) => handleNumberInput(e, 18),
+        Un_no: (e) => handleNumberInput(e, 12),
+        Esi_no: (e) => handleNumberInput(e, 17),
+        nominee_age: (e) => handleNumberInput(e, 2),
+        ifsc: handleIFSCInput
+      };
+
+      const customOnChange = onChangeHandlers[name] || inputProps.onChange;
 
       return (
         <div className="form-group col-md-4 mb-3">
           <label>
             {label}
-            {validateField(name, formData[name] || "") === "This field is required" && (
-              <span className="text-danger"> *</span>
-            )}
+            {validationRules[name]?.required && <span className="text-danger"> *</span>}
           </label>
           <div className="input-group">
             <div className="input-group-prepend">
@@ -416,7 +351,11 @@ const Employee = () => {
             </div>
 
             {options ? (
-              <select {...inputProps}>
+              <select
+                className={`form-control ${errors[name] ? 'is-invalid' : ''}`}
+                {...inputProps}
+                onChange={customOnChange}
+              >
                 <option value="" disabled>
                   Select {label}
                 </option>
@@ -424,15 +363,19 @@ const Employee = () => {
                   <option key={opt} value={opt}>{opt}</option>
                 ))}
               </select>
-            ) : type === "date" ? (
-              <input type="date" {...inputProps} />
             ) : (
-              <input type={type} {...inputProps} />
+              <input
+                type={type}
+                className={`form-control ${errors[name] ? 'is-invalid' : ''}`}
+                {...inputProps}
+                onChange={customOnChange}
+                onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
+              />
             )}
           </div>
           {errors[name] && (
             <div className="invalid-feedback d-block">
-              {errors[name]}
+              {errors[name].message}
             </div>
           )}
         </div>
@@ -546,7 +489,7 @@ const Employee = () => {
             sectionKey="personal"
             isEditing={editSection === "personal"}
             onEdit={handleEdit}
-            onSave={handleSave}
+            onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
           >
             {renderField("Name", "name")}
@@ -571,7 +514,7 @@ const Employee = () => {
             sectionKey="contact"
             isEditing={editSection === "contact"}
             onEdit={handleEdit}
-            onSave={handleSave}
+            onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
           >
             {renderField("Email", "email", "email")}
@@ -587,7 +530,7 @@ const Employee = () => {
             sectionKey="bank"
             isEditing={editSection === "bank"}
             onEdit={handleEdit}
-            onSave={handleSave}
+            onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
           >
             {renderField("Bank Name", "bank_name")}
@@ -601,7 +544,7 @@ const Employee = () => {
             sectionKey="family"
             isEditing={editSection === "family"}
             onEdit={handleEdit}
-            onSave={handleSave}
+            onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
           >
             {renderField("Father's Name", "father_name")}
@@ -614,7 +557,7 @@ const Employee = () => {
             sectionKey="nominee"
             isEditing={editSection === "nominee"}
             onEdit={handleEdit}
-            onSave={handleSave}
+            onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
           >
             {renderField("Nominee Name", "nominee_name")}
@@ -630,7 +573,7 @@ const Employee = () => {
             sectionKey="sensitive"
             isEditing={editSection === "sensitive"}
             onEdit={handleEdit}
-            onSave={handleSave}
+            onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
           >
             {renderField("Password", "password", "password")}

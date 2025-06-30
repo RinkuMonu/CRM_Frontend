@@ -75,7 +75,7 @@ const Leader = () => {
     const fetchMeetingsForToday = async () => {
       try {
         const response = await api.get(
-          `https://api.sevenunique.com/api/task/meetings/today/${user.id}`
+          `/task/meetings/today/${user.id}`
         );
         setMeetingsToday(response.data);
       } catch (error) {

@@ -140,7 +140,7 @@ const Task = ({selectedEmployee,selectedDate}) => {
 
   const updateTaskStatus = async (taskId, status, remark = '') => {
     try {
-      await api.put('https://api.sevenunique.com/api/task/update-status', {
+      await api.put('/task/update-status', {
         taskId,
         Status: status,
         remark

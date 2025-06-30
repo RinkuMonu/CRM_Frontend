@@ -13,13 +13,13 @@ const Navigation = () => {
   const logout = async () => {
     await dLogout();
 
-    // ✅ Clear localStorage
+    //   Clear localStorage
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    // ✅ Clear Redux state
+    //   Clear Redux state
     dispatch(setAuth(null));
-    // ✅ Redirect to login
+    //   Redirect to login
     return history.push("/login");
   };
 

@@ -8,7 +8,7 @@ export const useAutoLogin = () => {
     const dispatch = useDispatch();
     const { isAuth } = useSelector((state) => state.authSlice || {});
     // console.log(isAuth);
-    
+
 
     useEffect(() => {
         // If already authenticated, no need to auto-login
@@ -27,7 +27,7 @@ export const useAutoLogin = () => {
 
         (async () => {
             try {
-                const res = await api.get("https://api.sevenunique.com/api/auth/refresh");
+                const res = await api.get("/auth/refresh");
 
                 console.log("Auto-login response:", res);
 

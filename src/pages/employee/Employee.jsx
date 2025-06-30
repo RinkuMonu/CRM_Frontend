@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getUser, updateUser } from "../../http";
 import { FaUser, FaPhone, FaCalendarAlt, FaLock, FaPiggyBank, FaHome, FaIdCard, FaEnvelope, FaMapMarkerAlt, FaUserEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { NavLink } from "react-router-dom";
 
 const Employee = () => {
   const [user, setUser] = useState({});
@@ -18,7 +19,7 @@ const Employee = () => {
 
   const fetchUser = async () => {
     const res = await getUser(id);
-    if (res.success) setUser(res.data);
+    if (res?.success) setUser(res.data);
   };
 
   const handleEdit = (section) => {
@@ -29,7 +30,7 @@ const Employee = () => {
 
   const validateField = (name, value) => {
     const today = new Date().toISOString().split('T')[0];
-    const maxDOB = "2010-12-31"; // Minimum age 15 years (as of 2025)
+    const maxDOB = "2010-12-31";
     const isExperienced = formData.experience === "Experiance";
 
     const patterns = {
@@ -64,9 +65,9 @@ const Employee = () => {
         message: "Only letters allowed"
       },
       account_number: {
-        required: "Account number is required",
-        validate: (value) =>
-          /^\d{9,18}$/.test(value) || "Must be 9-18 digits"
+        required: true,
+        validate: (value) => /^\d{9,18}$/.test(value) || "Must be 9-18 digits",
+        message: "Must be 9-18 digits"
       },
       ifsc: {
         required: true,
@@ -154,11 +155,23 @@ const Employee = () => {
       branch: {
         required: true,
         message: "Department is required"
+      },
+      type: {
+        required: true,
+        message: "User type is required"
+      },
+      status: {
+        required: true,
+        message: "Status is required"
+      },
+      experience: {
+        required: true,
+        message: "Experience is required"
       }
     };
 
     if (patterns[name]?.required && !value) {
-      return "This field is required";
+      return patterns[name]?.message;
     }
 
     if (value && patterns[name]?.pattern && !patterns[name].pattern.test(value)) {
@@ -200,14 +213,46 @@ const Employee = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const error = validateField(name, value);
 
-    setErrors(prev => ({
-      ...prev,
-      [name]: error
-    }));
+    const updated = {
+      ...formData,
+      [name]: value,
+    };
 
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const isChangingExperienceToExperienced = name === "experience" && value === "Experiance";
+
+    const errorsToUpdate = { ...errors };
+
+    // Validate current field
+    const currentFieldError = validateField(name, value);
+    if (currentFieldError) {
+      errorsToUpdate[name] = currentFieldError;
+    } else {
+      delete errorsToUpdate[name];
+    }
+
+    // Validate additional fields if experience is changing to "Experiance"
+    if (isChangingExperienceToExperienced) {
+      const requiredFields = [
+        "company_name",
+        "total_experience",
+        "reason_of_leaving",
+        "Un_no",
+        "Esi_no"
+      ];
+
+      requiredFields.forEach((field) => {
+        const err = validateField(field, updated[field]);
+        if (err) {
+          errorsToUpdate[field] = err;
+        } else {
+          delete errorsToUpdate[field];
+        }
+      });
+    }
+
+    setFormData(updated);
+    setErrors(errorsToUpdate);
   };
 
   const handleSave = async () => {
@@ -215,6 +260,7 @@ const Employee = () => {
     const sectionFields = Object.keys(formData).filter(
       field => getSectionKey(field) === editSection
     );
+    console.log(sectionFields);
 
     const newErrors = {};
     sectionFields.forEach(field => {
@@ -227,7 +273,6 @@ const Employee = () => {
       toast.error("Please fix the errors before saving");
       return;
     }
-
     const updatedFields = {};
     sectionFields.forEach(field => {
       if (formData[field] !== user[field]) {
@@ -299,7 +344,6 @@ const Employee = () => {
         name === "reason_of_leaving" ||
         name === "Un_no" ||
         name === "Esi_no");
-
     if (shouldHideField && isEditing) return null;
     if (shouldHideField && !isEditing && !value) return null;
 
@@ -322,7 +366,7 @@ const Employee = () => {
         inputProps.maxLength = 10;
       } else if (
         name === "account_number" ||
-        name === "U_nno" ||
+        name === "Un_no" ||
         name === "Esi_no" ||
         name === "nominee_age"
       ) {
@@ -330,7 +374,7 @@ const Employee = () => {
           handleNumberInput(
             e,
             name,
-            name === "U_nno"
+            name === "Un_no"
               ? 12
               : name === "Esi_no"
                 ? 17
@@ -338,9 +382,7 @@ const Employee = () => {
                   ? 18
                   : 2
           );
-      }
-
-      else if (name === "ifsc") {
+      } else if (name === "ifsc") {
         inputProps.onChange = handleIFSCInput;
       }
 
@@ -353,7 +395,12 @@ const Employee = () => {
 
       return (
         <div className="form-group col-md-4 mb-3">
-          <label>{label}</label>
+          <label>
+            {label}
+            {validateField(name, formData[name] || "") === "This field is required" && (
+              <span className="text-danger"> *</span>
+            )}
+          </label>
           <div className="input-group">
             <div className="input-group-prepend">
               <div className="input-group-text">
@@ -370,7 +417,9 @@ const Employee = () => {
 
             {options ? (
               <select {...inputProps}>
-                <option value="">Select {label}</option>
+                <option value="" disabled>
+                  Select {label}
+                </option>
                 {options.map((opt) => (
                   <option key={opt} value={opt}>{opt}</option>
                 ))}
@@ -437,6 +486,17 @@ const Employee = () => {
     return sectionMap[fieldName] || "personal";
   };
 
+  const fields = [
+    "employee_adhar_image",
+    "employee_pan_image",
+    "tenth_marksheet_img",
+    "twelth_marksheet_img",
+    "mother_adhar_image",
+    "father_adhar_image",
+    "Policeverification",
+  ];
+  const isAnyDocMissing = fields.some((field) => !user[field]);
+
   return (
     <div className="main-content">
       <section className="section">
@@ -449,12 +509,22 @@ const Employee = () => {
               width="130"
               height="130"
             />
-            <button
-              className="btn btn-sm btn-outline-primary position-absolute end-0 top-0 mt-2 me-2"
-              onClick={() => fileInputRef.current.click()}
-            >
-              <FaUserEdit className="me-1" /> Edit Image
-            </button>
+            <div className="position-absolute end-0 top-0 mt-2 me-2 d-flex gap-2">
+              <button
+                className="btn btn-sm btn-outline-primary"
+                onClick={() => fileInputRef.current.click()}
+              >
+                <FaUserEdit className="me-1" /> Edit Image
+              </button>
+
+              {isAnyDocMissing && (
+                <NavLink to={`/editdocument/${id}`}>
+                  <button className="btn btn-sm btn-outline-dark">
+                    📁 Upload Documents
+                  </button>
+                </NavLink>
+              )}
+            </div>
             <input
               type="file"
               ref={fileInputRef}

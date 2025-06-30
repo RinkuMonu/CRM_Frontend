@@ -10,7 +10,7 @@ const Employees = () => {
   useEffect(() => {
     (async () => {
       const res = await getEmployees();
-      if (res.success) {
+      if (res?.success) {
         setUsers(res.data);
         setLoading(false);
       }

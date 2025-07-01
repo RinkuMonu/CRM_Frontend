@@ -28,9 +28,6 @@ export const useAutoLogin = () => {
         (async () => {
             try {
                 const res = await api.get("/auth/refresh");
-
-                console.log("Auto-login response:", res);
-
                 if (res?.success) {
                     dispatch(setAuth({
                         user: res.user,

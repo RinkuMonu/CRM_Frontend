@@ -200,9 +200,9 @@ const App = () => {
         <AdminRoute exact path='/addteam'>
           <AddTeam />
         </AdminRoute>
-        <AdminRoute path='/employee/:id'>
+        <MultiRoleRoute exact path='/employee/:id' allowedRoles={['Admin', 'Leader', 'Employee']}>
           <Employee />
-        </AdminRoute>
+        </MultiRoleRoute>
         <AdminRoute path='/team/:id'>
           <Team />
         </AdminRoute>
@@ -402,7 +402,6 @@ const EmployeeRoute = ({ children, ...rest }) => {
 
 const MultiRoleRoute = ({ allowedRoles = [], children, ...rest }) => {
   const { user } = useSelector((state) => state.authSlice);
-  console.log("isAuth", user);
 
   const accessToken = localStorage.getItem('accessToken');
 

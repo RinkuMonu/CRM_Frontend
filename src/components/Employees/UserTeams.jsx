@@ -108,7 +108,7 @@ const UserTeams = () => {
                             <td>
                               <NavLink
                                 to={`/userteam/${userteam.id}`}
-                                className="btn btn-primary"
+                                className="py-1 px-3 rounded-pill btn-primary"
                               >
                                 Detail
                               </NavLink>

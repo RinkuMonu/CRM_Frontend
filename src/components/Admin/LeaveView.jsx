@@ -162,20 +162,21 @@ const LeaveView = () => {
                       <td>{application.title}</td>
                       <td>{application.appliedDate}</td>
                       <td
-                        onClick={() =>
-                          history.push(`leaves/${application._id}`)
-                        }
-                        className={`cursor-pointer ${
-                          application.adminResponse === "Rejected"
-                            ? "text-danger"
-                            : application.adminResponse === "Pending"
-                            ? "text-primary"
-                            : "text-success"
-                        }`}
+                        onClick={() => history.push(`leaves/${application._id}`)}
                         style={{ cursor: "pointer" }}
                       >
-                        {application.adminResponse}
+                        <span
+                          className={`badge rounded-pill px-3 py-2 ${application.adminResponse === "Rejected"
+                            ? "bg-danger-subtle text-dark"
+                            : application.adminResponse === "Pending"
+                              ? "bg-warning-subtle text-dark"
+                              : "bg-success-subtle text-dark"
+                            }`}
+                        >
+                          {application.adminResponse}
+                        </span>
                       </td>
+
                     </tr>
                   ))
                 ) : (

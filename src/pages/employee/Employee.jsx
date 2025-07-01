@@ -5,12 +5,15 @@ import { getUser, updateUser } from "../../http";
 import { FaUser, FaPhone, FaCalendarAlt, FaLock, FaPiggyBank, FaHome, FaIdCard, FaEnvelope, FaMapMarkerAlt, FaUserEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Employee = () => {
+  const admin = useSelector(state => state.authSlice)
   const [user, setUser] = useState({});
   const [editSection, setEditSection] = useState(null);
   const fileInputRef = useRef(null);
   const { id } = useParams();
+  const role = admin?.user?.user?.type === "Admin" ? 'admin' : 'task'
 
   const {
     register,
@@ -28,10 +31,10 @@ const Employee = () => {
 
   useEffect(() => {
     fetchUser();
-  }, [id]);
+  }, [id, role]);
 
   const fetchUser = async () => {
-    const res = await getUser(id);
+    const res = await getUser(role, id);
     if (res?.success) {
       setUser(res.data);
       reset(res.data);
@@ -452,22 +455,26 @@ const Employee = () => {
               width="130"
               height="130"
             />
-            <div className="position-absolute end-0 top-0 mt-2 me-2 d-flex gap-2">
-              <button
-                className="btn btn-sm btn-outline-primary"
-                onClick={() => fileInputRef.current.click()}
-              >
-                <FaUserEdit className="me-1" /> Edit Image
-              </button>
-
-              {isAnyDocMissing && (
-                <NavLink to={`/editdocument/${id}`}>
-                  <button className="btn btn-sm btn-outline-dark">
-                    📁 Upload Documents
+            {
+              admin?.user?.user?.type === "Admin" && (
+                <div className="position-absolute end-0 top-0 mt-2 me-2 d-flex gap-2">
+                  <button
+                    className="btn btn-sm btn-outline-primary"
+                    onClick={() => fileInputRef.current.click()}
+                  >
+                    <FaUserEdit className="me-1" /> Edit Image
                   </button>
-                </NavLink>
-              )}
-            </div>
+
+                  {isAnyDocMissing && (
+                    <NavLink to={`/editdocument/${id}`}>
+                      <button className="btn btn-sm btn-outline-dark">
+                        📁 Upload Documents
+                      </button>
+                    </NavLink>
+                  )}
+                </div>
+              )
+            }
             <input
               type="file"
               ref={fileInputRef}
@@ -491,6 +498,7 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
+            user={admin?.user?.user?.type}
           >
             {renderField("Name", "name")}
             {renderField("Gender", "gender", "text", ["Male", "Female"])}
@@ -516,6 +524,7 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
+            user={admin?.user?.user?.type}
           >
             {renderField("Email", "email", "email")}
             {renderField("Mobile", "mobile", "tel")}
@@ -532,6 +541,7 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
+            user={admin?.user?.user?.type}
           >
             {renderField("Bank Name", "bank_name")}
             {renderField("Account Number", "account_number")}
@@ -546,6 +556,7 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
+            user={admin?.user?.user?.type}
           >
             {renderField("Father's Name", "father_name")}
             {renderField("Mother's Name", "mother_name")}
@@ -559,6 +570,7 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
+            user={admin?.user?.user?.type}
           >
             {renderField("Nominee Name", "nominee_name")}
             {renderField("Relation", "nominee_relation")}
@@ -575,6 +587,7 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSubmit(handleSave)}
             onCancel={handleCancel}
+            user={admin?.user?.user?.type}
           >
             {renderField("Password", "password", "password")}
           </Section>
@@ -584,7 +597,7 @@ const Employee = () => {
   );
 };
 
-const Section = ({ title, sectionKey, isEditing, onEdit, onSave, onCancel, children }) => (
+const Section = ({ title, sectionKey, isEditing, onEdit, onSave, onCancel, user, children }) => (
   <div className="border-top pt-3 mt-3">
     <div className="d-flex justify-content-between align-items-center mb-3">
       <h5 className="text-dark fw-bold mb-0">{title}</h5>
@@ -598,12 +611,14 @@ const Section = ({ title, sectionKey, isEditing, onEdit, onSave, onCancel, child
           </button>
         </div>
       ) : (
-        <button
-          className="btn btn-outline-primary btn-sm"
-          onClick={() => onEdit(sectionKey)}
-        >
-          Edit {title}
-        </button>
+        user == "Admin" && (
+          <button
+            className="btn btn-outline-primary btn-sm"
+            onClick={() => onEdit(sectionKey)}
+          >
+            Edit {title}
+          </button>
+        )
       )}
     </div>
     <div className="row">{children}</div>

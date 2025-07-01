@@ -99,7 +99,7 @@ const AssestView = () => {
                   onChange={(e) => setType(e.target.value)}
                   className="form-control select2"
                 >
-                  <option disabled>Select</option>
+                  <option value=''>Select</option>
                   <option>Upgrade</option>
                   <option>new Assest</option>
                   <option>Repair</option>
@@ -114,7 +114,7 @@ const AssestView = () => {
                   onChange={(e) => setStatus(e.target.value)}
                   className="form-control select2"
                 >
-                  <option disabled>Select</option>
+                  <option value=''>Select</option>
                   <option>Pending</option>
                   <option>Approved</option>
                   <option>Rejected</option>

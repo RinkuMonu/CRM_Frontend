@@ -7,9 +7,8 @@ import { dLogout } from "../../http/index";
 import { setAuth } from "../../store/auth-slice";
 import { useSelector } from "react-redux";
 const Leader = () => {
-  const { name, image } = useSelector((state) => state.authSlice.user);
+  // const { name, image } = useSelector((state) => state.authSlice.user);
   const { user } = useSelector((state) => state.authSlice);
-  console.log("dfgjdcjkdsjh", user.user.branch);
 
   const dispatch = useDispatch();
   const history = useHistory();

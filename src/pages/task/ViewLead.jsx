@@ -155,30 +155,23 @@ export default function ViewLead() {
                         {leads?.length > 0 ? (
                           leads?.map((lead, i) => (
                             <tr key={i}>
-                              <td>{lead?.taskID?.title || "N/A"}</td>
-                              <td>{lead?.taskID?.assignedBy?.name}</td>
-                              <td>{lead?.Contact_No}</td>
-                              <td>{lead?.taskID?.assignedBy?.status}</td>
+                              <td className="text-center">{lead?.taskID?.title || "N/A"}</td>
+                              <td className="text-center">{lead?.taskID?.assignedBy?.name}</td>
+                              <td className="text-center">{lead?.Contact_No}</td>
+                              <td className="text-center">{lead?.taskID?.assignedBy?.status}</td>
                               <td className="text-center">
                                 {getInterestBadge(lead.interest)}
                               </td>
-                              <td>{getInterestBadge(lead.result)}</td>
+                              <td className="text-center">{getInterestBadge(lead.result)}</td>
                               <td className="text-center">
-                                <>
-                                  <button
-                                    className="btn btn-sm btn-outline-primary me-2"
-                                    onClick={() => openUpdateModal(lead)}
-                                  >
-                                    Update Lead
+                                <button className="btn btn-sm btn-outline-primary me-2" onClick={() => openUpdateModal(lead)}>
+                                  ✏️ Update
+                                </button>
+                                {lead.result !== "Assigned" && (
+                                  <button className="btn btn-sm btn-outline-success" onClick={() => openDealModal(lead)}>
+                                    💼 Deal
                                   </button>
-                                  {lead.result !== "Assigned" &&
-                                    <button
-                                      className="btn btn-sm btn-outline-success"
-                                      onClick={() => openDealModal(lead)}
-                                    >
-                                      Assign Deal
-                                    </button>}
-                                </>
+                                )}
                               </td>
                             </tr>
                           ))

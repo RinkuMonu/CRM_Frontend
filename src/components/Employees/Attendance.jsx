@@ -106,7 +106,6 @@ const Attendance = () => {
         employeeID: user.user.id,
         regularizeReason,
       });
-      console.log(res);
 
       if (res.success) {
         toast.success("Regularize request sent to HR!");

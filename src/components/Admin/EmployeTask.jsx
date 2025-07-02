@@ -40,7 +40,7 @@ function EmployeTask() {
         );
         setTeamMembers(res.data);
       } catch (error) {
-        console.error("❌ Error fetching members:", error);
+        console.error("Error fetching members:", error);
       }
     };
     fetchMembers();
@@ -64,7 +64,7 @@ function EmployeTask() {
     ];
 
     if (!allowedTypes.includes(selectedFile.type)) {
-      toast.error("❌ Only Excel files (.xlsx or .xls) are allowed.");
+      toast.error("Only Excel files (.xlsx or .xls) are allowed.");
       e.target.value = ""; // Reset the input
       setFile(null);
       return;

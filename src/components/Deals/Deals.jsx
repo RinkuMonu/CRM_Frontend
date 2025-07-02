@@ -68,7 +68,7 @@ const Deals = ({ selectedEmployee }) => {
       setData(updatedData);
       setDeals(dealsData);
     } catch (err) {
-      console.error("❌ Error fetching deals:", err);
+      console.error("Error fetching deals:", err);
       toast.error("Failed to fetch deals");
     } finally {
       setIsLoading(false);
@@ -128,7 +128,7 @@ const Deals = ({ selectedEmployee }) => {
         newStage: finish.id,
       });
       
-      toast.success(`  Deal status updated to ${finish.title}`);
+      toast.success(`Deal status updated to ${finish.title}`);
       
       if (finish.id === "next_meeting") {
         setSelectedDealId(draggableId);
@@ -137,7 +137,7 @@ const Deals = ({ selectedEmployee }) => {
       }
     } catch (error) {
       console.error("Error updating deal status:", error);
-      toast.error("❌ Failed to update deal status");
+      toast.error("Failed to update deal status");
       fetchDeals();
     }
   };

@@ -63,11 +63,11 @@ export default function LeaderLead() {
         setDeals(updatedDeals.data);
         resetForm();
       } else {
-        toast.error("❌ Assignment failed");
+        toast.error("Assignment failed");
       }
     } catch (err) {
       console.error("Error assigning deal:", err);
-      toast.error(err.response?.data?.message || "❌ Error assigning deal");
+      toast.error(err.response?.data?.message || "Error assigning deal");
     }
   };
 

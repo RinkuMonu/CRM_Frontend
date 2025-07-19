@@ -99,11 +99,12 @@ const AssestView = () => {
                   onChange={(e) => setType(e.target.value)}
                   className="form-control select2"
                 >
-                 <option>Upgrade</option>
-                                <option>new Assest</option>
-                                <option>Repair</option>
-                                <option> other</option>
-                  
+                  <option value=''>Select</option>
+                  <option>Upgrade</option>
+                  <option>new Assest</option>
+                  <option>Repair</option>
+                  <option> other</option>
+
                 </select>
               </div>
               <div className="form-group col-md-2">
@@ -113,7 +114,7 @@ const AssestView = () => {
                   onChange={(e) => setStatus(e.target.value)}
                   className="form-control select2"
                 >
-                  <option>Select</option>
+                  <option value=''>Select</option>
                   <option>Pending</option>
                   <option>Approved</option>
                   <option>Rejected</option>
@@ -146,53 +147,53 @@ const AssestView = () => {
               </button>
             </div>
             <div className="table-responsive">
-            <table className="table border roundedtable table-md center-text">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Type</th>
-                  <th>Title</th>
-                  <th>Applied Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody className="sidebar-wrapper">
-                {applications?.map((application, idx) => (
-                  <tr
-                    className="hover-effect"
-                    onClick={() => history.push(`assest/${application._id}`)}
-                  >
-                    <td>{idx + 1}</td>
-                    <td>
-                      {employeeMap?.[application.applicantID]?.[0] || "N/A"}
-                    </td>
-                    <td>
-                      {employeeMap?.[application.applicantID]?.[1] || "N/A"}
-                    </td>
-                    <td>{application?.type}</td>
-                    <td>{application.title}</td>
-                    <td>{application.appliedDate}</td>
-                    <td
-                      className={`${
-                        application.adminResponse === "Rejected"
-                          ? "text-danger"
-                          : application.adminResponse === "Pending"
-                          ? "text-primary"
-                          : "text-success"
-                      }`}
-                    >
-                      {application.adminResponse}
-                    </td>
+              <table className="table border roundedtable table-md center-text">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Applied Date</th>
+                    <th>Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+
+                <tbody className="sidebar-wrapper">
+                  {applications?.map((application, idx) => (
+                    <tr
+                      key={application._id}
+                      className="table-row align-middle"
+                    >
+                      <td>{idx + 1}</td>
+                      <td>{employeeMap?.[application.applicantID]?.[0] || "N/A"}</td>
+                      <td>{employeeMap?.[application.applicantID]?.[1] || "N/A"}</td>
+                      <td>{application?.type}</td>
+                      <td>{application.title}</td>
+                      <td>{application.appliedDate}</td>
+                      <td>
+                        <span
+                          onClick={() => history.push(`assest/${application._id}`)}
+                          style={{ cursor: "pointer" }}
+                          className={`badge rounded-pill px-3 py-1 ${application.adminResponse === "Rejected"
+                            ? "bg-danger-subtle text-dark"
+                            : application.adminResponse === "Pending"
+                              ? "bg-warning-subtle text-dark"
+                              : "bg-success-subtle text-dark"
+                            }`}
+                        >
+                          {application.adminResponse}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+
+              </table>
+            </div>
           </section>
-          
+
         </div>
       ) : (
         <Loading />

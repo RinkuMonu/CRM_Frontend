@@ -1,9 +1,8 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 
 const api = axios.create({
   baseURL: `https://api.sevenunique.com/api`,
-  // baseURL: `http://localhost:5500/api`,
+  // baseURL: `http://localhost:5050/api`,
   // baseURL: `http://192.168.1.76:5500/api`,
 });
 
@@ -47,6 +46,7 @@ export const getTeams = () => api.get("/admin/teams");
 export const getTeamMembers = (data) => api.get(`/admin/team/${data}/members`);
 export const addUser = (data) => api.post("/admin/user", data);
 export const updateUser = (id, data) => api.patch(`/admin/user/${id}`, data);
+export const updateUserDoc = (id, data) => api.put(`/admin/userDoc/${id}`, data);
 export const addTeam = (data) => api.post("/admin/team", data);
 export const updateTeam = (id, data) => api.patch(`/admin/team/${id}`, data);
 export const getEmployee = (data) => api.get(`/admin/employee/${data}`);
@@ -59,7 +59,7 @@ export const addMember = (data) => api.patch("/admin/team/member/add", data);
 export const removeLeader = (data) =>
   api.patch("/admin/team/leader/remove", data);
 export const addLeader = (data) => api.patch("/admin/team/leader/add", data);
-export const getUser = (data) => api.get(`/admin/user/${data}`);
+export const getUser = (role, data) => api.get(`/${role}/user/${data}`);
 export const getAttendance = (data) =>
   api.post("admin/view-employee-attendance", data);
 export const viewassest = (data) =>

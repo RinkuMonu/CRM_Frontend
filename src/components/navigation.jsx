@@ -13,13 +13,13 @@ const Navigation = () => {
   const logout = async () => {
     await dLogout();
 
-    // ✅ Clear localStorage
+    //   Clear localStorage
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    // ✅ Clear Redux state
+    //   Clear Redux state
     dispatch(setAuth(null));
-    // ✅ Redirect to login
+    //   Redirect to login
     return history.push("/login");
   };
 
@@ -187,7 +187,7 @@ const Navigation = () => {
             <div className="dropdown-menu dropdown-menu-right">
               {/* <div className="dropdown-title">Logged in 5 min ago</div> */}
               <NavLink
-                to="features-profile.html"
+                to={`/employee/${user?.user?.id}`}
                 className="dropdown-item has-icon"
               >
                 <i className="far fa-user"></i> Profile

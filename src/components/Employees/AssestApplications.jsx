@@ -70,7 +70,7 @@ const AssestApplications = () => {
                     onChange={(e) => setType(e.target.value)}
                     className="form-control select2"
                   >
-                    <option>Select</option>
+                    <option value=''>Select</option>
                     <option>Upgrade</option>
                     <option>new Assest</option>
                     <option>Repair</option>
@@ -84,7 +84,7 @@ const AssestApplications = () => {
                     onChange={(e) => setStatus(e.target.value)}
                     className="form-control select2"
                   >
-                    <option>Select</option>
+                    <option value=''>Select</option>
                     <option>Pending</option>
                     <option>Approved</option>
                     <option>Rejected</option>
@@ -133,25 +133,27 @@ const AssestApplications = () => {
                 {applications?.map((application, idx) => (
                   <tr
                     className="hover-effect"
-                    onClick={() =>
-                      history.push(`userAssestApplications/${application._id}`)
-                    }
                   >
                     <td>{idx + 1}</td>
                     <td>{application.type}</td>
                     <td>{application.title}</td>
                     <td>{application.appliedDate}</td>
-                    <td
-                      className={`${
-                        application.adminResponse === "Rejected"
-                          ? "text-danger"
+                    <td>
+                      <span
+                        onClick={() =>
+                          history.push(`userAssestApplications/${application._id}`)
+                        }
+                        className={`badge btn rounded-pill px-3 py-1 fw-semibold ${application.adminResponse === "Rejected"
+                          ? "bg-danger-subtle text-dark"
                           : application.adminResponse === "Pending"
-                          ? "text-primary"
-                          : "text-success"
-                      }`}
-                    >
-                      {application.adminResponse}
+                            ? "bg-warning-subtle text-dark"
+                            : "bg-success-subtle text-dark"
+                          }`}
+                      >
+                        {application.adminResponse}
+                      </span>
                     </td>
+
                   </tr>
                 ))}
               </tbody>

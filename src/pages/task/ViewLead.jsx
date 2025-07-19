@@ -31,8 +31,8 @@ export default function ViewLead() {
 
   const fetchLeads = async () => {
     try {
-      const res = await api.get(`https://api.sevenunique.com/api/task/getlead/${id}`);
-       setLeads(res);
+      const res = await api.get(`/task/getlead/${id}`);
+      setLeads(res);
     } catch (error) {
       console.error("Error fetching leads:", error);
     }
@@ -41,7 +41,7 @@ export default function ViewLead() {
   const fetchLeaders = async () => {
     try {
       const res = await api.get(
-        `https://api.sevenunique.com/api/task/get-salesLeader`
+        `/task/get-salesLeader`
       );
       setLeaders(res.data || []);
     } catch (err) {
@@ -76,7 +76,7 @@ export default function ViewLead() {
   // Submit Handlers
   const submitUpdate = async () => {
     try {
-      await api.put(`https://api.sevenunique.com/api/task/updatelead`, {
+      await api.put(`/task/updatelead`, {
         leadID: selectedLead._id,
         result: form.result,
         duration: form.duration,
@@ -94,7 +94,7 @@ export default function ViewLead() {
 
   const submitDeal = async () => {
     try {
-      await api.post(`https://api.sevenunique.com/api/task/createDeals`, {
+      await api.post(`/task/createDeals`, {
         leadID: selectedLead._id,
         value: form.value,
         assigned_leader: form.assigned_leader,
@@ -145,40 +145,33 @@ export default function ViewLead() {
                           <th>Task Title</th>
                           <th>Lead Name</th>
                           <th>Contact No.</th>
-                          <th>State</th>
+                          <th>Status</th>
                           <th>Interest</th>
                           <th>Result</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {leads.length > 0 ? (
-                          leads.map((lead, i) => (
+                        {leads?.length > 0 ? (
+                          leads?.map((lead, i) => (
                             <tr key={i}>
-                              <td>{lead?.taskID?.title || "N/A"}</td>
-                              <td>{lead?.name}</td>
-                              <td>{lead?.Contact_No}</td>
-                              <td>{lead?.State}</td>
+                              <td className="text-center">{lead?.taskID?.title || "N/A"}</td>
+                              <td className="text-center">{lead?.taskID?.assignedBy?.name}</td>
+                              <td className="text-center">{lead?.Contact_No}</td>
+                              <td className="text-center">{lead?.taskID?.assignedBy?.status}</td>
                               <td className="text-center">
                                 {getInterestBadge(lead.interest)}
                               </td>
-                              <td>{getInterestBadge(lead.result)}</td>
+                              <td className="text-center">{getInterestBadge(lead.result)}</td>
                               <td className="text-center">
-                                  <>
-                                    <button
-                                      className="btn btn-sm btn-outline-primary me-2"
-                                      onClick={() => openUpdateModal(lead)}
-                                    >
-                                      Update Lead
-                                    </button>
-                                    {lead.result !== "Assigned" && 
-                                    <button
-                                      className="btn btn-sm btn-outline-success"
-                                      onClick={() => openDealModal(lead)}
-                                    >
-                                      Assign Deal
-                                    </button>}
-                                  </>
+                                <button className="btn btn-sm btn-outline-primary me-2" onClick={() => openUpdateModal(lead)}>
+                                  ✏️ Update
+                                </button>
+                                {lead.result !== "Assigned" && (
+                                  <button className="btn btn-sm btn-outline-success" onClick={() => openDealModal(lead)}>
+                                    💼 Deal
+                                  </button>
+                                )}
                               </td>
                             </tr>
                           ))
@@ -210,7 +203,7 @@ export default function ViewLead() {
                   type="button"
                   className="btn-close btn-close-white"
                   onClick={() => setShowUpdateModal(false)}
-                ></button>
+                >X</button>
               </div>
               <div className="modal-body">
                 <div className="mb-3">
@@ -284,7 +277,7 @@ export default function ViewLead() {
                   type="button"
                   className="btn-close btn-close-white"
                   onClick={() => setShowDealModal(false)}
-                ></button>
+                >X</button>
               </div>
               <div className="modal-body">
                 <div className="mb-3">

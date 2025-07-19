@@ -36,11 +36,11 @@ function EmployeTask() {
     const fetchMembers = async () => {
       try {
         const res = await api.get(
-          `https://api.sevenunique.com/api/task/get-allEmployee?type=employee`
+          `/task/get-allEmployee?type=employee`
         );
         setTeamMembers(res.data);
       } catch (error) {
-        console.error("❌ Error fetching members:", error);
+        console.error("Error fetching members:", error);
       }
     };
     fetchMembers();
@@ -64,7 +64,7 @@ function EmployeTask() {
     ];
 
     if (!allowedTypes.includes(selectedFile.type)) {
-      toast.error("❌ Only Excel files (.xlsx or .xls) are allowed.");
+      toast.error("Only Excel files (.xlsx or .xls) are allowed.");
       e.target.value = ""; // Reset the input
       setFile(null);
       return;
@@ -98,7 +98,7 @@ function EmployeTask() {
     }
 
     try {
-      const res = await api.post("https://api.sevenunique.com/api/task", data, {
+      const res = await api.post("/task", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

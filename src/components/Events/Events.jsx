@@ -45,7 +45,7 @@ export default function Events() {
   // Fetch events for the selected date
   const fetchEventsByDate = (date) => {
     api
-      .get(`https://api.sevenunique.com/api/task/events/${date}`) // Ensure your backend supports this endpoint
+      .get(`/task/events/${date}`) // Ensure your backend supports this endpoint
       .then((response) => {
         setEvents(response.data); // Assuming response contains the events data
       })

@@ -59,7 +59,7 @@ const AssignSalary = () => {
       console.error("Error assigning salary:", error);
       toast.error("Server Error. Please try again.");
     } finally {
-      setIsLoading(false); // ✅ Stop loading
+      setIsLoading(false); //   Stop loading
     }
   };
 

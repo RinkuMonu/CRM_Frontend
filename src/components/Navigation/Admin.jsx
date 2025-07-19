@@ -15,7 +15,7 @@ const Admin = () => {
   const logout = async () => {
     await dLogout();
 
-    // ✅ Clear localStorage
+    //   Clear localStorage
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");

@@ -132,24 +132,25 @@ const LeaveApplications = () => {
                     <tr
                       key={application._id}
                       className="hover-effect"
-                      onClick={() =>
-                        history.push(`userLeaveApplications/${application._id}`)
-                      }
                     >
                       <td>{idx + 1}</td>
                       <td>{application.type}</td>
                       <td>{application.title}</td>
                       <td>{application.appliedDate}</td>
-                      <td
-                        className={`${
-                          application.adminResponse === "Rejected"
-                            ? "text-danger"
+                      <td >
+                        <span
+                          onClick={() =>
+                            history.push(`userLeaveApplications/${application._id}`)
+                          }
+                          className={`btn py-1 rounded-pill ${application.adminResponse === "Rejected"
+                            ? "bg-danger-subtle text-dark"
                             : application.adminResponse === "Pending"
-                            ? "text-primary"
-                            : "text-success"
-                        }`}
-                      >
-                        {application.adminResponse}
+                              ? "bg-warning-subtle text-dark"
+                              : "bg-success-subtle text-dark"
+                            }`}
+                        >
+                          {application.adminResponse}
+                        </span>
                       </td>
                     </tr>
                   ))

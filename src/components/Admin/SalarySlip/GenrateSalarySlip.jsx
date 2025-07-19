@@ -73,6 +73,11 @@ const GenrateSalarySlip = () => {
         companyEsi: data.companyEsi,
         totalDeduction: data.totalDeduction,
         netPay: data.netPay,
+        BasicSalary: data.BasicSalary,
+        Other: data.Other,
+        HRA: data.HRA,
+        Conveyance: data.Conveyance,  
+        
       });
 
       console.log("Salary slip response:", res);
@@ -176,6 +181,10 @@ const GenrateSalarySlip = () => {
                     "companyEsi",
                     "totalDeduction",
                     "netPay",
+                    "HRA",
+                    "Conveyance",
+                    "Other",
+                    "BasicSalary"
                   ].map((field, i) => (
                     <div className="form-group col-md-4 mb-3" key={i}>
                       <div className="card p-3">

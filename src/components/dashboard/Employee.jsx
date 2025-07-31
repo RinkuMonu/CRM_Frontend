@@ -150,194 +150,105 @@ const Admin = () => {
 
   // console.log("testing", birthdaysToday?.data);
 
-  const holidays = [
-    {
-      title: "New Year's Day",
-      date: "01-01-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-calendar2-week" />,
-    },
-    {
-      title: "Guru Gobind Singh Jayanti",
-      date: "06-01-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-person-bounding-box" />,
-    },
-    {
-      title: "Swami Vivekananda Jayanti",
-      date: "12-01-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-award" />,
-    },
-    {
-      title: "Makar Sankranti",
-      date: "14-01-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-sunrise-fill" />,
-    },
-    {
-      title: "Republic Day",
-      date: "26-01-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-flag-fill" />,
-    },
-    {
-      title: "Vasant Panchami",
-      date: "10-02-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-flower3" />,
-    },
-    {
-      title: "Women's Day",
-      date: "08-03-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-gender-female" />,
-    },
-    {
-      title: "Holi",
-      date: "17-03-2025",
-      duration: "2 Days only",
-      icon: <i className="bi bi-bucket-fill" />,
-    },
-    {
-      title: "Good Friday",
-      date: "29-03-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-cross" />,
-    },
-    {
-      title: "Eid-ul-Fitr",
-      date: "10-04-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-moon-stars-fill" />,
-    },
-    {
-      title: "Ambedkar Jayanti",
-      date: "14-04-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-book" />,
-    },
-    {
-      title: "Ram Navami",
-      date: "18-04-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-person-standing" />,
-    },
-    {
-      title: "Labour Day",
-      date: "01-05-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-tools" />,
-    },
-    {
-      title: "Buddha Purnima",
-      date: "23-05-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-fire" />,
-    },
-    {
-      title: "Bakrid",
-      date: "17-06-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-moon-fill" />,
-    },
-    {
-      title: "Muharram",
-      date: "17-07-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-droplet-fill" />,
-    },
-    {
-      title: "Independence Day",
-      date: "15-08-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-flag" />,
-    },
-    {
-      title: "Raksha Bandhan",
-      date: "19-08-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-heart-fill" />,
-    },
-    {
-      title: "Teachers' Day",
-      date: "05-09-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-journal-bookmark-fill" />,
-    },
-    {
-      title: "Milad-un-Nabi",
-      date: "16-09-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-star-fill" />,
-    },
-    {
-      title: "Mahalaya Amavasya",
-      date: "30-09-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-circle-half" />,
-    },
-    {
-      title: "Gandhi Jayanti",
-      date: "02-10-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-person-check" />,
-    },
-    {
-      title: "Dussehra",
-      date: "12-10-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-crosshair" />,
-    },
-    {
-      title: "Halloween",
-      date: "31-10-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-emoji-dizzy-fill" />,
-    },
-    {
-      title: "Kannada Rajyotsava",
-      date: "01-11-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-bookmark-star-fill" />,
-    },
-    {
-      title: "Diwali",
-      date: "03-11-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-brightness-high-fill" />,
-    },
-    {
-      title: "Bhai Dooj",
-      date: "06-11-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-people-fill" />,
-    },
-    {
-      title: "Chhath Puja",
-      date: "07-11-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-water" />,
-    },
-    {
-      title: "Govardhan Puja",
-      date: "15-11-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-cloud-fog2-fill" />,
-    },
-    {
-      title: "Constitution Day",
-      date: "26-11-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-journal-code" />,
-    },
-    {
-      title: "Christmas Day",
-      date: "25-12-2025",
-      duration: "1 Day only",
-      icon: <i className="bi bi-gift-fill" />,
-    },
-  ];
+ 
+const holidays = [
+  {
+    title: "New Year",
+    date: "01-01-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-calendar2-week" />,
+  },
+  {
+    title: "Swami Vivekananda Jayanti",
+    date: "12-01-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-award" />,
+  },
+  {
+    title: "Makar Sankranti",
+    date: "14-01-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-sunrise-fill" />,
+  },
+  {
+    title: "Republic Day",
+    date: "26-01-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-flag-fill" />,
+  },
+  {
+    title: "Holi",
+    date: "14-03-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-bucket-fill" />,
+  },
+  {
+    title: "Hariyali Teej",
+    date: "30-07-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-flower3" />,
+  },
+  {
+    title: "Raksha Bandhan",
+    date: "09-08-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-heart-fill" />,
+  },
+  {
+    title: "Independence Day",
+    date: "15-08-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-flag" />,
+  },
+  {
+    title: "Janmashtami",
+    date: "16-08-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-star-fill" />,
+  },
+  {
+    title: "Ganesh Chaturthi",
+    date: "28-08-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-circle-half" />,
+  },
+  {
+    title: "Vijay Dashami",
+    date: "02-10-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-crosshair" />,
+  },
+  {
+    title: "Diwali",
+    date: "20-10-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-brightness-high-fill" />,
+  },
+  {
+    title: "Goverdhan Pooja",
+    date: "21-10-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-cloud-fog2-fill" />,
+  },
+  {
+    title: "Bhai Dooj",
+    date: "22-10-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-people-fill" />,
+  },
+  {
+    title: "Guru Nanak Jayanti",
+    date: "05-11-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-person-check" />,
+  },
+  {
+    title: "Christmas Day",
+    date: "25-12-2025",
+    duration: "1 Day only",
+    icon: <i className="bi bi-gift-fill" />,
+  },
+];
 
   return (
     <>

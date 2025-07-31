@@ -727,10 +727,7 @@ const AddUser = () => {
                   <label>Pf UnNumber</label>
                   <input
                     {...register("Un_no", {
-                      required:
-                        experience !== "Fresher" && experience !== "Intern"
-                          ? "PF UN number is required"
-                          : false,
+                      
                       pattern: {
                         value: /^\d{12}$/,
                         message: "Must be 12 digits",
@@ -755,10 +752,7 @@ const AddUser = () => {
                   <label>Esi Number</label>
                   <input
                     {...register("Esi_no", {
-                      required:
-                        experience !== "Fresher" && experience !== "Intern"
-                          ? "ESI number is required"
-                          : false,
+                     
                       pattern: {
                         value: /^\d+$/,
                         message: "Must be numbers only",
@@ -793,7 +787,9 @@ const AddUser = () => {
                     <option value="">Select Department</option>
                     <option value="tech">Tech</option>
                     <option value="sales">Sales</option>
-                    <option value="telecaller">Telecaller</option>
+                    <option value="Security-Department">Security Department</option>
+                    <option value="management">Management</option>
+                    <option value="account">Account</option>
                     <option value="hr">HR</option>
                   </select>
                   {errors.branch && (

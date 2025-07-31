@@ -59,7 +59,7 @@ export const addMember = (data) => api.patch("/admin/team/member/add", data);
 export const removeLeader = (data) =>
   api.patch("/admin/team/leader/remove", data);
 export const addLeader = (data) => api.patch("/admin/team/leader/add", data);
-export const getUser = (role, data) => api.get(`/${role}/user/${data}`);
+export const getUser = (role, data) => api.get(`admin/user/${role}`);
 export const getAttendance = (data) =>
   api.post("admin/view-employee-attendance", data);
 export const viewassest = (data) =>

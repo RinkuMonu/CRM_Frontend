@@ -511,14 +511,14 @@ const holidays = [
                           Loading deals...
                         </td>
                       </tr>
-                    ) : deals.length === 0 ? (
+                    ) : deals?.length === 0 ? (
                       <tr>
                         <td colSpan="5" className="text-center">
                           No deals found
                         </td>
                       </tr>
                     ) : (
-                      deals.map((deal) => (
+                      deals?.map((deal) => (
                         <tr key={deal._id}>
                           <td>{deal.lead?.name || "N/A"}</td>
                           <td>{deal.assigned_employee?.name || "N/A"}</td>

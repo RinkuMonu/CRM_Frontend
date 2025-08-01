@@ -711,7 +711,7 @@ const AddUser = () => {
                     }`}
                   >
                     <option value="active">Active</option>
-                    <option value="banned">Banned</option>
+                    <option value="banned">Inactive</option>
                     <option value="notice">Notice</option>
                     <option value="provison">Provision</option>
                   </select>

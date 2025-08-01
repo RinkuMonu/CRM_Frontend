@@ -3,9 +3,12 @@ import { useParams } from "react-router-dom";
 import { getUser, updateUser } from "../../http";
 import { FaUser, FaPhone, FaCalendarAlt, FaLock, FaPiggyBank, FaHome, FaIdCard, FaEnvelope, FaMapMarkerAlt, FaUserEdit } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const Employee = () => {
   const [user, setUser] = useState({});
+  const loginUser=useSelector(state => state.authSlice.user);
+
   const [editSection, setEditSection] = useState(null);
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
@@ -449,12 +452,17 @@ const Employee = () => {
               width="130"
               height="130"
             />
-            <button
+            {
+              user?.type =='Admin' &&(
+ <button
               className="btn btn-sm btn-outline-primary position-absolute end-0 top-0 mt-2 me-2"
               onClick={() => fileInputRef.current.click()}
             >
               <FaUserEdit className="me-1" /> Edit Image
             </button>
+              )
+            }
+           
             <input
               type="file"
               ref={fileInputRef}
@@ -478,6 +486,7 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSave}
             onCancel={handleCancel}
+            user={loginUser?.user?.type}
           >
             {renderField("Name", "name")}
             {renderField("Gender", "gender", "text", ["Male", "Female"])}
@@ -499,10 +508,12 @@ const Employee = () => {
           <Section
             title="Contact Information"
             sectionKey="contact"
-            isEditing={editSection === "contact"}
+            isEditing={user.type === 'Admin' ? editSection === "contact" : false}
             onEdit={handleEdit}
             onSave={handleSave}
             onCancel={handleCancel}
+            user={loginUser?.user?.type}
+
           >
             {renderField("Email", "email", "email")}
             {renderField("Mobile", "mobile", "tel")}
@@ -519,6 +530,8 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSave}
             onCancel={handleCancel}
+            user={loginUser?.user?.type}
+
           >
             {renderField("Bank Name", "bank_name")}
             {renderField("Account Number", "account_number")}
@@ -533,6 +546,8 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSave}
             onCancel={handleCancel}
+            user={loginUser?.user?.type}
+
           >
             {renderField("Father's Name", "father_name")}
             {renderField("Mother's Name", "mother_name")}
@@ -546,6 +561,8 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSave}
             onCancel={handleCancel}
+            user={loginUser?.user?.type}
+
           >
             {renderField("Nominee Name", "nominee_name")}
             {renderField("Relation", "nominee_relation")}
@@ -562,6 +579,8 @@ const Employee = () => {
             onEdit={handleEdit}
             onSave={handleSave}
             onCancel={handleCancel}
+            user={"Admin"}
+            
           >
             {renderField("Password", "password", "password")}
           </Section>
@@ -571,30 +590,34 @@ const Employee = () => {
   );
 };
 
-const Section = ({ title, sectionKey, isEditing, onEdit, onSave, onCancel, children }) => (
+const Section = ({ title, sectionKey, isEditing, onEdit, onSave, onCancel, children,user }) => (
   <div className="border-top pt-3 mt-3">
     <div className="d-flex justify-content-between align-items-center mb-3">
       <h5 className="text-dark fw-bold mb-0">{title}</h5>
-      {isEditing ? (
-        <div>
-          <button className="btn btn-success btn-sm me-2" onClick={onSave}>
-            Save Changes
+      
+      {user == "Admin" && ( // 🔑 only Admins can see edit buttons
+        isEditing ? (
+          <div>
+            <button className="btn btn-success btn-sm me-2" onClick={onSave}>
+              Save Changes
+            </button>
+            <button className="btn btn-outline-secondary btn-sm" onClick={onCancel}>
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            className="btn btn-outline-primary btn-sm"
+            onClick={() => onEdit(sectionKey)}
+          >
+            Edit {title}
           </button>
-          <button className="btn btn-outline-secondary btn-sm" onClick={onCancel}>
-            Cancel
-          </button>
-        </div>
-      ) : (
-        <button
-          className="btn btn-outline-primary btn-sm"
-          onClick={() => onEdit(sectionKey)}
-        >
-          Edit {title}
-        </button>
+        )
       )}
     </div>
     <div className="row">{children}</div>
   </div>
 );
+
 
 export default Employee;

@@ -99,11 +99,7 @@ const LoginForm = () => {
                     <div className="form-group">
                       <div className="d-block">
                         <label htmlFor="password" className="control-label">Password</label>
-                        <div className="float-right">
-                          <NavLink to='/forgot' className="text-small">
-                            Forgot Password?
-                          </NavLink>
-                        </div>
+                        
                       </div>
                       <input id="password" onChange={inputEvent} value={formData.password} type="password" className="form-control" name="password" tabIndex="2" required />
                       <div className="invalid-feedback">

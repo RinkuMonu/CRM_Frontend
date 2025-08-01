@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: `https://api.sevenunique.com/api`,
-  // baseURL: `http://localhost:5050/api`,
+  // baseURL: `https://api.sevenunique.com/api`,
+  baseURL: `http://localhost:5050/api`,
   // baseURL: `http://192.168.1.76:5500/api`,
 });
 
@@ -37,7 +37,13 @@ export const dLogout = () => api.get("/auth/logout");
 
 //Admin
 export const getCounts = () => api.get("/admin/counts");
-export const getEmployees = () => api.get("/admin/employees");
+// http.js or jaha aapka api wrapper hai
+export const getEmployees = ({ status = "All", search = "" } = {}) => {
+  return api.get("/admin/employees", {
+    params: { status, search },
+  });
+};
+
 export const getLeaders = () => api.get("/admin/leaders");
 export const getFreeLeaders = () => api.get("/admin/leaders/free");
 export const getAdmins = () => api.get("/admin/admins");

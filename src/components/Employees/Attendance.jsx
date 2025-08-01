@@ -21,39 +21,47 @@ const Attendance = () => {
   const [outMarked, setOutMarked] = useState(false);
   const [showRegularizeModal, setShowRegularizeModal] = useState(false);
   const [regularizeReason, setRegularizeReason] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const dt = new Date();
-    const iso = dt.toISOString().split("T")[0];
+    const iso = dt.toISOString().split("T")[0]; // yyyy-mm-dd
     setFromDate(iso);
     setToDate(iso);
 
-    const fetch = async () => {
-      const res = await viewEmployeeAttendance({
-        employeeID: user.user.id,
-        fromDate: iso,
-        toDate: iso,
-      });
-
-      if (res.success && Array.isArray(res.data)) {
-        const today = res.data.find((att) => {
-          return (
-            att.date === dt.getDate() &&
-            att.month === dt.getMonth() + 1 &&
-            att.year === dt.getFullYear()
-          );
+    const fetchToday = async () => {
+      setLoading(true);
+      try {
+        const res = await viewEmployeeAttendance({
+          employeeID: user.user.id,
+          fromDate: iso,
+          toDate: iso,
         });
 
-        if (today?.inTime) setInMarked(true);
-        if (today?.outTime) setOutMarked(true);
-        setAttendance(res.data);
-      } else {
-        setAttendance([]); // fallback
+        if (res.success && Array.isArray(res.data)) {
+          setAttendance(res.data);
+
+          const today = res.data.find(
+            (att) =>
+              att.date === dt.getDate() &&
+              att.month === dt.getMonth() + 1 &&
+              att.year === dt.getFullYear()
+          );
+
+          if (today?.inTime) setInMarked(true);
+          if (today?.outTime) setOutMarked(true);
+        } else {
+          setAttendance([]);
+        }
+      } catch (error) {
+        toast.error("Error fetching attendance");
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetch();
-  }, [inMarked]);
+    fetchToday();
+  }, [inMarked, outMarked]);
 
   const handleMarkIn = async () => {
     try {
@@ -83,9 +91,7 @@ const Attendance = () => {
         toast.success(res.message);
         setOutMarked(true);
       } else if (res.needRegularize) {
-        toast.info(
-          res.message || "Please fill reason to regularize early OUT."
-        );
+        toast.info(res.message || "Please fill reason to regularize early OUT.");
         setShowRegularizeModal(true);
       } else {
         toast.error(res.message || "Failed to mark out.");
@@ -120,14 +126,33 @@ const Attendance = () => {
   };
 
   const searchAttendance = async () => {
-    const obj = {
-      employeeID: user.user.id,
-      fromDate,
-      toDate,
-      status: statusFilter,
-    };
-    const res = await viewEmployeeAttendance(obj);
-    setAttendance(res.data);
+    setLoading(true);
+    try {
+      const obj = {
+        employeeID: user.user.id,
+        fromDate,
+        toDate,
+        status: statusFilter,
+      };
+      const res = await viewEmployeeAttendance(obj);
+      if (res.success) setAttendance(res.data);
+      else setAttendance([]);
+    } catch (error) {
+      toast.error("Error fetching attendance");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatTime = (isoTime) => {
+    if (!isoTime) return "Not Marked";
+    const date = new Date(isoTime);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
   };
 
   return (
@@ -200,40 +225,56 @@ const Attendance = () => {
           </div>
         </section>
 
-        <div className="table-responsive mt-3">
-          <table className="table border roundedtable">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Day</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {attendance?.map((att, idx) => (
-                <tr key={idx}>
-                  <td>{idx + 1}</td>
-                  <td>{att.date + "/" + att.month + "/" + att.year}</td>
-                  <td>{att.day}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        att.present === "Present"
-                          ? "badge-success"
-                          : att.present === "Half-day"
-                          ? "badge-info"
-                          : "badge-danger"
-                      }`}
-                    >
-                      {att.present}
-                    </span>
-                  </td>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="table-responsive mt-3">
+            <table className="table border roundedtable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Date</th>
+                  <th>Day</th>
+                  <th>In Time</th>
+                  <th>Out Time</th>
+                  <th>Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {attendance?.length > 0 ? (
+                  attendance.map((att, idx) => (
+                    <tr key={idx}>
+                      <td>{idx + 1}</td>
+                      <td>{`${att.date}/${att.month}/${att.year}`}</td>
+                      <td>{att.day}</td>
+                      <td>{formatTime(att.inTime)}</td>
+                      <td>{formatTime(att.outTime)}</td>
+                      <td>
+                        <span
+                          className={`badge ${
+                            att.present === "Present"
+                              ? "badge-success"
+                              : att.present === "Half-day"
+                              ? "badge-info"
+                              : "badge-danger"
+                          }`}
+                        >
+                          {att.present}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="text-center">
+                      No attendance records found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Regularize Modal */}

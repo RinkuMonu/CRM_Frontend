@@ -65,6 +65,7 @@ import GenrateSalarySlip from './components/Admin/SalarySlip/GenrateSalarySlip';
 import { useEffect } from 'react';
 import ContactUs from './components/Contact us/contact';
 import EditDocumentsPage from './pages/user/editdocument';
+import { SidebarProvider } from "./components/SidebarContext";
 
 const App = () => {
   const { loading } = useAutoLogin();
@@ -80,6 +81,7 @@ const App = () => {
 
   return loading ?
     <Loading /> : (
+      <SidebarProvider>
       <Switch>
         <EmployeeRoute exact path='/userTeams'>
           <UserTeams />
@@ -239,6 +241,7 @@ const App = () => {
           <Redirect to="/login" />
         </Route>
       </Switch>
+      </SidebarProvider>
     )
 }
 

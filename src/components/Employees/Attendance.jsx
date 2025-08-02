@@ -23,45 +23,46 @@ const Attendance = () => {
   const [regularizeReason, setRegularizeReason] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const dt = new Date();
-    const iso = dt.toISOString().split("T")[0]; // yyyy-mm-dd
-    setFromDate(iso);
-    setToDate(iso);
+const getCurrentMonthRange = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth(); // current month index (0-based)
 
-    const fetchToday = async () => {
-      setLoading(true);
-      try {
-        const res = await viewEmployeeAttendance({
-          employeeID: user.user.id,
-          fromDate: iso,
-          toDate: iso,
-        });
+  const firstDay = new Date(year, month, 1); // 1st of this month
 
-        if (res.success && Array.isArray(res.data)) {
-          setAttendance(res.data);
+  return {
+    firstDate: firstDay.toISOString().split("T")[0], // yyyy-mm-dd
+    todayDate: today.toISOString().split("T")[0],
+  };
+};
 
-          const today = res.data.find(
-            (att) =>
-              att.date === dt.getDate() &&
-              att.month === dt.getMonth() + 1 &&
-              att.year === dt.getFullYear()
-          );
+useEffect(() => {
+  const { firstDate, todayDate } = getCurrentMonthRange();
+  console.log("Setting fromDate:", firstDate, "toDate:", todayDate);
 
-          if (today?.inTime) setInMarked(true);
-          if (today?.outTime) setOutMarked(true);
-        } else {
-          setAttendance([]);
-        }
-      } catch (error) {
-        toast.error("Error fetching attendance");
-      } finally {
-        setLoading(false);
-      }
-    };
+  setFromDate(firstDate);
+  setToDate(todayDate);
 
-    fetchToday();
-  }, [inMarked, outMarked]);
+  const fetchAttendance = async () => {
+    setLoading(true);
+    try {
+      const res = await viewEmployeeAttendance({
+        employeeID: user.user.id,
+        fromDate: firstDate,
+        toDate: todayDate,
+        status: statusFilter,
+      });
+      if (res.success) setAttendance(res.data);
+      else setAttendance([]);
+    } catch (error) {
+      toast.error("Error fetching attendance");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (user?.user?.id) fetchAttendance();
+}, [user?.user?.id, statusFilter]);
 
   const handleMarkIn = async () => {
     try {
@@ -79,6 +80,45 @@ const Attendance = () => {
       toast.error("Error marking in");
     }
   };
+  const formatDateForInput = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+useEffect(() => {
+  const today = new Date();
+  const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+
+  const firstDate = formatDateForInput(firstDay); // ✅ Local format
+  const todayDate = formatDateForInput(today);
+
+  console.log("Setting fromDate:", firstDate, "toDate:", todayDate);
+
+  setFromDate(firstDate);
+  setToDate(todayDate);
+
+  const fetchAttendance = async () => {
+    setLoading(true);
+    try {
+      const res = await viewEmployeeAttendance({
+        employeeID: user.user.id,
+        fromDate: firstDate,
+        toDate: todayDate,
+        status: statusFilter,
+      });
+      if (res.success) setAttendance(res.data);
+      else setAttendance([]);
+    } catch (error) {
+      toast.error("Error fetching attendance");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (user?.user?.id) fetchAttendance();
+}, [user?.user?.id, statusFilter]);
+
 
   const handleMarkOut = async () => {
     try {
@@ -128,13 +168,12 @@ const Attendance = () => {
   const searchAttendance = async () => {
     setLoading(true);
     try {
-      const obj = {
+      const res = await viewEmployeeAttendance({
         employeeID: user.user.id,
         fromDate,
         toDate,
         status: statusFilter,
-      };
-      const res = await viewEmployeeAttendance(obj);
+      });
       if (res.success) setAttendance(res.data);
       else setAttendance([]);
     } catch (error) {

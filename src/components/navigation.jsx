@@ -1,69 +1,104 @@
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { NavLink } from "react-router-dom";
 import { dLogout } from "../http";
 import { setAuth } from "../store/auth-slice";
+import { useState } from "react";
+import SideBar from "./sidebar";
 
 const Navigation = () => {
   const { user } = useSelector((state) => state.authSlice);
   const dispatch = useDispatch();
   const history = useHistory();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const logout = async () => {
     await dLogout();
-
-    //   Clear localStorage
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    //   Clear Redux state
     dispatch(setAuth(null));
-    //   Redirect to login
     return history.push("/login");
   };
 
   return (
     <>
-      {/* <div className="navbar-bg"></div> */}
       <nav
         className="navbar navbar-expand-lg navbar-right flex justify-content-end"
         style={{
           position: "fixed",
           padding: "24px",
           background: "#fff",
-          //   boxShadow: "rgba(33, 35, 38, 0.1) 0px 10px 10px -10px",
           margin: "11px 20px",
           borderRadius: "20px",
+          // width: "calc(100% - 40px)",
+          zIndex: 100,
         }}
       >
-        {/* <form className="form-inline mr-auto">
-          <ul className="navbar-nav align-items-center">
-            <li>
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          style={{
+            background: "transparent",
+            color: "#000",
+            border: "none",
+            padding: "6px 12px",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "25px",
+            position: "absolute",
+            left: "22px",
+          }}
+        >
+          <i class="bi bi-layout-sidebar-inset-reverse"></i>
+        </button>
+
+        {/* <ul className="navbar-nav navbar-right ">
+          <li className="dropdown">
+            <a
+              href="#"
+              className="nav-link dropdown-toggle nav-link-lg nav-link-user d-flex"
+            >
+              <img
+                alt="image"
+                src={user?.user?.image || "/assets/icons/user-1.jpg"}
+                className="rounded-circle "
+                style={{ width: "40px", height: "40px" }}
+              />
+              <div className="ms-2 mt-0">
+                <p
+                  className="m-0 text-muted text-sm"
+                  style={{ fontSize: "12px" }}
+                >
+                  Welcome Back
+                </p>
+                <h6
+                  className="d-sm-none d-lg-inline-block mb-0"
+                  style={{ fontSize: "14px" }}
+                >
+                  {user?.user?.name}
+                </h6>
+              </div>
+            </a>
+            <div className="dropdown-menu dropdown-menu-right">
+              <NavLink
+                to={`/employee/${user?.user?.id}`}
+                className="dropdown-item has-icon"
+              >
+                <i className="far fa-user"></i> Profile
+              </NavLink>
+              <div className="dropdown-divider"></div>
               <NavLink
                 to="/"
-                id="sidebarCollapse"
-                data-toggle="sidebar"
-                className="nav-link nav-link-lg"
+                onClick={logout}
+                className="dropdown-item has-icon text-danger"
               >
-                <i class="bi bi-layout-sidebar-inset-reverse"></i>
+                <i className="fas fa-sign-out-alt"></i> Logout
               </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/"
-                data-toggle="search"
-                className="nav-link nav-link-lg d-sm-none"
-              >
-                <i className="fas fa-search"></i>
-              </NavLink>
-            </li>
-            <li>
-              <input type="text" className="py-2 ps-3  pr-5 border search-header rounded-3" placeholder="Search" style={{fontSize:"14px"}}/>
-            </li>
-          </ul>
-        </form> */}
-        <ul className="navbar-nav navbar-right ">
+            </div>
+          </li>
+        </ul> */}
+
+<ul className="navbar-nav navbar-right ">
           <li>
             <hr
               className="border border-1 opacity-5"
@@ -214,8 +249,10 @@ const Navigation = () => {
               </NavLink>
             </div>
           </li>
-        </ul>
-      </nav>
+        </ul>      </nav>
+
+      {/* Sidebar */}
+      <SideBar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
     </>
   );
 };

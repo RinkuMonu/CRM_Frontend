@@ -66,6 +66,7 @@ import { useEffect } from 'react';
 import ContactUs from './components/Contact us/contact';
 import EditDocumentsPage from './pages/user/editdocument';
 import { SidebarProvider } from "./components/SidebarContext";
+import AllowedIP from './components/Admin/Allowed-IP';
 
 const App = () => {
   const { loading } = useAutoLogin();
@@ -228,6 +229,9 @@ const App = () => {
         </AdminRoute>
         <AdminRoute exact path='/salaryslip'>
           <GenrateSalarySlip />
+        </AdminRoute>
+        <AdminRoute exact path='/allowed-ip'>
+          <AllowedIP />
         </AdminRoute>
         <MultiRoleRoute allowedRoles={['Admin', 'Leader', 'Employee']} exact path='/events'>
           <Events />

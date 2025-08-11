@@ -375,9 +375,9 @@ const Admin = () => {
                       : "text-secondary"
                   }`
                 }
-                to="/home"
+                to="/allowed-ip"
               >
-                <i className="far fa-square"></i> Blank Page
+                <i className="far fa-square"></i> Allowed-IP
               </NavLink>
             </li>
 
@@ -391,7 +391,7 @@ const Admin = () => {
                       : "text-secondary"
                   }`
                 }
-                to="/contact_us"
+                to="/"
               >
                 <i className="fab fa-teamspeak"></i> Contact Us
               </NavLink>

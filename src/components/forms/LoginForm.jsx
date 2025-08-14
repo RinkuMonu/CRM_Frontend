@@ -2,14 +2,14 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { doLogin } from "../../http";
 import { useDispatch } from "react-redux";
-import { setAuth } from '../../store/auth-slice';
+import { setAuth } from "../../store/auth-slice";
 import { toast } from "react-toastify";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
 
   const inputEvent = (e) => {
@@ -17,33 +17,32 @@ const LoginForm = () => {
     setFormData((old) => {
       return {
         ...old,
-        [name]: value
-      }
-    })
-  }
+        [name]: value,
+      };
+    });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
 
-    if (!email || !password) return toast.error('All Fields Required');
+    if (!email || !password) return toast.error("All Fields Required");
 
     const res = await doLogin({ email, password });
-    const { success } = res;
+    // const { success } = res;
 
-    if (success) {
+    if (res?.success) {
       //   Save user data in localStorage
-      localStorage.setItem("user", JSON.stringify(res.user));
-      localStorage.setItem("accessToken", JSON.stringify(res.accessToken));
-      localStorage.setItem("refreshToken", JSON.stringify(res.refreshToken));
+      localStorage.setItem("user", JSON.stringify(res?.user));
+      localStorage.setItem("accessToken", JSON.stringify(res?.accessToken));
+      localStorage.setItem("refreshToken", JSON.stringify(res?.refreshToken));
 
       //   Store in Redux
-      dispatch(setAuth(res.user));
+      dispatch(setAuth(res?.user));
       toast.success("Login successful");
       window.location.reload();
-
     } else {
-      toast.error(res.message || "Login failed");
+      toast.error(res?.message || "Login failed");
     }
   };
 
@@ -79,18 +78,46 @@ const LoginForm = () => {
             <div className="col-md-7 ps-0 rightsidelogin">
               <div className="loginimg">
                 {/* <iframe src="https://lottie.host/embed/05e5189b-6641-40dc-ab27-0af880acffd3/Ra2Wz9Jx0w.lottie"></iframe> */}
-                <img src="./assets/icons/24148025_page_266.jpg" width={"100%"} style={{padding:"90px"}}/>
+                <img
+                  src="./assets/icons/24148025_page_266.jpg"
+                  width={"100%"}
+                  style={{ padding: "90px" }}
+                />
               </div>
             </div>
             <div className="col-md-5">
-              <div className="loginform d-flex justify-content-center align-items-center h-100 p-6" style={{boxShadow: "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px", backgroundColor: "#fbfbfb"}}>
-                <div className="d-flex flex-column gap-3 w-100 p-5 w-md-100 text-left" style={{ maxWidth: "400px" }}>
-                  <h1 className='text-left'>Welcome Back!</h1>
+              <div
+                className="loginform d-flex justify-content-center align-items-center h-100 p-6"
+                style={{
+                  boxShadow:
+                    "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
+                  backgroundColor: "#fbfbfb",
+                }}
+              >
+                <div
+                  className="d-flex flex-column gap-3 w-100 p-5 w-md-100 text-left"
+                  style={{ maxWidth: "400px" }}
+                >
+                  <h1 className="text-left">Welcome Back!</h1>
                   <p>Please sign-in to your account and start the adventure</p>
-                  <form onSubmit={onSubmit} className="needs-validation" noValidate="">
+                  <form
+                    onSubmit={onSubmit}
+                    className="needs-validation"
+                    noValidate=""
+                  >
                     <div className="form-group">
                       <label htmlFor="email">Email</label>
-                      <input id="email" onChange={inputEvent} value={formData.email} type="email" className="form-control" name="email" tabIndex="1" required autoFocus />
+                      <input
+                        id="email"
+                        onChange={inputEvent}
+                        value={formData.email}
+                        type="email"
+                        className="form-control"
+                        name="email"
+                        tabIndex="1"
+                        required
+                        autoFocus
+                      />
                       <div className="invalid-feedback">
                         Please fill in your email
                       </div>
@@ -98,35 +125,43 @@ const LoginForm = () => {
 
                     <div className="form-group">
                       <div className="d-block">
-                        <label htmlFor="password" className="control-label">Password</label>
-                        
+                        <label htmlFor="password" className="control-label">
+                          Password
+                        </label>
                       </div>
-                      <input id="password" onChange={inputEvent} value={formData.password} type="password" className="form-control" name="password" tabIndex="2" required />
+                      <input
+                        id="password"
+                        onChange={inputEvent}
+                        value={formData.password}
+                        type="password"
+                        className="form-control"
+                        name="password"
+                        tabIndex="2"
+                        required
+                      />
                       <div className="invalid-feedback">
                         please fill in your password
                       </div>
                     </div>
 
-
                     <div className="form-group">
-                      <button type="submit" className="btn btn-primary btn-lg btn-block" tabIndex="4">
+                      <button
+                        type="submit"
+                        className="btn btn-primary btn-lg btn-block"
+                        tabIndex="4"
+                      >
                         Login
                       </button>
                     </div>
                   </form>
                 </div>
-
-
               </div>
-
             </div>
-
           </div>
-
         </div>
       </section>
     </div>
-  )
-}
+  );
+};
 
 export default LoginForm;

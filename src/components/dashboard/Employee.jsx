@@ -129,7 +129,7 @@ const Admin = () => {
     api
       .get("task/todayevents?type=birthday") // <-- API endpoint
       .then((res) => {
-        setBirthdaysToday(res.data); // 👈 make sure 'users' match backend response
+        setBirthdaysToday(res?.data); // 👈 make sure 'users' match backend response
       })
       .catch((err) => {
         console.error("Error fetching birthday data:", err);

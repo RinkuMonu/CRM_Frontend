@@ -26,12 +26,12 @@ const LoginForm = () => {
     const res = await doLogin({ email, password });
     // const { success } = res;
 
-    if (success) {
+    if (res?.success) {
       localStorage.setItem("user", JSON.stringify(res.user));
       localStorage.setItem("accessToken", JSON.stringify(res.accessToken));
       localStorage.setItem("refreshToken", JSON.stringify(res.refreshToken));
       dispatch(setAuth(res.user));
-      toast.success("Login successful");
+        toast.success("Login successful");
       window.location.reload();
     } else {
       toast.error(res?.message || "Login failed");

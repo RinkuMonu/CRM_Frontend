@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { doLogin } from "../../http";
 import { useDispatch } from "react-redux";
-import { setAuth } from '../../store/auth-slice';
+import { setAuth } from "../../store/auth-slice";
 import { toast } from "react-toastify";
 
 const DEMO_PATHS = {
@@ -24,17 +24,17 @@ const LoginForm = () => {
     if (!email || !password) return toast.error('All Fields Required');
 
     const res = await doLogin({ email, password });
-    const { success } = res;
+    // const { success } = res;
 
-    if (success) {
+    if (res?.success) {
       localStorage.setItem("user", JSON.stringify(res.user));
       localStorage.setItem("accessToken", JSON.stringify(res.accessToken));
       localStorage.setItem("refreshToken", JSON.stringify(res.refreshToken));
       dispatch(setAuth(res.user));
-      toast.success("Login successful");
+        toast.success("Login successful");
       window.location.reload();
     } else {
-      toast.error(res.message || "Login failed");
+      toast.error(res?.message || "Login failed");
     }
   };
 
@@ -155,7 +155,6 @@ const LoginForm = () => {
               </div>
             </div>
           </div>
-
         </div>
       </section>
     </div>

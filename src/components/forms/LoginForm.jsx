@@ -5,8 +5,8 @@ import { setAuth } from '../../store/auth-slice';
 import { toast } from "react-toastify";
 
 const DEMO_PATHS = {
-  admin: "/admin.mov",     // public/videos/admin-demo.mp4
-  employee: "/employee.mov" // public/videos/employee-demo.mp4
+  admin: "/admin.mp4",     // public/videos/admin-demo.mp4
+  employee: "/employee.mp4" // public/videos/employee-demo.mp4
 };
 
 const LoginForm = () => {

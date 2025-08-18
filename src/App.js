@@ -67,6 +67,7 @@ import ContactUs from "./components/Contact us/contact";
 import EditDocumentsPage from "./pages/user/editdocument";
 import { SidebarProvider } from "./components/SidebarContext";
 import AllowedIP from "./components/Admin/Allowed-IP";
+import EmpTaskAdd from "./components/Employees/emptaskAdd";
 
 const App = () => {
   const { loading } = useAutoLogin();
@@ -261,6 +262,13 @@ const App = () => {
           path="/events"
         >
           <Events />
+        </MultiRoleRoute>
+        <MultiRoleRoute
+          allowedRoles={["Admin", "Leader", "Employee"]}
+          exact
+          path="/emptaskAdd"
+        >
+          <EmpTaskAdd />
         </MultiRoleRoute>
         <MultiRoleRoute
           allowedRoles={["Admin", "Leader", "Employee"]}

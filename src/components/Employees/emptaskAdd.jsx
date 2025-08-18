@@ -9,9 +9,9 @@ import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
 import Task from "../../pages/task/Task";
 import { toast } from "react-toastify";
+import { use } from "react";
 
 function EmpTaskAdd() {
-  const { user } = useSelector((state) => state.authSlice);
   const [tasks, setTask] = useState([]);
   const [loading, setLoading] = useState(true);
   const [employees, setEmployees] = useState();
@@ -28,6 +28,8 @@ function EmpTaskAdd() {
   });
   const [teamMembers, setTeamMembers] = useState([]);
   const [file, setFile] = useState(null);
+  const { user } = useSelector((state) => state.authSlice);
+  console.log(user);
 
   const users = JSON.parse(localStorage.getItem("user"));
   const userId = users?.id;
@@ -35,8 +37,9 @@ function EmpTaskAdd() {
   useEffect(() => {
     const fetchMembers = async () => {
       try {
-        const res = await api.get(`/task/get-allEmployee?type=employee`);
+        const res = await api.get(`/task/get-allEmployee?type=leader`);
         setTeamMembers(res.data);
+        console.log(res.data);
       } catch (error) {
         console.error("Error fetching members:", error);
       }
@@ -118,8 +121,11 @@ function EmpTaskAdd() {
   };
 
   const searchEmployeeTask = () => {
-    setShowtask(true); // Show task section
+    setShowtask(true);
   };
+  useEffect(() => {
+    searchEmployeeTask();
+  }, []);
 
   return (
     <>
@@ -146,16 +152,16 @@ function EmpTaskAdd() {
                       {/* Employee Select */}
                       <div className="col-md-5">
                         <label htmlFor="selectemployee" className="form-label">
-                          Select Employee
+                          Name
                         </label>
                         <select
                           name="assignedTo"
                           className="form-control select2"
-                          value={selectedEmployee}
+                          value={user.user.id}
                           onChange={(e) => setSelectedEmployee(e.target.value)}
                           required
                         >
-                          <option value="">Select Team Member</option>
+                          <option value="">{user.user.name}</option>
                           {teamMembers?.map((member) => (
                             <option key={member._id} value={member._id}>
                               {member.name}
@@ -178,14 +184,14 @@ function EmpTaskAdd() {
                         />
                       </div>
 
-                      <div className="col-md-2 d-flex align-items-end">
+                      {/* <div className="col-md-2 d-flex align-items-end">
                         <button
                           onClick={searchEmployeeTask}
                           className="bg-primary rounded-sm px-3 py-2 text-white border-0 w-100"
                         >
                           <i className="bi bi-search me-2"></i>Search
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -240,7 +246,7 @@ function EmpTaskAdd() {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Assign To</Form.Label>
+              <Form.Label>Assign By</Form.Label>
               <Form.Select
                 name="assignedTo"
                 value={formData.assignedTo}

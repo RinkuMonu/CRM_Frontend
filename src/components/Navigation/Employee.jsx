@@ -43,16 +43,6 @@ const Employee = () => {
             className="me-2"
           />
         </div>
-        {/* Search */}
-        {/* <div className="mb-4 position-relative">
-          <input
-            type="text"
-            className="form-control ps-5"
-            placeholder="Search"
-            style={{ background: "#ededed" }}
-          />
-          <i className="fas fa-search position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary"></i>
-        </div> */}
         <hr style={{ width: "100%", border: "1px dashed #a9a7a7" }} />
 
         <ul className="sidebar-menu">
@@ -66,15 +56,20 @@ const Employee = () => {
               <i className="fas fa-users"></i> <span>Team</span>
             </NavLink>
           </li>
+          <li>
+            <NavLink className="nav-link" to="/emptaskAdd">
+              <i className="fas fa-users"></i> <span>Add Task</span>
+            </NavLink>
+          </li>
 
-          {(user?.user?.branch === "tech" ||
+          {/* {(user?.user?.branch === "tech" ||
             user?.user?.branch === "telecaller") && (
             <li>
               <NavLink className="nav-link" to="/task">
                 <i className="fas fa-users"></i> <span>Task</span>
               </NavLink>
             </li>
-          )}
+          )} */}
           {user?.user?.branch === "sales" && (
             <li>
               <NavLink className="nav-link" to="/deals">

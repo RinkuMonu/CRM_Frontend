@@ -234,9 +234,9 @@ const App = () => {
         <AdminRoute path="/edituser/:id">
           <EditUser />
         </AdminRoute>
-        <AdminRoute path="/editdocument/:id">
+        {/* <AdminRoute path="/editdocument/:id">
           <EditDocumentsPage />
-        </AdminRoute>
+        </AdminRoute> */}
         <AdminRoute path="/editteam/:id">
           <EditTeam />
         </AdminRoute>
@@ -261,6 +261,13 @@ const App = () => {
           path="/events"
         >
           <Events />
+        </MultiRoleRoute>
+        <MultiRoleRoute
+          allowedRoles={["Admin", "Leader", "Employee"]}
+          exact
+          path="/editdocument/:id"
+        >
+          <EditDocumentsPage />
         </MultiRoleRoute>
         <MultiRoleRoute
           allowedRoles={["Admin", "Leader", "Employee"]}

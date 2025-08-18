@@ -73,6 +73,7 @@ const AddUser = () => {
     },
     mode: "onChange",
   });
+  // console.log("data", watch());
 
   const experience = watch("experience");
   const type = watch("type");
@@ -103,7 +104,7 @@ const AddUser = () => {
         setShowModal(false);
         reset();
         setImagePreview("/assets/icons/user.png");
-        window.location.href = "/employees";
+        // window.location.href = "/employees";
       } else {
         toast.error(res.message || "Something went wrong");
       }
@@ -727,7 +728,6 @@ const AddUser = () => {
                   <label>Pf UnNumber</label>
                   <input
                     {...register("Un_no", {
-                      
                       pattern: {
                         value: /^\d{12}$/,
                         message: "Must be 12 digits",
@@ -752,7 +752,6 @@ const AddUser = () => {
                   <label>Esi Number</label>
                   <input
                     {...register("Esi_no", {
-                     
                       pattern: {
                         value: /^\d+$/,
                         message: "Must be numbers only",
@@ -787,7 +786,9 @@ const AddUser = () => {
                     <option value="">Select Department</option>
                     <option value="tech">Tech</option>
                     <option value="sales">Sales</option>
-                    <option value="Security-Department">Security Department</option>
+                    <option value="Security-Department">
+                      Security Department
+                    </option>
                     <option value="management">Management</option>
                     <option value="account">Account</option>
                     <option value="hr">HR</option>

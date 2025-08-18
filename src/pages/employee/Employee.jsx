@@ -1,13 +1,26 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { getUser, updateUser } from "../../http";
-import { FaUser, FaPhone, FaCalendarAlt, FaLock, FaPiggyBank, FaHome, FaIdCard, FaEnvelope, FaMapMarkerAlt, FaUserEdit } from "react-icons/fa";
+import {
+  FaUser,
+  FaPhone,
+  FaCalendarAlt,
+  FaLock,
+  FaPiggyBank,
+  FaHome,
+  FaIdCard,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaUserEdit,
+} from "react-icons/fa";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import DocumentUpload from "./document";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 const Employee = () => {
   const [user, setUser] = useState({});
-  const loginUser=useSelector(state => state.authSlice.user);
+  const loginUser = useSelector((state) => state.authSlice.user);
 
   const [editSection, setEditSection] = useState(null);
   const [formData, setFormData] = useState({});
@@ -31,7 +44,7 @@ const Employee = () => {
   };
 
   const validateField = (name, value) => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const maxDOB = "2010-12-31"; // Minimum age 15 years (as of 2025)
     const isExperienced = formData.experience === "Experiance";
 
@@ -39,136 +52,143 @@ const Employee = () => {
       name: {
         required: true,
         pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
+        message: "Only letters allowed",
       },
       email: {
         required: true,
         pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        message: "Invalid email address"
+        message: "Invalid email address",
       },
       mobile: {
         required: true,
         pattern: /^[6-9]\d{9}$/,
-        message: "Must be 10 digits starting with 6-9"
+        message: "Must be 10 digits starting with 6-9",
       },
       alternate_number: {
         required: false,
         pattern: /^[6-9]\d{9}$/,
-        message: "Must be 10 digits starting with 6-9"
+        message: "Must be 10 digits starting with 6-9",
       },
       password: {
-        required: name === 'password',
+        required: name === "password",
         minLength: 6,
-        message: "Password must be at least 6 characters"
+        message: "Password must be at least 6 characters",
       },
       desgination: {
         required: true,
         pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
+        message: "Only letters allowed",
       },
       account_number: {
         required: "Account number is required",
-        validate: (value) =>
-          /^\d{9,18}$/.test(value) || "Must be 9-18 digits"
+        validate: (value) => /^\d{9,18}$/.test(value) || "Must be 9-18 digits",
       },
       ifsc: {
         required: true,
         pattern: /^[A-Z]{4}0[A-Z0-9]{6}$/,
-        message: "Invalid IFSC format"
+        message: "Invalid IFSC format",
       },
       bank_name: {
         required: true,
         pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
+        message: "Only letters allowed",
       },
       father_name: {
         required: true,
         pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
+        message: "Only letters allowed",
       },
       mother_name: {
         required: true,
         pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
+        message: "Only letters allowed",
       },
       current_address: {
         required: true,
-        message: "Current address is required"
+        message: "Current address is required",
       },
       permanent_address: {
         required: true,
-        message: "Permanent address is required"
+        message: "Permanent address is required",
       },
       DOB: {
         required: true,
         max: maxDOB,
-        message: "Must be at least 15 years old"
+        message: "Must be at least 15 years old",
       },
       DOJ: {
         required: true,
         max: today,
-        message: "Joining date cannot be in future"
+        message: "Joining date cannot be in future",
       },
       nominee_name: {
         required: true,
         pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
+        message: "Only letters allowed",
       },
       nominee_relation: {
         required: true,
         pattern: /^[a-zA-Z\s]*$/,
-        message: "Only letters allowed"
+        message: "Only letters allowed",
       },
       nominee_mobile: {
         required: true,
         pattern: /^[6-9]\d{9}$/,
-        message: "Must be 10 digits starting with 6-9"
+        message: "Must be 10 digits starting with 6-9",
       },
       nominee_age: {
         required: true,
-        validate: (val) => parseInt(val) >= 15 || "Age must be at least 15"
+        validate: (val) => parseInt(val) >= 15 || "Age must be at least 15",
       },
       Un_no: {
         required: isExperienced,
         pattern: /^\d{12}$/,
-        message: "Must be 12 digits"
+        message: "Must be 12 digits",
       },
       Esi_no: {
         required: isExperienced,
         pattern: /^\d+$/,
-        message: "Must be numbers only"
+        message: "Must be numbers only",
       },
       company_name: {
         required: isExperienced,
-        message: "Company name is required"
+        message: "Company name is required",
       },
       total_experience: {
         required: isExperienced,
-        message: "Total experience is required"
+        message: "Total experience is required",
       },
       reason_of_leaving: {
         required: isExperienced,
-        message: "Reason for leaving is required"
+        message: "Reason for leaving is required",
       },
       gender: {
         required: true,
-        message: "Gender is required"
+        message: "Gender is required",
       },
       branch: {
         required: true,
-        message: "Department is required"
-      }
+        message: "Department is required",
+      },
     };
 
     if (patterns[name]?.required && !value) {
       return "This field is required";
     }
 
-    if (value && patterns[name]?.pattern && !patterns[name].pattern.test(value)) {
+    if (
+      value &&
+      patterns[name]?.pattern &&
+      !patterns[name].pattern.test(value)
+    ) {
       return patterns[name].message;
     }
 
-    if (value && patterns[name]?.minLength && value.length < patterns[name].minLength) {
+    if (
+      value &&
+      patterns[name]?.minLength &&
+      value.length < patterns[name].minLength
+    ) {
       return patterns[name].message;
     }
 
@@ -180,19 +200,19 @@ const Employee = () => {
   };
 
   const handleNameInput = (e, fieldName) => {
-    const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+    const value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
     handleChange({ target: { name: fieldName, value } });
   };
 
   const handleMobileInput = (e, fieldName) => {
-    let value = e.target.value.replace(/\D/g, '');
+    let value = e.target.value.replace(/\D/g, "");
     if (value.length === 1 && !/^[6-9]$/.test(value)) return;
     if (value.length > 10) value = value.slice(0, 10);
     handleChange({ target: { name: fieldName, value } });
   };
 
   const handleNumberInput = (e, fieldName, maxLength = 10) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, maxLength);
+    const value = e.target.value.replace(/\D/g, "").slice(0, maxLength);
     handleChange({ target: { name: fieldName, value } });
   };
 
@@ -205,22 +225,22 @@ const Employee = () => {
     const { name, value } = e.target;
     const error = validateField(name, value);
 
-    setErrors(prev => ({
+    setErrors((prev) => ({
       ...prev,
-      [name]: error
+      [name]: error,
     }));
 
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
     // Validate all fields in the current section
     const sectionFields = Object.keys(formData).filter(
-      field => getSectionKey(field) === editSection
+      (field) => getSectionKey(field) === editSection
     );
 
     const newErrors = {};
-    sectionFields.forEach(field => {
+    sectionFields.forEach((field) => {
       const error = validateField(field, formData[field]);
       if (error) newErrors[field] = error;
     });
@@ -232,7 +252,7 @@ const Employee = () => {
     }
 
     const updatedFields = {};
-    sectionFields.forEach(field => {
+    sectionFields.forEach((field) => {
       if (formData[field] !== user[field]) {
         updatedFields[field] = formData[field];
       }
@@ -246,7 +266,7 @@ const Employee = () => {
     try {
       const res = await updateUser(id, updatedFields);
       if (res.success) {
-        setUser(prev => ({ ...prev, ...updatedFields }));
+        setUser((prev) => ({ ...prev, ...updatedFields }));
         setEditSection(null);
         setErrors({});
         toast.success("Profile updated successfully");
@@ -268,7 +288,7 @@ const Employee = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (!file.type.match('image.*')) {
+    if (!file.type.match("image.*")) {
       toast.error("Please select an image file");
       return;
     }
@@ -279,13 +299,15 @@ const Employee = () => {
     try {
       const res = await updateUser(id, formData);
       if (res.success) {
-        setUser(prev => ({ ...prev, image: URL.createObjectURL(file) }));
+        setUser((prev) => ({ ...prev, image: URL.createObjectURL(file) }));
         toast.success("Profile image updated successfully");
       } else {
         toast.error(res.message || "Failed to update profile image");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update profile image");
+      toast.error(
+        error.response?.data?.message || "Failed to update profile image"
+      );
     }
   };
 
@@ -293,10 +315,12 @@ const Employee = () => {
     const isEditing = editSection === getSectionKey(name);
     const value = user[name] || "";
     const isExperienced = formData.experience === "Experiance";
-    const isFresherOrIntern = formData.experience === "Fresher" || formData.experience === "Intern";
+    const isFresherOrIntern =
+      formData.experience === "Fresher" || formData.experience === "Intern";
 
     // Hide certain fields for Intern/Fresher
-    const shouldHideField = isFresherOrIntern &&
+    const shouldHideField =
+      isFresherOrIntern &&
       (name === "company_name" ||
         name === "total_experience" ||
         name === "reason_of_leaving" ||
@@ -308,19 +332,29 @@ const Employee = () => {
 
     if (isEditing) {
       const inputProps = {
-        className: `form-control ${errors[name] ? 'is-invalid' : ''}`,
+        className: `form-control ${errors[name] ? "is-invalid" : ""}`,
         name,
         value: formData[name] ?? "",
         onChange: handleChange,
-        onKeyDown: (e) => e.key === "Enter" && e.preventDefault()
+        onKeyDown: (e) => e.key === "Enter" && e.preventDefault(),
       };
 
       // Special handling for different field types
-      if (name === "name" || name === "nominee_name" || name === "nominee_relation" ||
-        name === "father_name" || name === "mother_name" || name === "bank_name" ||
-        name === "desgination") {
+      if (
+        name === "name" ||
+        name === "nominee_name" ||
+        name === "nominee_relation" ||
+        name === "father_name" ||
+        name === "mother_name" ||
+        name === "bank_name" ||
+        name === "desgination"
+      ) {
         inputProps.onChange = (e) => handleNameInput(e, name);
-      } else if (name === "mobile" || name === "alternate_number" || name === "nominee_mobile") {
+      } else if (
+        name === "mobile" ||
+        name === "alternate_number" ||
+        name === "nominee_mobile"
+      ) {
         inputProps.onChange = (e) => handleMobileInput(e, name);
         inputProps.maxLength = 10;
       } else if (
@@ -336,14 +370,12 @@ const Employee = () => {
             name === "U_nno"
               ? 12
               : name === "Esi_no"
-                ? 17
-                : name === "account_number"
-                  ? 18
-                  : 2
+              ? 17
+              : name === "account_number"
+              ? 18
+              : 2
           );
-      }
-
-      else if (name === "ifsc") {
+      } else if (name === "ifsc") {
         inputProps.onChange = handleIFSCInput;
       }
 
@@ -351,7 +383,7 @@ const Employee = () => {
       if (name === "DOB") {
         inputProps.max = "2010-12-31";
       } else if (name === "DOJ") {
-        inputProps.max = new Date().toISOString().split('T')[0];
+        inputProps.max = new Date().toISOString().split("T")[0];
       }
 
       return (
@@ -360,14 +392,23 @@ const Employee = () => {
           <div className="input-group">
             <div className="input-group-prepend">
               <div className="input-group-text">
-                {name.includes("mobile") ? <FaPhone /> :
-                  name === "name" ? <FaUser /> :
-                    name.includes("DO") ? <FaCalendarAlt /> :
-                      name === "password" ? <FaLock /> :
-                        name.includes("account") ? <FaPiggyBank /> :
-                          name.includes("address") ? <FaMapMarkerAlt /> :
-                            name.includes("ifsc") ? <FaIdCard /> :
-                              name === "email" ? <FaEnvelope /> : null}
+                {name.includes("mobile") ? (
+                  <FaPhone />
+                ) : name === "name" ? (
+                  <FaUser />
+                ) : name.includes("DO") ? (
+                  <FaCalendarAlt />
+                ) : name === "password" ? (
+                  <FaLock />
+                ) : name.includes("account") ? (
+                  <FaPiggyBank />
+                ) : name.includes("address") ? (
+                  <FaMapMarkerAlt />
+                ) : name.includes("ifsc") ? (
+                  <FaIdCard />
+                ) : name === "email" ? (
+                  <FaEnvelope />
+                ) : null}
               </div>
             </div>
 
@@ -375,7 +416,9 @@ const Employee = () => {
               <select {...inputProps}>
                 <option value="">Select {label}</option>
                 {options.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
                 ))}
               </select>
             ) : type === "date" ? (
@@ -385,9 +428,7 @@ const Employee = () => {
             )}
           </div>
           {errors[name] && (
-            <div className="invalid-feedback d-block">
-              {errors[name]}
-            </div>
+            <div className="invalid-feedback d-block">{errors[name]}</div>
           )}
         </div>
       );
@@ -434,7 +475,7 @@ const Employee = () => {
       nominee_relation: "nominee",
       nominee_address: "nominee",
       nominee_mobile: "nominee",
-      nominee_age: "nominee"
+      nominee_age: "nominee",
     };
 
     return sectionMap[fieldName] || "personal";
@@ -452,17 +493,20 @@ const Employee = () => {
               width="130"
               height="130"
             />
-            {
-              user?.type =='Admin' &&(
- <button
-              className="btn btn-sm btn-outline-primary position-absolute end-0 top-0 mt-2 me-2"
-              onClick={() => fileInputRef.current.click()}
-            >
-              <FaUserEdit className="me-1" /> Edit Image
-            </button>
-              )
-            }
-           
+            <div className="d-flex  gap-3 position-absolute end-0 top-0 mt-2 me-2">
+              <button
+                className="btn btn-sm btn-outline-primary"
+                onClick={() => fileInputRef.current.click()}
+              >
+                <FaUserEdit className="me-1" /> Edit Image
+              </button>
+              <Link to={`/editdocument/${id}`}>
+                <button className="btn btn-sm btn-outline-primary">
+                  <FaUserEdit className="me-1" /> Edit Documents
+                </button>
+              </Link>
+            </div>
+
             <input
               type="file"
               ref={fileInputRef}
@@ -492,11 +536,29 @@ const Employee = () => {
             {renderField("Gender", "gender", "text", ["Male", "Female"])}
             {renderField("DOB", "DOB", "date")}
             {renderField("DOJ", "DOJ", "date")}
-            {renderField("Status", "status", "text", ["active", "banned", "notice", "provison"])}
-            {renderField("Type", "type", "text", ["Employee", "Leader", "Admin"])}
-            {renderField("Department", "branch", "text", ["tech", "sales", "telecaller", "hr"])}
+            {renderField("Status", "status", "text", [
+              "active",
+              "banned",
+              "notice",
+              "provison",
+            ])}
+            {renderField("Type", "type", "text", [
+              "Employee",
+              "Leader",
+              "Admin",
+            ])}
+            {renderField("Department", "branch", "text", [
+              "tech",
+              "sales",
+              "telecaller",
+              "hr",
+            ])}
             {renderField("Designation", "desgination")}
-            {renderField("Experience", "experience", "text", ["Fresher", "Experiance", "Intern"])}
+            {renderField("Experience", "experience", "text", [
+              "Fresher",
+              "Experiance",
+              "Intern",
+            ])}
             {renderField("Company Name", "company_name")}
             {renderField("Total Experience", "total_experience")}
             {renderField("Reason of Leaving", "reason_of_leaving")}
@@ -508,12 +570,12 @@ const Employee = () => {
           <Section
             title="Contact Information"
             sectionKey="contact"
-            isEditing={user.type === 'Admin' ? editSection === "contact" : false}
+            // isEditing={user.type === 'Admin' ? editSection === "contact" : false}
+            isEditing={editSection === "contact"}
             onEdit={handleEdit}
             onSave={handleSave}
             onCancel={handleCancel}
             user={loginUser?.user?.type}
-
           >
             {renderField("Email", "email", "email")}
             {renderField("Mobile", "mobile", "tel")}
@@ -531,7 +593,6 @@ const Employee = () => {
             onSave={handleSave}
             onCancel={handleCancel}
             user={loginUser?.user?.type}
-
           >
             {renderField("Bank Name", "bank_name")}
             {renderField("Account Number", "account_number")}
@@ -547,7 +608,6 @@ const Employee = () => {
             onSave={handleSave}
             onCancel={handleCancel}
             user={loginUser?.user?.type}
-
           >
             {renderField("Father's Name", "father_name")}
             {renderField("Mother's Name", "mother_name")}
@@ -562,7 +622,6 @@ const Employee = () => {
             onSave={handleSave}
             onCancel={handleCancel}
             user={loginUser?.user?.type}
-
           >
             {renderField("Nominee Name", "nominee_name")}
             {renderField("Relation", "nominee_relation")}
@@ -570,7 +629,7 @@ const Employee = () => {
             {renderField("Mobile", "nominee_mobile", "tel")}
             {renderField("Address", "nominee_address")}
           </Section>
-
+          {/* <DocumentUpload userId={id} user={user} /> */}
           {/* Sensitive Information */}
           <Section
             title="Sensitive Information"
@@ -580,7 +639,6 @@ const Employee = () => {
             onSave={handleSave}
             onCancel={handleCancel}
             user={"Admin"}
-            
           >
             {renderField("Password", "password", "password")}
           </Section>
@@ -590,18 +648,49 @@ const Employee = () => {
   );
 };
 
-const Section = ({ title, sectionKey, isEditing, onEdit, onSave, onCancel, children,user }) => (
+const Section = ({
+  title,
+  sectionKey,
+  isEditing,
+  onEdit,
+  onSave,
+  onCancel,
+  children,
+  user,
+}) => (
   <div className="border-top pt-3 mt-3">
     <div className="d-flex justify-content-between align-items-center mb-3">
       <h5 className="text-dark fw-bold mb-0">{title}</h5>
-      
-      {user == "Admin" && ( // 🔑 only Admins can see edit buttons
-        isEditing ? (
+      {isEditing ? (
+        <div>
+          <button className="btn btn-success btn-sm me-2" onClick={onSave}>
+            Save Changes
+          </button>
+          <button
+            className="btn btn-outline-secondary btn-sm"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          className="btn btn-outline-primary btn-sm"
+          onClick={() => onEdit(sectionKey)}
+        >
+          Edit {title}
+        </button>
+      )}
+      {/* {user == "Admin" && // 🔑 only Admins can see edit buttons
+        (isEditing ? (
           <div>
             <button className="btn btn-success btn-sm me-2" onClick={onSave}>
               Save Changes
             </button>
-            <button className="btn btn-outline-secondary btn-sm" onClick={onCancel}>
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              onClick={onCancel}
+            >
               Cancel
             </button>
           </div>
@@ -612,12 +701,10 @@ const Section = ({ title, sectionKey, isEditing, onEdit, onSave, onCancel, child
           >
             Edit {title}
           </button>
-        )
-      )}
+        ))} */}
     </div>
     <div className="row">{children}</div>
   </div>
 );
-
 
 export default Employee;

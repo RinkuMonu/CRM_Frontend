@@ -19,10 +19,7 @@ const RowEmployee = ({ index, data }) => {
     return requiredDocs.every((doc) => {
       return user[doc] && user[doc].trim() !== "";
     });
-    
   }
-  
-  
 
   return (
     <tr>
@@ -81,7 +78,10 @@ const RowEmployee = ({ index, data }) => {
 
       {user.user.type === "Admin" ? (
         <td>
-          <NavLink to={`/employee/${data.id}`} className="p-2 rounded badge bg-label-warning">
+          <NavLink
+            to={`/employee/${data.id}`}
+            className="p-2 rounded badge bg-label-warning"
+          >
             Detail
           </NavLink>
         </td>

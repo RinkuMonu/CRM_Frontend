@@ -91,56 +91,64 @@ const ApproveAttendance = () => {
                   <th>Action</th>
                 </tr>
               </thead>
-              <tbody>
-                {requests.map((att, idx) => (
-                  <tr key={att._id}>
-                    <td>{idx + 1}</td>
-                    <td>{att.employeeID?.name}</td>
-                    <td>{`${att.date}/${att.month}/${att.year}`}</td>
-                    <td>
-                      {att.inTime
-                        ? new Date(att.inTime).toLocaleTimeString("en-IN", {
-                            hour: "numeric",
-                            minute: "2-digit",
-                            second: "2-digit",
-                            hour12: true,
-                          })
-                        : "-"}
-                    </td>
-                    <td>
-                      <select
-                        value={att.selectedPresent}
-                        onChange={(e) => {
-                          const updated = [...requests];
-                          updated[idx].selectedPresent = e.target.value;
-                          setRequests(updated);
-                        }}
-                        className="form-control form-control-sm"
-                        disabled={att.inApproved === true}
-                      >
-                        <option value="Present">Present</option>
-                        <option value="Half-day">Half-day</option>
-                        <option value="Absent">Absent</option>
-                      </select>
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => {
-                          if (att.inApproved === true) {
-                            toast.info("Already approved");
-                            return;
-                          }
-                          handleApprove(att._id, att.selectedPresent);
-                        }}
-                        className="btn btn-sm btn-success"
-                        disabled={att.inApproved === true}
-                      >
-                        {att.inApproved === true ? "Approved" : "Approve"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+              {requests.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No IN requests found for this date
+                  </td>
+                </tr>
+              ) : (
+                <tbody>
+                  {requests.map((att, idx) => (
+                    <tr key={att._id}>
+                      <td>{idx + 1}</td>
+                      <td>{att.employeeID?.name}</td>
+                      <td>{`${att.date}/${att.month}/${att.year}`}</td>
+                      <td>
+                        {att.inTime
+                          ? new Date(att.inTime).toLocaleTimeString("en-IN", {
+                              hour: "numeric",
+                              minute: "2-digit",
+                              second: "2-digit",
+                              hour12: true,
+                            })
+                          : "-"}
+                      </td>
+                      <td>
+                        <select
+                          value={att.selectedPresent}
+                          onChange={(e) => {
+                            const updated = [...requests];
+                            updated[idx].selectedPresent = e.target.value;
+                            setRequests(updated);
+                          }}
+                          className="form-control form-control-sm"
+                          disabled={att.inApproved === true}
+                        >
+                          <option value="Present">Present</option>
+                          <option value="Half-day">Half-day</option>
+                          <option value="Absent">Absent</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => {
+                            if (att.inApproved === true) {
+                              toast.info("Already approved");
+                              return;
+                            }
+                            handleApprove(att._id, att.selectedPresent);
+                          }}
+                          className="btn btn-sm btn-success"
+                          disabled={att.inApproved === true}
+                        >
+                          {att.inApproved === true ? "Approved" : "Approve"}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
             </table>
           </div>
         )}

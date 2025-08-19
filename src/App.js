@@ -68,6 +68,7 @@ import EditDocumentsPage from "./pages/user/editdocument";
 import { SidebarProvider } from "./components/SidebarContext";
 import AllowedIP from "./components/Admin/Allowed-IP";
 import EmpTaskAdd from "./components/Employees/emptaskAdd";
+import AssignAssest from "./components/Admin/assignAssest";
 
 const App = () => {
   const { loading } = useAutoLogin();
@@ -201,6 +202,9 @@ const App = () => {
         <AdminRoute exact path="/assest">
           <AssestView />
         </AdminRoute>
+        {/* <AdminRoute exact path="/assign_assest">
+          <AssignAssest />
+        </AdminRoute> */}
         <AdminRoute exact path="/assignSalary">
           <AssignSalary />
         </AdminRoute>
@@ -262,6 +266,13 @@ const App = () => {
           path="/events"
         >
           <Events />
+        </MultiRoleRoute>
+        <MultiRoleRoute
+          allowedRoles={["Admin", "Leader", "Employee"]}
+          exact
+          path="/assign_assest"
+        >
+          <AssignAssest />
         </MultiRoleRoute>
         <MultiRoleRoute
           allowedRoles={["Admin", "Leader", "Employee"]}

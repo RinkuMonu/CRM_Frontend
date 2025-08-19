@@ -97,11 +97,26 @@ const Employee = () => {
               <i className="fas fa-book"></i> <span>Leave Applications</span>
             </NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink
+              className={({ isActive }) =>
+                `nav-link ${
+                  isActive
+                    ? "active text-primary fw-bold bg-white rounded shadow-sm"
+                    : "text-secondary"
+                }`
+              }
+              to="/Assign_assest"
+            >
+              <i className="fas fa-book"></i>Assign Assest
+            </NavLink>
+          </li>
           <li>
             <NavLink className="nav-link" to="/useassestApplications">
               <i className="fas fa-book"></i> <span>Assest Request Track</span>
             </NavLink>
           </li>
+
           <li>
             <NavLink className="nav-link" to="/userSalary">
               <i class="fas fa-piggy-bank"></i> <span>Salary</span>

@@ -93,7 +93,7 @@ const AssestView = () => {
               </div>
 
               <div className="form-group col-md-2">
-                <label>Leave Type</label>
+                <label>Assest Type</label>
                 <select
                   name="type"
                   onChange={(e) => setType(e.target.value)}

@@ -41,7 +41,7 @@ const LoginForm = () => {
   // Open in new tab and play
   const openVideo = (path) => {
     console.log(path);
-    
+
     const videoWindow = window.open("", "_blank");
     if (videoWindow) {
       videoWindow.document.write(`
@@ -54,13 +54,16 @@ const LoginForm = () => {
             </style>
           </head>
           <body>
-            <video src="${path}" controls autoplay></video>
+           <video autoPlay muted loop>
+              <source src="${path}" type="video/mp4" />
+           </video>
           </body>
         </html>
       `);
       videoWindow.document.close();
     }
   };
+  // <video src="${path}" controls autoplay></video>
 
   return (
     <div id="app">

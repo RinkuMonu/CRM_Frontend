@@ -197,6 +197,20 @@ const Leader = () => {
           </li>
           <li className="nav-item">
             <NavLink
+              className={({ isActive }) =>
+                `nav-link ${
+                  isActive
+                    ? "active text-primary fw-bold bg-white rounded shadow-sm"
+                    : "text-secondary"
+                }`
+              }
+              to="/Assign_assest"
+            >
+              <i className="fas fa-book"></i>Assign Assest
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink
               to="/userLeaveApplications"
               className={({ isActive }) =>
                 `nav-link ${

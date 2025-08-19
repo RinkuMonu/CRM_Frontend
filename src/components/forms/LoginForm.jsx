@@ -42,7 +42,7 @@ const LoginForm = () => {
   const openVideo = (path) => {
     console.log(path);
 
-    const videoWindow = window.open("", "_blank");
+    const videoWindow = window.open("", "target");
     if (videoWindow) {
       videoWindow.document.write(`
         <html>

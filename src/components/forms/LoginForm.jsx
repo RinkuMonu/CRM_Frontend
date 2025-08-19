@@ -5,13 +5,13 @@ import { setAuth } from "../../store/auth-slice";
 import { toast } from "react-toastify";
 
 const DEMO_PATHS = {
-  admin: "/admin.mp4",     // public/videos/admin-demo.mp4
-  employee: "/employee.mp4" // public/videos/employee-demo.mp4
+  admin: "/admin.mp4", // public/videos/admin-demo.mp4
+  employee: "/employee.mp4", // public/videos/employee-demo.mp4
 };
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
 
   const inputEvent = (e) => {
     const { name, value } = e.target;
@@ -21,7 +21,7 @@ const LoginForm = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = formData;
-    if (!email || !password) return toast.error('All Fields Required');
+    if (!email || !password) return toast.error("All Fields Required");
 
     const res = await doLogin({ email, password });
     // const { success } = res;
@@ -31,7 +31,7 @@ const LoginForm = () => {
       localStorage.setItem("accessToken", JSON.stringify(res.accessToken));
       localStorage.setItem("refreshToken", JSON.stringify(res.refreshToken));
       dispatch(setAuth(res.user));
-        toast.success("Login successful");
+      toast.success("Login successful");
       window.location.reload();
     } else {
       toast.error(res?.message || "Login failed");
@@ -134,6 +134,7 @@ const LoginForm = () => {
                         <button
                           type="button"
                           className="btn btn-outline-primary w-100"
+                          
                           onClick={() => openVideo(DEMO_PATHS.admin)}
                         >
                           🛡️ Admin Demo
@@ -150,7 +151,6 @@ const LoginForm = () => {
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>

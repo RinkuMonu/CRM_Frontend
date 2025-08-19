@@ -3,11 +3,13 @@ import { doLogin } from "../../http";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../store/auth-slice";
 import { toast } from "react-toastify";
+import admin from "../../assets/demoVideo/admin.mp4";
+import employee from "../../assets/demoVideo/employee.mp4";
 
-const DEMO_PATHS = {
-  admin: "/admin.mp4", // public/videos/admin-demo.mp4
-  employee: "/employee.mp4", // public/videos/employee-demo.mp4
-};
+// const DEMO_PATHS = {
+//   admin: "/admin.mp4", // public/videos/admin-demo.mp4
+//   employee: "/employee.mp4", // public/videos/employee-demo.mp4
+// };
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -134,8 +136,7 @@ const LoginForm = () => {
                         <button
                           type="button"
                           className="btn btn-outline-primary w-100"
-                          
-                          onClick={() => openVideo(DEMO_PATHS.admin)}
+                          onClick={() => openVideo(admin)}
                         >
                           🛡️ Admin Demo
                         </button>
@@ -144,7 +145,7 @@ const LoginForm = () => {
                         <button
                           type="button"
                           className="btn btn-outline-primary w-100"
-                          onClick={() => openVideo(DEMO_PATHS.employee)}
+                          onClick={() => openVideo(employee)}
                         >
                           💼 Employee
                         </button>

@@ -7,7 +7,6 @@ import {
   deleteAssignedAsset,
   updateAssignedAsset,
 } from "../../http";
-import { useHistory } from "react-router-dom";
 import Loading from "../Loading";
 import { FaEdit, FaPlus } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
@@ -16,27 +15,27 @@ import { useSelector } from "react-redux";
 
 const AssignAssest = () => {
   const [applications, setApplications] = useState();
-  const [employees, setEmployees] = useState();
-  const [employeeMap, setEmployeeMap] = useState();
+  const [employees, setEmployees] = useState([]);
   const { user } = useSelector((state) => state.authSlice);
   console.log("Current User:", user);
+
   // ---------- modal states ----------
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [assignEmp, setAssignEmp] = useState("");
-  const [selectedAssets, setSelectedAssets] = useState([]); // multiple assets
-  const [brands, setBrands] = useState({});
-  const [assignDate, setAssignDate] = useState("");
 
-  // ---------- edit modal states ----------
+  // Assign modal states
+  const [assignEmp, setAssignEmp] = useState("");
+  const [assignDate, setAssignDate] = useState("");
+  const [assetsList, setAssetsList] = useState([]); // [{type, brand, serialNumber}]
+
+  // Edit modal states
   const [editingAsset, setEditingAsset] = useState(null);
   const [editAssignEmp, setEditAssignEmp] = useState("");
-  const [editSelectedAssets, setEditSelectedAssets] = useState([]);
-  const [editBrands, setEditBrands] = useState({});
   const [editAssignDate, setEditAssignDate] = useState("");
+  const [editAssetsList, setEditAssetsList] = useState([]); // [{type, brand, serialNumber}]
+
   // ---------- Fetch Data ----------
   useEffect(() => {
-    let empObj = {};
     const fetchData = async () => {
       try {
         const res = await getAssignedAssets();
@@ -50,16 +49,7 @@ const AssignAssest = () => {
       try {
         const emps = await getEmployees();
         const leaders = await getLeaders();
-
-        emps.data.forEach(
-          (employee) => (empObj[employee.id] = [employee.name, employee.email])
-        );
-        leaders.data.forEach(
-          (leader) => (empObj[leader.id] = [leader.name, leader.email])
-        );
-
-        setEmployeeMap(empObj);
-        setEmployees([...emps.data, ...leaders.data]);
+        setEmployees([...(emps?.data || []), ...(leaders?.data || [])]);
       } catch (err) {
         console.error("Error fetching employees:", err);
       }
@@ -69,52 +59,56 @@ const AssignAssest = () => {
     fetchEmployees();
   }, [showModal, showEditModal]);
 
-  // ---------- handle checkbox select/deselect ----------
-  const handleAssetSelect = (e) => {
-    const { value, checked } = e.target;
-    let updatedAssets = [...selectedAssets];
-    if (checked) {
-      updatedAssets.push(value);
-    } else {
-      updatedAssets = updatedAssets.filter((item) => item !== value);
-    }
-    setSelectedAssets(updatedAssets);
+  // ---------- ASSIGN modal helpers ----------
+  const addAssetRow = () => {
+    setAssetsList((prev) => [
+      ...prev,
+      { type: "", brand: "", serialNumber: "" },
+    ]);
   };
 
-  // ---------- handle edit checkbox select/deselect ----------
-  const handleEditAssetSelect = (e) => {
-    const { value, checked } = e.target;
-    let updatedAssets = [...editSelectedAssets];
-    if (checked) {
-      updatedAssets.push(value);
-    } else {
-      updatedAssets = updatedAssets.filter((item) => item !== value);
-    }
-    setEditSelectedAssets(updatedAssets);
+  const removeAssetRow = (idx) => {
+    setAssetsList((prev) => prev.filter((_, i) => i !== idx));
   };
 
-  // ---------- handle brand input ----------
-  const handleBrandChange = (asset, value) => {
-    setBrands({ ...brands, [asset]: value });
+  const handleAssetRowChange = (idx, field, value) => {
+    setAssetsList((prev) =>
+      prev.map((row, i) => (i === idx ? { ...row, [field]: value } : row))
+    );
   };
 
-  // ---------- handle edit brand input ----------
-  const handleEditBrandChange = (asset, value) => {
-    setEditBrands({ ...editBrands, [asset]: value });
+  // ---------- EDIT modal helpers ----------
+  const addEditAssetRow = () => {
+    setEditAssetsList((prev) => [
+      ...prev,
+      { type: "", brand: "", serialNumber: "" },
+    ]);
+  };
+
+  const removeEditAssetRow = (idx) => {
+    setEditAssetsList((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleEditAssetRowChange = (idx, field, value) => {
+    setEditAssetsList((prev) =>
+      prev.map((row, i) => (i === idx ? { ...row, [field]: value } : row))
+    );
   };
 
   // ---------- handle assign ----------
   const handleAssign = async () => {
-    if (!assignEmp || selectedAssets.length === 0 || !assignDate) {
+    const cleaned = assetsList.filter((a) => a.type);
+    if (!assignEmp || cleaned.length === 0 || !assignDate) {
       alert("Please fill all fields");
       return;
     }
 
     const payload = {
       employeeId: assignEmp,
-      assets: selectedAssets.map((a) => ({
-        type: a,
-        brand: brands[a] || "",
+      assets: cleaned.map((a) => ({
+        type: a.type,
+        brand: a.brand || "",
+        serialNumber: a.serialNumber || "",
       })),
       assignedDate: assignDate,
     };
@@ -123,15 +117,13 @@ const AssignAssest = () => {
       const res = await assignAsset(payload);
       if (res.success) {
         toast.success("Asset assigned successfully!");
-
-        // list refresh karo
-        await getAssignedAssets();
+        const refreshed = await getAssignedAssets();
+        setApplications(refreshed.data);
 
         // reset
         setShowModal(false);
         setAssignEmp("");
-        setSelectedAssets([]);
-        setBrands({});
+        setAssetsList([]);
         setAssignDate("");
       }
     } catch (err) {
@@ -139,37 +131,34 @@ const AssignAssest = () => {
     }
   };
 
-  // ---------- handle edit ----------
+  // ---------- handle edit (open modal with prefill) ----------
   const handleEdit = (asset) => {
     setEditingAsset(asset);
-    setEditAssignEmp(asset.employeeId._id || asset.employeeId);
-
-    // Pre-populate assets and brands
-    const assets = asset.assets.map((a) => a.type);
-    const brandObj = {};
-    asset.assets.forEach((a) => {
-      brandObj[a.type] = a.brand;
-    });
-
-    setEditSelectedAssets(assets);
-    setEditBrands(brandObj);
-    setEditAssignDate(asset.assignedDate.split("T")[0]); // Format date for input
-
+    setEditAssignEmp(asset.employeeId?._id || asset.employeeId);
+    const rows = (asset.assets || []).map((a) => ({
+      type: a.type || "",
+      brand: a.brand || "",
+      serialNumber: a.serialNumber || "",
+    }));
+    setEditAssetsList(rows);
+    setEditAssignDate(asset.assignedDate?.split("T")[0] || "");
     setShowEditModal(true);
   };
 
   // ---------- handle update ----------
   const handleUpdate = async () => {
-    if (!editAssignEmp || editSelectedAssets.length === 0 || !editAssignDate) {
+    const cleaned = editAssetsList.filter((a) => a.type);
+    if (!editAssignEmp || cleaned.length === 0 || !editAssignDate) {
       alert("Please fill all fields");
       return;
     }
 
     const payload = {
       employeeId: editAssignEmp,
-      assets: editSelectedAssets.map((a) => ({
-        type: a,
-        brand: editBrands[a] || "",
+      assets: cleaned.map((a) => ({
+        type: a.type,
+        brand: a.brand || "",
+        serialNumber: a.serialNumber || "",
       })),
       assignedDate: editAssignDate,
     };
@@ -178,8 +167,6 @@ const AssignAssest = () => {
       const res = await updateAssignedAsset(editingAsset._id, payload);
       if (res.success) {
         toast.success("Asset updated successfully!");
-
-        // Refresh the list
         const updatedAssets = await getAssignedAssets();
         setApplications(updatedAssets.data);
 
@@ -187,8 +174,7 @@ const AssignAssest = () => {
         setShowEditModal(false);
         setEditingAsset(null);
         setEditAssignEmp("");
-        setEditSelectedAssets([]);
-        setEditBrands({});
+        setEditAssetsList([]);
         setEditAssignDate("");
       }
     } catch (err) {
@@ -197,6 +183,7 @@ const AssignAssest = () => {
     }
   };
 
+  // ---------- delete ----------
   const handleDelete = async (id) => {
     try {
       const res = await deleteAssignedAsset(id);
@@ -210,10 +197,13 @@ const AssignAssest = () => {
       toast.error("Failed to delete asset");
     }
   };
+
+  // ---------- visible list for non-admin ----------
   const visibleApplications =
     user?.user?.type === "Admin"
       ? applications
       : applications?.filter((app) => app?.employeeId?._id === user?.user?.id);
+
   console.log(visibleApplications, "Applications Data");
 
   return (
@@ -271,50 +261,98 @@ const AssignAssest = () => {
                         </select>
                       </div>
 
-                      {/* Asset checkboxes + brand inputs */}
+                      {/* Asset rows */}
                       <div className="mb-3">
-                        <label>Asset Type</label>
-                        <div className="d-flex flex-column gap-2 mt-2">
-                          {[
-                            "Laptop",
-                            "PC",
-                            "Pendrive",
-                            "Mouse",
-                            "Keyboard",
-                            "Other",
-                            "Headset",
-                          ].map((asset) => (
-                            <div key={asset}>
-                              <div className="form-check">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={asset}
-                                  value={asset}
-                                  checked={selectedAssets.includes(asset)}
-                                  onChange={handleAssetSelect}
-                                />
-                                <label
-                                  htmlFor={asset}
-                                  className="form-check-label"
+                        <label>Assets</label>
+
+                        {assetsList.length === 0 && (
+                          <div className="text-muted small mt-1">
+                            No assets added yet.
+                          </div>
+                        )}
+
+                        {assetsList.map((row, idx) => (
+                          <div key={idx} className="border rounded p-2 mt-2">
+                            <div className="row g-2">
+                              <div className="col-md-4">
+                                <select
+                                  className="form-control"
+                                  value={row.type}
+                                  onChange={(e) =>
+                                    handleAssetRowChange(
+                                      idx,
+                                      "type",
+                                      e.target.value
+                                    )
+                                  }
                                 >
-                                  {asset}
-                                </label>
+                                  <option value="">Select Type</option>
+                                  {[
+                                    "Laptop",
+                                    "PC",
+                                    "Pendrive",
+                                    "Mouse",
+                                    "Keyboard",
+                                    "Other",
+                                    "Headset",
+                                  ].map((t) => (
+                                    <option key={t} value={t}>
+                                      {t}
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
-                              {selectedAssets.includes(asset) && (
+                              <div className="col-md-4">
                                 <input
                                   type="text"
-                                  className="form-control mt-1"
-                                  placeholder={`${asset} Brand`}
-                                  value={brands[asset] || ""}
+                                  className="form-control"
+                                  placeholder="Brand"
+                                  value={row.brand}
                                   onChange={(e) =>
-                                    handleBrandChange(asset, e.target.value)
+                                    handleAssetRowChange(
+                                      idx,
+                                      "brand",
+                                      e.target.value
+                                    )
                                   }
                                 />
-                              )}
+                              </div>
+                              <div className="col-md-3">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Serial Number"
+                                  value={row.serialNumber}
+                                  onChange={(e) =>
+                                    handleAssetRowChange(
+                                      idx,
+                                      "serialNumber",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-1 d-flex align-items-center">
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-danger"
+                                  onClick={() => removeAssetRow(idx)}
+                                  title="Remove"
+                                >
+                                  ×
+                                </button>
+                              </div>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
+
+                        <button
+                          type="button"
+                          className="btn btn-outline-primary mt-2"
+                          onClick={addAssetRow}
+                        >
+                          Add Asset
+                        </button>
                       </div>
 
                       <div className="mb-3">
@@ -379,50 +417,98 @@ const AssignAssest = () => {
                         </select>
                       </div>
 
-                      {/* Asset checkboxes + brand inputs */}
+                      {/* Asset rows (Edit) */}
                       <div className="mb-3">
-                        <label>Asset Type</label>
-                        <div className="d-flex flex-column gap-2 mt-2">
-                          {[
-                            "Laptop",
-                            "PC",
-                            "Pendrive",
-                            "Mouse",
-                            "Keyboard",
-                            "Other",
-                            "Headset",
-                          ].map((asset) => (
-                            <div key={asset}>
-                              <div className="form-check">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id={`edit-${asset}`}
-                                  value={asset}
-                                  checked={editSelectedAssets.includes(asset)}
-                                  onChange={handleEditAssetSelect}
-                                />
-                                <label
-                                  htmlFor={`edit-${asset}`}
-                                  className="form-check-label"
+                        <label>Assets</label>
+
+                        {editAssetsList.length === 0 && (
+                          <div className="text-muted small mt-1">
+                            No assets added yet.
+                          </div>
+                        )}
+
+                        {editAssetsList.map((row, idx) => (
+                          <div key={idx} className="border rounded p-2 mt-2">
+                            <div className="row g-2">
+                              <div className="col-md-4">
+                                <select
+                                  className="form-control"
+                                  value={row.type}
+                                  onChange={(e) =>
+                                    handleEditAssetRowChange(
+                                      idx,
+                                      "type",
+                                      e.target.value
+                                    )
+                                  }
                                 >
-                                  {asset}
-                                </label>
+                                  <option value="">Select Type</option>
+                                  {[
+                                    "Laptop",
+                                    "PC",
+                                    "Pendrive",
+                                    "Mouse",
+                                    "Keyboard",
+                                    "Other",
+                                    "Headset",
+                                  ].map((t) => (
+                                    <option key={t} value={t}>
+                                      {t}
+                                    </option>
+                                  ))}
+                                </select>
                               </div>
-                              {editSelectedAssets.includes(asset) && (
+                              <div className="col-md-4">
                                 <input
                                   type="text"
-                                  className="form-control mt-1"
-                                  placeholder={`${asset} Brand`}
-                                  value={editBrands[asset] || ""}
+                                  className="form-control"
+                                  placeholder="Brand"
+                                  value={row.brand}
                                   onChange={(e) =>
-                                    handleEditBrandChange(asset, e.target.value)
+                                    handleEditAssetRowChange(
+                                      idx,
+                                      "brand",
+                                      e.target.value
+                                    )
                                   }
                                 />
-                              )}
+                              </div>
+                              <div className="col-md-3">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Serial Number"
+                                  value={row.serialNumber}
+                                  onChange={(e) =>
+                                    handleEditAssetRowChange(
+                                      idx,
+                                      "serialNumber",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="col-md-1 d-flex align-items-center">
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-danger"
+                                  onClick={() => removeEditAssetRow(idx)}
+                                  title="Remove"
+                                >
+                                  ×
+                                </button>
+                              </div>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
+
+                        <button
+                          type="button"
+                          className="btn btn-outline-primary mt-2"
+                          onClick={addEditAssetRow}
+                        >
+                          Add Asset
+                        </button>
                       </div>
 
                       <div className="mb-3">
@@ -475,18 +561,22 @@ const AssignAssest = () => {
                       className="table-row align-middle"
                     >
                       <td>{idx + 1}</td>
-                      <td>{application?.employeeId.name || "N/A"}</td>
-                      <td>{application?.employeeId.email || "N/A"}</td>
+                      <td>{application?.employeeId?.name || "N/A"}</td>
+                      <td>{application?.employeeId?.email || "N/A"}</td>
                       <td>
-                        {application.assets
-                          .map((a) => `${a.type} (${a.brand})`)
-                          .join(", ")}
+                        {application.assets.map((a, i) => (
+                          <div key={i}>
+                            {a.type} ({a.brand}){" "}
+                            {a.serialNumber ? `- ${a.serialNumber}` : ""}
+                          </div>
+                        ))}
                       </td>
                       <td>
                         {new Date(
                           application.assignedDate
                         ).toLocaleDateString()}
                       </td>
+
                       {user?.user?.type === "Admin" && (
                         <td>
                           <div className="section-header d-flex justify-content-between gap-3">

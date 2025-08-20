@@ -1,12 +1,11 @@
 import axios from "axios";
 
-export const baseURLApi= `https://api.sevenunique.com/`  //for docx
+export const baseURLApi = `https://api.sevenunique.com/`; //for docx
 const api = axios.create({
   baseURL: `https://api.sevenunique.com/api`,
   // baseURL: `http://localhost:5050/api`,
   // baseURL: `http://192.168.1.76:5500/api`,
 });
-
 
 api.interceptors.request.use(
   (config) => {
@@ -48,7 +47,8 @@ export const getEmployees = ({ status = "All", search = "" } = {}) => {
 
 export const getLeaders = () => api.get("/admin/leaders");
 export const getFreeLeaders = () => api.get("/admin/leaders/free");
-export const getAdmins = () => api.get("/admin/admins");
+// export const getAdmins = () => api.get("/admin/admins");
+export const getAdmins = (params = {}) => api.get("/admin/admins", { params });
 export const getTeams = () => api.get("/admin/teams");
 
 export const getTeamMembers = (data) => api.get(`/admin/team/${data}/members`);
@@ -133,15 +133,16 @@ export const assignAsset = (data) => api.post("/admin/assign-asset", data);
 export const getAssignedAssets = () => api.get("/admin/get_all_assign_asset");
 
 // Get Assigned Asset By ID
-export const getAssignedAssetById = (id) => api.get(`/admin/get_all_assign_asset/${id}`);
+export const getAssignedAssetById = (id) =>
+  api.get(`/admin/get_all_assign_asset/${id}`);
 
 // Update Assigned Asset
-export const updateAssignedAsset = (id, data) => api.put(`/admin/update_assign_asset/${id}`, data);
+export const updateAssignedAsset = (id, data) =>
+  api.put(`/admin/update_assign_asset/${id}`, data);
 
 // Delete Assigned Asset
-export const deleteAssignedAsset = (id) => api.delete(`/admin/assign-asset/${id}`);
-
-
+export const deleteAssignedAsset = (id) =>
+  api.delete(`/admin/assign-asset/${id}`);
 
 // Task
 export const getTask = () => api.get("/task/my");

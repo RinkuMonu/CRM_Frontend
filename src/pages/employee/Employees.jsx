@@ -19,9 +19,11 @@ const Employees = () => {
   };
 
   useEffect(() => {
-    fetchEmployees();
+    const t = setTimeout(() => {
+      fetchEmployees();
+    }, 300);
+    return () => clearTimeout(t);
   }, [status, search]);
-
   return (
     <div className="main-content">
       <section className="section">
@@ -48,6 +50,7 @@ const Employees = () => {
               <option value="active">Active</option>
               <option value="provison">Provison</option>
               <option value="notice">Notice</option>
+              <option value="banned">Banned</option>
             </select>
           </div>
         </div>

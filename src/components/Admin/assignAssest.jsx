@@ -34,6 +34,22 @@ const AssignAssest = () => {
   const [editAssignDate, setEditAssignDate] = useState("");
   const [editAssetsList, setEditAssetsList] = useState([]); // [{type, brand, serialNumber}]
 
+  const assetOptions = [
+    { type: "Laptop", hasSerial: true },
+    { type: "PC", hasSerial: true },
+    { type: "Pendrive", hasSerial: true },
+    { type: "Mouse", hasSerial: true },
+    { type: "Keyboard", hasSerial: true },
+    { type: "Headset", hasSerial: true },
+    { type: "Sim Card", hasSerial: true },
+    { type: "Mobile", hasSerial: true },
+    { type: "Mouse Pad", hasSerial: false },
+    { type: "Charger", hasSerial: false },
+    { type: "Hard Disk", hasSerial: true },
+    { type: "Wiereless Cable", hasSerial: false },
+    { type: "Other", hasSerial: true },
+  ];
+
   // ---------- Fetch Data ----------
   useEffect(() => {
     const fetchData = async () => {
@@ -287,17 +303,9 @@ const AssignAssest = () => {
                                   }
                                 >
                                   <option value="">Select Type</option>
-                                  {[
-                                    "Laptop",
-                                    "PC",
-                                    "Pendrive",
-                                    "Mouse",
-                                    "Keyboard",
-                                    "Other",
-                                    "Headset",
-                                  ].map((t) => (
-                                    <option key={t} value={t}>
-                                      {t}
+                                  {assetOptions.map((opt) => (
+                                    <option key={opt.type} value={opt.type}>
+                                      {opt.type}
                                     </option>
                                   ))}
                                 </select>
@@ -318,19 +326,22 @@ const AssignAssest = () => {
                                 />
                               </div>
                               <div className="col-md-3">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Serial Number"
-                                  value={row.serialNumber}
-                                  onChange={(e) =>
-                                    handleAssetRowChange(
-                                      idx,
-                                      "serialNumber",
-                                      e.target.value
-                                    )
-                                  }
-                                />
+                                {assetOptions.find((o) => o.type === row.type)
+                                  ?.hasSerial && (
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Serial Number"
+                                    value={row.serialNumber}
+                                    onChange={(e) =>
+                                      handleAssetRowChange(
+                                        idx,
+                                        "serialNumber",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                )}
                               </div>
                               <div className="col-md-1 d-flex align-items-center">
                                 <button
@@ -443,17 +454,9 @@ const AssignAssest = () => {
                                   }
                                 >
                                   <option value="">Select Type</option>
-                                  {[
-                                    "Laptop",
-                                    "PC",
-                                    "Pendrive",
-                                    "Mouse",
-                                    "Keyboard",
-                                    "Other",
-                                    "Headset",
-                                  ].map((t) => (
-                                    <option key={t} value={t}>
-                                      {t}
+                                  {assetOptions.map((opt) => (
+                                    <option key={opt.type} value={opt.type}>
+                                      {opt.type}
                                     </option>
                                   ))}
                                 </select>
@@ -474,19 +477,22 @@ const AssignAssest = () => {
                                 />
                               </div>
                               <div className="col-md-3">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Serial Number"
-                                  value={row.serialNumber}
-                                  onChange={(e) =>
-                                    handleEditAssetRowChange(
-                                      idx,
-                                      "serialNumber",
-                                      e.target.value
-                                    )
-                                  }
-                                />
+                                {assetOptions.find((o) => o.type === row.type)
+                                  ?.hasSerial && (
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Serial Number"
+                                    value={row.serialNumber}
+                                    onChange={(e) =>
+                                      handleEditAssetRowChange(
+                                        idx,
+                                        "serialNumber",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                )}
                               </div>
                               <div className="col-md-1 d-flex align-items-center">
                                 <button
@@ -548,7 +554,7 @@ const AssignAssest = () => {
                     <th>#</th>
                     <th>Employee</th>
                     <th>Email</th>
-                    <th>Assets</th>
+                    <th>Assets With Serial Number</th>
                     <th>Assigned Date</th>
                     {user?.user?.type === "Admin" && <th>Action</th>}
                   </tr>

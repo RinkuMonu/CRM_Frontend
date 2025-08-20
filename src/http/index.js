@@ -2,8 +2,8 @@ import axios from "axios";
 
 export const baseURLApi= `https://api.sevenunique.com/`  //for docx
 const api = axios.create({
-  baseURL: `https://api.sevenunique.com/api`,
-  // baseURL: `http://localhost:5050/api`,
+  // baseURL: `https://api.sevenunique.com/api`,
+  baseURL: `http://localhost:5050/api`,
   // baseURL: `http://192.168.1.76:5500/api`,
 });
 

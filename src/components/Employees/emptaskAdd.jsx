@@ -154,20 +154,22 @@ function EmpTaskAdd() {
                         <label htmlFor="selectemployee" className="form-label">
                           Name
                         </label>
-                        <select
-                          name="assignedTo"
-                          className="form-control select2"
-                          value={user.user.id}
-                          onChange={(e) => setSelectedEmployee(e.target.value)}
-                          required
+                        <div 
+
+                        // name="assignedTo"
+                        className="form-control select2  py-2"
+                        // value={user.user.id}
+                        // onChange={(e) => setSelectedEmployee(e.target.value)}
+                        // required
                         >
-                          <option value="">{user.user.name}</option>
-                          {teamMembers?.map((member) => (
-                            <option key={member._id} value={member._id}>
-                              {member.name}
-                            </option>
-                          ))}
-                        </select>
+                          {/* <option value="">{user.user.name}</option> */}
+                          {/* {teamMembers?.map((member) => ( */}
+
+                          {/* <option key={user.user.id} value={user.user.id}> */}
+                          {user.user.name}
+                          {/* </option> */}
+                          {/* ))} */}
+                        </div>
                       </div>
 
                       {/* Date Picker */}
@@ -198,8 +200,9 @@ function EmpTaskAdd() {
               </div>
               {showtask && (
                 <Task
-                  selectedEmployee={selectedEmployee}
+                  selectedEmployee={user?.user?.id}
                   selectedDate={selectedDate}
+                  showModal={showModal}
                 />
               )}
             </div>

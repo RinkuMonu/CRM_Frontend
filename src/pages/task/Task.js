@@ -1,40 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { Modal, Button, Form } from 'react-bootstrap';
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-} from 'react-beautiful-dnd';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { Modal, Button, Form } from "react-bootstrap";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { Link } from "react-router-dom";
-import api from '../../http';
+import api from "../../http";
 
-const Task = ({selectedEmployee,selectedDate}) => {
+const Task = ({ selectedEmployee, selectedDate, showModal }) => {
   const [tasks, setTasks] = useState([]);
-  const [modalData, setModalData] = useState(null);
+  const [modalData, setModalData] = useState(true);
   const [loading, setLoading] = useState(false);
   const [showRemarkModal, setShowRemarkModal] = useState(false);
   const [currentTask, setCurrentTask] = useState(null);
-  const [remark, setRemark] = useState('');
+  const [remark, setRemark] = useState("");
 
   const users = JSON.parse(localStorage.getItem("user"));
-  const _id = selectedEmployee||users?.id;
+  const _id = selectedEmployee || users?.id;
 
   useEffect(() => {
     fetchTasks();
-  }, [selectedEmployee,selectedDate]);
+  }, [selectedEmployee, selectedDate, modalData, showModal]);
 
   const fetchTasks = async () => {
     try {
-      const res = await api.get(`task/user-today/${_id}?date=${selectedDate || new Date().toISOString().split('T')[0]}`);
+      const res = await api.get(
+        `task/user-today/${_id}?date=${
+          selectedDate || new Date().toISOString().split("T")[0]
+        }`
+      );
       const taskData = res.data.tasks;
       const leadData = res.data.leads;
-        // console.log(res);
-        
-      const tasksWithLeads = taskData.map(task => ({
+      // console.log(res);
+
+      const tasksWithLeads = taskData.map((task) => ({
         ...task,
-        leads: leadData.filter(lead => lead.taskID === task._id)
+        leads: leadData.filter((lead) => lead.taskID === task._id),
       }));
 
       setTasks(tasksWithLeads);
@@ -51,14 +51,22 @@ const Task = ({selectedEmployee,selectedDate}) => {
     setModalData({ ...modalData, [e.target.name]: e.target.value });
   };
 
- 
-
   const initialData = {
     columns: {
       Todo: { id: "Todo", title: "Todo", bgColor: "#E6F0F2", tasks: [] },
-      Progress: { id: "Progress", title: "Progress", bgColor: "#DFF6FF", tasks: [] },
-      Pending: { id: "Pending", title: "Pending", bgColor: "#fff2ca", tasks: [] },
-      Done: { id: "Done", title: "Done", bgColor: '#c5ffe4', tasks: [] },
+      Progress: {
+        id: "Progress",
+        title: "Progress",
+        bgColor: "#DFF6FF",
+        tasks: [],
+      },
+      Pending: {
+        id: "Pending",
+        title: "Pending",
+        bgColor: "#fff2ca",
+        tasks: [],
+      },
+      Done: { id: "Done", title: "Done", bgColor: "#c5ffe4", tasks: [] },
     },
     columnOrder: ["Todo", "Progress", "Pending", "Done"],
   };
@@ -75,20 +83,20 @@ const Task = ({selectedEmployee,selectedDate}) => {
       },
       columnOrder: data.columnOrder,
     };
-  
-    tasks.forEach(task => {
+
+    tasks.forEach((task) => {
       const status = task.Status || "Todo";
       if (updatedData.columns[status]) {
         updatedData.columns[status].tasks.push(task);
       }
     });
-  
+
     setData(updatedData);
   }, [tasks]);
 
   const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
-    
+
     if (!destination) return;
 
     const start = data.columns[source.droppableId];
@@ -111,7 +119,9 @@ const Task = ({selectedEmployee,selectedDate}) => {
 
     // For status changes that require remarks
     if (["Pending", "Done"].includes(finish.id)) {
-      const [moved] = data.columns[source.droppableId].tasks.filter(t => t._id === draggableId);
+      const [moved] = data.columns[source.droppableId].tasks.filter(
+        (t) => t._id === draggableId
+      );
       setCurrentTask(moved);
       setShowRemarkModal(true);
       return;
@@ -119,7 +129,7 @@ const Task = ({selectedEmployee,selectedDate}) => {
 
     // For other status changes
     await updateTaskStatus(draggableId, finish.id);
-    
+
     // Optimistically update UI
     const startTasks = Array.from(start.tasks);
     const [moved] = startTasks.splice(source.index, 1);
@@ -138,12 +148,12 @@ const Task = ({selectedEmployee,selectedDate}) => {
     setData(newData);
   };
 
-  const updateTaskStatus = async (taskId, status, remark = '') => {
+  const updateTaskStatus = async (taskId, status, remark = "") => {
     try {
-      await api.put('/task/update-status', {
+      await api.put("/task/update-status", {
         taskId,
         Status: status,
-        remark
+        remark,
       });
       toast.success(`Task status updated to ${status}`);
       fetchTasks();
@@ -155,42 +165,44 @@ const Task = ({selectedEmployee,selectedDate}) => {
 
   const handleRemarkSubmit = async () => {
     if (currentTask) {
-      const newStatus = data.columnOrder.find(col => 
-        ["Pending", "Done"].includes(col) && col !== currentTask.Status
+      const newStatus = data.columnOrder.find(
+        (col) => ["Pending", "Done"].includes(col) && col !== currentTask.Status
       );
-      
+
       if (newStatus) {
         await updateTaskStatus(currentTask._id, newStatus, remark);
-        
+
         // Update UI optimistically
         const sourceCol = data.columns[currentTask.Status || "Todo"];
         const destCol = data.columns[newStatus];
-        
-        const sourceTasks = sourceCol.tasks.filter(t => t._id !== currentTask._id);
-        const destTasks = [...destCol.tasks, {...currentTask, Status: newStatus}];
-        
+
+        const sourceTasks = sourceCol.tasks.filter(
+          (t) => t._id !== currentTask._id
+        );
+        const destTasks = [
+          ...destCol.tasks,
+          { ...currentTask, Status: newStatus },
+        ];
+
         setData({
           ...data,
           columns: {
             ...data.columns,
             [sourceCol.id]: { ...sourceCol, tasks: sourceTasks },
             [destCol.id]: { ...destCol, tasks: destTasks },
-          }
+          },
         });
       }
-      
+
       setShowRemarkModal(false);
-      setRemark('');
+      setRemark("");
       setCurrentTask(null);
     }
   };
 
   const TaskCard = ({ task, index }) => (
-    
     <Draggable draggableId={task._id} index={index}>
       {(provided, snapshot) => (
-        
-        
         <div
           className="card mb-3 p-2"
           ref={provided.innerRef}
@@ -204,8 +216,12 @@ const Task = ({selectedEmployee,selectedDate}) => {
           <div className="card-body">
             <h5 className="card-title fw-semibold">{task.title}</h5>
             <p className="text-muted small mb-1">{task.description}</p>
-            <p className="text-muted small mb-1">Assigned by: {task.assignedBy.name}</p>
-            <p className="text-muted small mb-1">Date: {new Date(task.createdAt).toLocaleDateString()}</p>
+            <p className="text-muted small mb-1">
+              Assigned by: {task.assignedBy.name}
+            </p>
+            <p className="text-muted small mb-1">
+              Date: {new Date(task.createdAt).toLocaleDateString()}
+            </p>
             <p className="text-muted small">Status: {task.Status}</p>
             {task.remark && (
               <p className="text-muted small">
@@ -213,18 +229,15 @@ const Task = ({selectedEmployee,selectedDate}) => {
               </p>
             )}
             <div className="d-grid">
-            {task && task.leads.length > 0 && (
-        <Link to={`viewlead/${task._id}`}>
-          <button className="btn btn-sm btn-info">
-            View Lead
-          </button>
-        </Link>
-      )}
+              {task && task.leads.length > 0 && (
+                <Link to={`viewlead/${task._id}`}>
+                  <button className="btn btn-sm btn-info">View Lead</button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
-      )
-      }
+      )}
     </Draggable>
   );
 
@@ -240,7 +253,9 @@ const Task = ({selectedEmployee,selectedDate}) => {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className={`min-vh-25 ${snapshot.isDraggingOver ? "bg-light p-2 rounded" : ""}`}
+              className={`min-vh-25 ${
+                snapshot.isDraggingOver ? "bg-light p-2 rounded" : ""
+              }`}
             >
               {tasks.map((task, index) => (
                 <TaskCard key={task._id} task={task} index={index} />
@@ -264,16 +279,16 @@ const Task = ({selectedEmployee,selectedDate}) => {
 
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="row">
-            {data.columnOrder.map(columnId => {
+            {data.columnOrder.map((columnId) => {
               const column = data.columns[columnId];
               const columnTasks = column.tasks;
-              return <Column key={columnId} column={column} tasks={columnTasks} />;
+              return (
+                <Column key={columnId} column={column} tasks={columnTasks} />
+              );
             })}
           </div>
         </DragDropContext>
       </section>
-
-     
 
       {/* Remark Modal */}
       <Modal show={showRemarkModal} onHide={() => setShowRemarkModal(false)}>
@@ -282,10 +297,13 @@ const Task = ({selectedEmployee,selectedDate}) => {
         </Modal.Header>
         <Modal.Body>
           <Form.Group>
-            <Form.Label>Status will be changed to: 
+            <Form.Label>
+              Status will be changed to:
               <span className="fw-bold ms-2">
-                {data.columnOrder.find(col => 
-                  ["Pending", "Done"].includes(col) && col !== currentTask?.Status
+                {data.columnOrder.find(
+                  (col) =>
+                    ["Pending", "Done"].includes(col) &&
+                    col !== currentTask?.Status
                 )}
               </span>
             </Form.Label>
@@ -300,10 +318,13 @@ const Task = ({selectedEmployee,selectedDate}) => {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => {
-            setShowRemarkModal(false);
-            setRemark('');
-          }}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowRemarkModal(false);
+              setRemark("");
+            }}
+          >
             Cancel
           </Button>
           <Button variant="primary" onClick={handleRemarkSubmit}>

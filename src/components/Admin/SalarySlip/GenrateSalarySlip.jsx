@@ -68,7 +68,6 @@ const GenrateSalarySlip = () => {
         earnedSalary: data.earnedSalary,
         leaveDeduction: data.leaveDeduction,
 
-        
         pf: data.pf,
         esi: data.esi,
         companyPf: data.companyPf,
@@ -248,7 +247,6 @@ const GenrateSalarySlip = () => {
                       />
                     </div>
                   </div>
-                  {/* //////////////////readOnly///////////////////// */}
 
                   <div className="form-group col-md-4 mb-3">
                     <div className="card p-3">

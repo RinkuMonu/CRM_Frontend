@@ -64,9 +64,11 @@ const GenrateSalarySlip = () => {
         grossSalary: attendance?.grossSalary || 0,
         presentDays: attendance?.presentDays || 0,
         halfDays: attendance?.halfDays || 0,
-        absentDays: attendance?.absentDays || 0,
+        absentDays: attendance?.absentCount || 0,
         earnedSalary: data.earnedSalary,
         leaveDeduction: data.leaveDeduction,
+
+        
         pf: data.pf,
         esi: data.esi,
         companyPf: data.companyPf,
@@ -76,8 +78,7 @@ const GenrateSalarySlip = () => {
         BasicSalary: data.BasicSalary,
         Other: data.Other,
         HRA: data.HRA,
-        Conveyance: data.Conveyance,  
-        
+        Conveyance: data.Conveyance,
       });
 
       console.log("Salary slip response:", res);
@@ -156,64 +157,426 @@ const GenrateSalarySlip = () => {
               {attendance && (
                 <>
                   {/* Read-Only Attendance Info */}
-                  {["presentDays", "halfDays", "absentDays", "grossSalary"].map(
-                    (field, i) => (
-                      <div className="form-group col-md-4 mb-3" key={i}>
-                        <div className="card p-3">
-                          <label>{field.replace(/([A-Z])/g, " $1")}</label>
-                          <input
-                            className="form-control"
-                            value={attendance[field] || 0}
-                            readOnly
-                          />
-                        </div>
-                      </div>
-                    )
-                  )}
-
-                  {/* Dynamic Inputs with Validation */}
                   {[
-                    "earnedSalary",
-                    "leaveDeduction",
-                    "pf",
-                    "esi",
-                    "companyPf",
-                    "companyEsi",
-                    "totalDeduction",
-                    "netPay",
-                    "HRA",
-                    "Conveyance",
-                    "Other",
-                    "BasicSalary"
+                    "presentDays",
+                    "halfDays",
+                    "absentCount",
+                    "grossSalary",
                   ].map((field, i) => (
                     <div className="form-group col-md-4 mb-3" key={i}>
                       <div className="card p-3">
                         <label>{field.replace(/([A-Z])/g, " $1")}</label>
                         <input
-                          type="text"
                           className="form-control"
-                          {...register(field, {
-                            required: `${field} is required`,
-                            pattern: {
-                              value: /^[0-9]+$/,
-                              message: "Only numbers allowed",
-                            },
-                          })}
-                          onInput={(e) =>
-                            (e.target.value = e.target.value.replace(
-                              /[^0-9]/g,
-                              ""
-                            ))
-                          }
+                          value={attendance[field] || 0}
+                          readOnly
                         />
-                        {errors[field] && (
-                          <p className="text-danger">
-                            {errors[field]?.message}
-                          </p>
-                        )}
                       </div>
                     </div>
                   ))}
+                  {/* //////////////////readOnly///////////////////// */}
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Leave Balance</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        readOnly
+                        value={attendance.leaveBalance || 0}
+                        {...register("leaveBalance", {
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                    </div>
+                  </div>
+                  {/* //////////////////readOnly///////////////////// */}
+                  {/* //////////////////readOnly///////////////////// */}
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Paid Leave Taken</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        readOnly
+                        value={attendance.paidLeavesTaken || 0}
+                        {...register("paidLeavesTaken", {
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                    </div>
+                  </div>
+                  {/* //////////////////readOnly///////////////////// */}
+                  {/* //////////////////readOnly///////////////////// */}
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>UnPaid Leave Taken</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        readOnly
+                        value={attendance.unpaidLeavesTaken || 0}
+                        {...register("unpaidLeavesTaken", {
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                    </div>
+                  </div>
+                  {/* //////////////////readOnly///////////////////// */}
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Earned Salary</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={attendance.earnedSalary || ""}
+                        {...register("earnedSalary", {
+                          required: "earnedSalary is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.earnedSalary && (
+                        <p className="text-danger">
+                          {errors.earnedSalary.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Leave Deduction</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={attendance.leaveDeduction || ""}
+                        {...register("leaveDeduction", {
+                          required: "leaveDeduction is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.leaveDeduction && (
+                        <p className="text-danger">
+                          {errors.leaveDeduction.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>PF</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("pf", {
+                          required: "pf is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.pf && (
+                        <p className="text-danger">{errors.pf.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>ESI</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("esi", {
+                          required: "esi is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.esi && (
+                        <p className="text-danger">{errors.esi.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Company PF</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("companyPf", {
+                          required: "companyPf is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.companyPf && (
+                        <p className="text-danger">
+                          {errors.companyPf.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Company ESI</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("companyEsi", {
+                          required: "companyEsi is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.companyEsi && (
+                        <p className="text-danger">
+                          {errors.companyEsi.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Total Deduction</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("totalDeduction", {
+                          required: "totalDeduction is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.totalDeduction && (
+                        <p className="text-danger">
+                          {errors.totalDeduction.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Net Pay</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("netPay", {
+                          required: "netPay is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.netPay && (
+                        <p className="text-danger">{errors.netPay.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>HRA</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("HRA", {
+                          required: "HRA is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.HRA && (
+                        <p className="text-danger">{errors.HRA.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Conveyance</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("Conveyance", {
+                          required: "Conveyance is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.Conveyance && (
+                        <p className="text-danger">
+                          {errors.Conveyance.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Other</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("Other", {
+                          required: "Other is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.Other && (
+                        <p className="text-danger">{errors.Other.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="form-group col-md-4 mb-3">
+                    <div className="card p-3">
+                      <label>Basic Salary</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...register("BasicSalary", {
+                          required: "BasicSalary is required",
+                          pattern: {
+                            value: /^[0-9]+$/,
+                            message: "Only numbers allowed",
+                          },
+                        })}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(
+                            /[^0-9]/g,
+                            ""
+                          ))
+                        }
+                      />
+                      {errors.BasicSalary && (
+                        <p className="text-danger">
+                          {errors.BasicSalary.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </>
               )}
 

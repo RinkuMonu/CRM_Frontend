@@ -9,12 +9,10 @@ const isValidIpOrCidr = (value) => {
   if (!value || typeof value !== "string") return false;
   const v = value.trim();
   // IPv4
-  const ipv4 =
-    /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)(?:\.|$)){4}$/.test(v);
+  const ipv4 = /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)(?:\.|$)){4}$/.test(v);
   if (ipv4) return true;
   // IPv6 (basic)
-  const ipv6 =
-    /^(([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}|::1|::)$/.test(v);
+  const ipv6 = /^(([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}|::1|::)$/.test(v);
   if (ipv6) return true;
   // CIDR v4
   const cidrV4 =
@@ -23,8 +21,7 @@ const isValidIpOrCidr = (value) => {
     );
   if (cidrV4) return true;
   // CIDR v6 (basic)
-  const cidrV6 =
-    /^[0-9a-fA-F:]+\/(?:[1-9]|[1-9]\d|1[01]\d|12[0-8])$/.test(v);
+  const cidrV6 = /^[0-9a-fA-F:]+\/(?:[1-9]|[1-9]\d|1[01]\d|12[0-8])$/.test(v);
   return cidrV6;
 };
 
@@ -51,23 +48,25 @@ const AllowedIP = () => {
   });
 
   const loadList = async () => {
-  setLoading(true);
-  try {
-    const res = await api.get("/admin/global-ips");
+    setLoading(true);
+    try {
+      const res = await api.get("/admin/global-ips");
 
-    // Defensive unwrap: works with or without axios interceptors
-    const payload = (res && res.data !== undefined) ? res.data : res;
-    const list = Array.isArray(payload?.data)
-      ? payload.data
-      : (Array.isArray(payload) ? payload : []);
+      // Defensive unwrap: works with or without axios interceptors
+      const payload = res && res.data !== undefined ? res.data : res;
+      const list = Array.isArray(payload?.data)
+        ? payload.data
+        : Array.isArray(payload)
+        ? payload
+        : [];
 
-    setRows(list);
-  } catch (e) {
-    toast.error(e?.response?.data?.message || "Failed to load IPs");
-  } finally {
-    setLoading(false);
-  }
-};
+      setRows(list);
+    } catch (e) {
+      toast.error(e?.response?.data?.message || "Failed to load IPs");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     loadList();
@@ -169,8 +168,7 @@ const AllowedIP = () => {
                   placeholder="e.g. 49.36.12.101 or 103.88.12.0/24"
                   {...register("value", {
                     required: "IP/CIDR is required",
-                    validate: (v) =>
-                      isValidIpOrCidr(v) || "Invalid IP or CIDR",
+                    validate: (v) => isValidIpOrCidr(v) || "Invalid IP or CIDR",
                   })}
                 />
                 {errors.value && (
@@ -208,7 +206,13 @@ const AllowedIP = () => {
                   type="submit"
                   disabled={saving}
                 >
-                  {editingId ? (saving ? "Updating..." : "Update") : saving ? "Saving..." : "Add"}
+                  {editingId
+                    ? saving
+                      ? "Updating..."
+                      : "Update"
+                    : saving
+                    ? "Saving..."
+                    : "Add"}
                 </button>
                 {editingId && (
                   <button

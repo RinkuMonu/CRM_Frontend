@@ -31,7 +31,7 @@ const templates = {
       </ul>
       <p>Please report to ${manager} on ${reportingDate} at 9:40 AM for documentation and orientation.</p>
       <p>Kindly sign and return this letter to confirm your acceptance.</p>
-      <p>Sincerely,<br/>Bhavika Manghnani<br/>HR Manager<br/>Seven Unique Tech Solution Private Limited</p>
+      <p>Sincerely,<br/>Munesh kumari<br/>HR Manager<br/>Seven Unique Tech Solution Private Limited</p>
     </div>
   `,
 
@@ -44,7 +44,7 @@ const templates = {
       <p>This letter serves as a formal warning regarding <b>${reason}</b>. Despite previous discussions, the issue remains unresolved.</p>
       <p>This behavior is in violation of company standards and expectations. You are hereby advised to correct your conduct immediately. Any further violation may result in stricter disciplinary action, including suspension or termination.</p>
       <p>We trust that you will take this matter seriously and work towards improving your performance and behavior.</p>
-      <p>Sincerely,<br/>Bhavika Manghnani<br/>HR Department<br/>Seven Unique Tech Solution Private Limited</p>
+      <p>Sincerely,<br/>Munesh kumari<br/>HR Department<br/>Seven Unique Tech Solution Private Limited</p>
     </div>
   `,
 
@@ -70,7 +70,7 @@ const templates = {
       <p>Despite previous discussions and written warnings, no significant improvement has been observed. As a result, the management has decided to terminate your services in accordance with company policy.</p>
       <p>You are required to return all company assets including your ID card, laptop, official documents, and any other materials issued to you, on or before your final working day.</p>
       <p>We thank you for your time with the organization and wish you the best in your future endeavors.</p>
-      <p>Sincerely,<br/>Bhavika Manghnani<br/>HR Department<br/>Seven Unique Tech Solution Private Limited</p>
+      <p>Sincerely,<br/>Munesh kumari<br/>HR Department<br/>Seven Unique Tech Solution Private Limited</p>
     </div>
   `,
 

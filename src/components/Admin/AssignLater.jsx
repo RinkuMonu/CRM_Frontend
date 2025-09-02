@@ -20,33 +20,82 @@ const templates = {
     <div style="font-family: Arial, sans-serif; padding: 30px; color: #000;">
       <p>Date: ${startDate}</p>
       <p>${name},<br/>${address}</p>
+      <p>Subject: Employment Offer for the Position of <b>${position}</b> </p>
       <p>Dear ${name},</p>
       <p>Congratulations!</p>
-      <p>We are pleased to confirm that you have been selected to work for SEVENUNIQUE TECH SOLUTIONS PRIVATE LIMITED. We are delighted to make you the following job offer.</p>
-      <p>The position we are offering you is that of <b>${position}</b> at a monthly salary of ₹${salary}/- with an annual CTC of ₹${ctc}. This position reports to ${manager}. Your working hours will be from 9:40 AM to 6:30 PM, Monday to Saturday.</p>
-      <p>Benefits include:</p>
-      <ul>
-        <li>Casual Leave of 12 days per annum.</li>
-        <li>Employer State Insurance Corporation (ESIC) Coverage.</li>
-      </ul>
-      <p>Please report to ${manager} on ${reportingDate} at 9:40 AM for documentation and orientation.</p>
-      <p>Kindly sign and return this letter to confirm your acceptance.</p>
-      <p>Sincerely,<br/>Munesh kumari<br/>HR Manager<br/>Seven Unique Tech Solution Private Limited</p>
+      <p>We are delighted to offer you a position as a <b>${position}</b> with <b>Sevenunique Tech Solutions Private Limited</b> (the “Company”) at our Jaipur Office. This letter describes the basic terms of the offer, subject to a mutual agreement on the conditions stated below.</p>
+
+      <p>This offer stands contingent on a background check and validation of the information provided by you during the interview or any other process related to your employment with the Company.</p>
+
+      <b>Employment Start Date & Probation</b>
+
+      <p>You are required to commence employment with the Company on Monday, <b>${reportingDate}</b> (the “Joining Date”). You will be on probation for 3 (Three) months from the date of your joining. Wherein the probation period may be either extended at the discretion of the management or may be reduced either earlier or on completion, or thereafter till confirmation. .</p>
+
+      <p>Your services are liable to be terminated with notice of not more than 15 (Fifteen) days during the initial or extended period of probation. In case you decide to leave the company during this period, you will have to give prior notice of 15 (Fifteen) days to the company.</p>
+
+      <br>Employment Benefits and Compensation:</br>
+
+      <p> Your Fixed Annual CTC will be Rs. ${ctc} per annum, or Rs. ${salary} per month. The Salary Break-up is outlined in “Annexure- I” for your reference.</p>
+    <br/>
+    <p>Sincerely,<br/><b>HR Department</b><br/>Sevenunique Tech Solution Pvt. Ltd.</p>
     </div>
   `,
 
-  warning: ({ name, reason, date, id, department }) => `
-    <div style="font-family: Arial, sans-serif; padding: 30px; color: #000;">
-      <p>Date: ${date}</p>
-      <p>To,<br/>${name}<br/>Employee ID: ${id}<br/>Department: ${department}</p>
-      <p>Subject: Warning Letter for ${reason}</p>
-      <p>Dear ${name},</p>
-      <p>This letter serves as a formal warning regarding <b>${reason}</b>. Despite previous discussions, the issue remains unresolved.</p>
-      <p>This behavior is in violation of company standards and expectations. You are hereby advised to correct your conduct immediately. Any further violation may result in stricter disciplinary action, including suspension or termination.</p>
-      <p>We trust that you will take this matter seriously and work towards improving your performance and behavior.</p>
-      <p>Sincerely,<br/>Munesh kumari<br/>HR Department<br/>Seven Unique Tech Solution Private Limited</p>
-    </div>
-  `,
+  warning: ({ name, id, designation, reason, date }) => `
+  <div style="font-family: Arial, sans-serif; padding: 40px; line-height: 1.6; color: #000;">
+    <h2 style="text-align: center; text-decoration: underline; font-weight: bold; margin-bottom: 20px;">
+      Warning Letter
+    </h2>
+
+    <p><b>Sevenunique Tech Solution Pvt. Ltd.</b></p>
+    <p>Plot No 97, Dakshinpuri - I, Shrikishan, Sanganer,<br/>Jagatpura, Jaipur, Rajasthan, India – 302017</p>
+    <p>Email: <a href="mailto:Info@7unique.in">Info@7unique.in</a></p>
+    <p>Phone: 0141-4511098</p>
+
+    <p><b>Date:</b> ${date}</p>
+
+    <p><b>Employee Name:</b> ${name}<br/>
+    <b>ID No.:</b> ${id}<br/>
+    <b>Designation:</b> ${designation}</p>
+
+    <p><b>Subject:</b> Warning Letter for <b>${reason}</b></p>
+
+    <p>Dear ${name},</p>
+
+    <p>
+      This letter serves as a formal warning regarding your <b>${reason}</b> that was observed on <b>${date}</b>. 
+      As per our company's policies and procedures, it is expected that all employees adhere to the standards of behaviour and performance.
+    </p>
+
+    <p>
+      You are expected to correct your behaviour and adhere to the company's rules and regulations. 
+      Failure to do so may result in further disciplinary action, up to and including termination of employment.
+    </p>
+
+    <p>
+      You are required to sign and return a copy of this letter to acknowledge receipt and understanding of the warning.
+    </p>
+
+    <p>
+      Thanks & Regards,<br/>
+      <b>Munesh Kumari</b><br/>
+      HR Manager<br/>
+      Sevenunique Tech Solution Pvt. Ltd.
+    </p>
+
+    <hr style="margin: 40px 0; border: 1px solid #000;" />
+
+    <h3 style="text-align: center; font-weight: bold;">Acknowledgement</h3>
+    <p>
+      I, <b>${name}</b>, acknowledge receipt of this warning letter and understand the expectations outlined above.
+    </p>
+
+    <p>
+      Signature: _______________________<br/>
+      Date: ___________________________
+    </p>
+  </div>
+`,
 
   promotion: ({ name, newPosition, effectiveDate }) => `
     <div style="font-family: Arial, sans-serif; padding: 30px; color: #000;">
@@ -77,7 +126,7 @@ const templates = {
   notice: ({ name, noticeDate, reason }) => `
     <div style="font-family: Arial, sans-serif; padding: 30px; color: #000;">
       <p>Date: ${noticeDate}</p>
-      <p>To,<br/>${name}</p>
+      <p>To, <b>${name}</b></p>
       <p>Subject: Notice Issuance</p>
       <p>Dear ${name},</p>
       <p>This letter is to inform you that a notice has been issued regarding: <b>${reason}</b>.</p>
@@ -85,6 +134,116 @@ const templates = {
       <p>Sincerely,<br/>HR Department<br/>Seven Unique Tech Solution Private Limited</p>
     </div>
   `,
+  internship: ({ name, genderTitle, startDate, endDate, duration, role }) => `
+  <div style="font-family: Arial, sans-serif; padding: 40px; line-height: 1.6; color: #000;">
+    <h2 style="text-align: center; text-decoration: underline; font-weight: bold; margin-bottom: 20px;">
+      INTERNSHIP COMPLETION CERTIFICATE
+    </h2>
+
+    <p><b>Sevenunique Tech Solution Pvt. Ltd.</b></p>
+    <p>Plot No 97, Dakshinpuri - I, Shrikishan, Sanganer, Jagatpura, Jaipur,<br/>Rajasthan, India – 302017</p>
+    <p>Email: <a href="mailto:Info@7unique.in">Info@7unique.in</a></p>
+    <p>Phone: 0141-4511098</p>
+
+    <p><b>Date:</b> ${new Date().toLocaleDateString("en-GB")}</p>
+
+    <h3 style="text-align: center; font-weight: bold; margin-top: 20px;">
+      TO WHOMSOEVER IT MAY CONCERN
+    </h3>
+
+    <p>
+      This is to certify that <b>${genderTitle} ${name}</b> has completed ${
+    genderTitle === "Mr." ? "his" : "her"
+  } internship at <b>Sevenunique Tech Solution Pvt. Ltd.</b> 
+      from <b>${startDate}</b> to <b>${endDate}</b> 
+      <span style="color: red;">(Duration ${duration})</span>.
+    </p>
+
+    <p>
+      During the internship period, ${genderTitle} ${name} worked as a <b>${role}</b>.
+      ${
+        genderTitle === "Mr." ? "He" : "She"
+      } was involved in various tasks including client relationship building, 
+      communication, feedback collection, strategic planning, and solution providing.
+    </p>
+
+    <p>
+      We found ${name} to be hardworking, dedicated, and keen to learn. 
+      ${
+        genderTitle === "Mr." ? "He" : "She"
+      } carried out all responsibilities with sincerity and professionalism.
+    </p>
+
+    <p>
+      We wish ${name} all the best in ${
+    genderTitle === "Mr." ? "his" : "her"
+  } future endeavors.
+    </p>
+
+    <br/>
+    <p>Sincerely,<br/><b>HR Department</b><br/>Sevenunique Tech Solution Pvt. Ltd.</p>
+  </div>
+`,
+
+  experience: ({
+    name,
+    genderTitle,
+    joiningDate,
+    relievingDate,
+    duration,
+    position,
+  }) => `
+  <div style="font-family: Arial, sans-serif; padding: 40px; line-height: 1.6; color: #000;">
+    <h2 style="text-align: center; text-decoration: underline; font-weight: bold; margin-bottom: 20px;">
+      EXPERIENCE LETTER
+    </h2>
+
+    <p><b>Sevenunique Tech Solution Pvt. Ltd.</b></p>
+    <p>Plot No 97, Dakshinpuri - I, Shrikishan, Sanganer,<br/>Jagatpura, Jaipur, Rajasthan, India – 302017</p>
+    <p>Email: <a href="mailto:Info@7unique.in">Info@7unique.in</a></p>
+    <p>Phone: 0141-4511098</p>
+
+    <p><b>Date:</b> ${new Date().toLocaleDateString("en-GB")}</p>
+
+    <h3 style="text-align: center; font-weight: bold; margin-top: 20px;">
+      To Whomsoever It May Concern
+    </h3>
+
+    <p>
+      This is to certify that <b>${genderTitle} ${name}</b> was employed with 
+      <b>Sevenunique Tech Solution Pvt. Ltd.</b> as a <b>${position}</b> 
+      from <b>${joiningDate}</b> to <b>${relievingDate}</b> 
+      <span style="color: red;">(Duration ${duration})</span>.
+    </p>
+
+    <p>
+      During ${
+        genderTitle === "Mr." ? "his" : "her"
+      } tenure with our organization, 
+      ${genderTitle} ${name} demonstrated exceptional skills, excellent communication, 
+      and a strong work ethic.
+    </p>
+
+    <p>
+    During your employment with our organization, you have consistently demonstrated a high level of professionalism, integrity, and dedication to your work. Your contributions to our organization have been valuable, and we appreciate your hard work and commitment.
+    </p>
+
+    <p>
+      We wish ${name} the best in ${genderTitle === "Mr." ? "his" : "her"} 
+      future endeavors and appreciate the experience gained during ${
+        genderTitle === "Mr." ? "his" : "her"
+      } tenure with us.
+    </p>
+
+    <br/><br/>
+    <p>
+      Best Regards,<br/>
+      <b>Muneesh Kumari</b><br/>
+      HR Manager<br/>
+      Sevenunique Tech Solution Pvt. Ltd.
+    </p>
+  </div>
+`,
 };
 
 // ========= MAIN COMPONENT ==========
@@ -129,13 +288,31 @@ const AssignLetter = () => {
           "manager",
         ];
       case "warning":
-        return ["name", "reason", "date"];
+        return ["name", "id", "designation", "reason", "date"];
       case "promotion":
         return ["name", "newPosition", "effectiveDate"];
       case "termination":
-        return ["name", "terminationDate"];
+        return ["name", "terminationDate", "reason", "id", "department"];
       case "notice":
         return ["name", "noticeDate", "reason"];
+      case "experience":
+        return [
+          "name",
+          "genderTitle",
+          "joiningDate",
+          "relievingDate",
+          "duration",
+          "position",
+        ];
+      case "internship":
+        return [
+          "name",
+          "genderTitle",
+          "startDate",
+          "endDate",
+          "duration",
+          "role",
+        ];
       default:
         return [];
     }
@@ -217,6 +394,13 @@ const AssignLetter = () => {
           type={field.toLowerCase().includes("date") ? "date" : "text"}
           value={formData[field] || ""}
           onChange={(e) => handleInputChange(field, e.target.value)}
+          placeholder={
+            field === "genderTitle"
+              ? "eg. Mr./Miss."
+              : field === "duration"
+              ? "eg. 50 days/3 Month"
+              : ""
+          }
           onKeyPress={(e) => {
             if (field === "name" && /[^a-zA-Z\s]/.test(e.key))
               e.preventDefault();
@@ -269,6 +453,8 @@ const AssignLetter = () => {
                   <option value="warning">Warning</option>
                   <option value="termination">Termination</option>
                   <option value="notice">Notice</option>
+                  <option value="experience">Experience</option>
+                  <option value="internship">Internship</option>
                 </select>
               </div>
 

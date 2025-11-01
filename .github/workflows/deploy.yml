@@ -1,4 +1,4 @@
-name: Deploy React App to CWP Hosting
+name: Deploy React App to AWS EC2
 
 on:
   push:
@@ -18,7 +18,6 @@ jobs:
       - name: 🧩 Setup Git LFS
         run: |
           git lfs install
-          # Optional but safe: fetch everything then checkout real binaries
           git lfs fetch --all
           git lfs checkout
 
@@ -30,49 +29,43 @@ jobs:
       - name: 📦 Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: 🔍 Verify video exists before build
-        run: |
-          echo "Listing public/videos (if you keep video in public/videos)"
-          ls -lh public || true
-          ls -lh public/videos || true
-          # If you import via src/assets, list that too:
-          ls -lh src/assets || true
-
       - name: 🏗️ Build React App
         run: CI=false npm run build
 
-      - name: 🔍 Verify video in build output
-        run: |
-          echo "Search video in build folder"
-          # Adjust filename accordingly:
-          find build -type f -iname "*.mp4" -exec ls -lh {} \;
-          # Also print file command to confirm it's a real MP4, not a tiny pointer
-          for f in $(find build -type f -iname "*.mp4"); do file "$f"; done
-
-      - name: 📦 Zip the build folder
+      - name: 📦 Tar build folder
         run: tar -czvf build.tar.gz -C build .
 
-      - name: 🚀 Upload build to CWP Server
-        uses: appleboy/scp-action@master
+      - name: 🚚 Upload build.tar.gz to EC2
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: "build.tar.gz"
-          target: "/home/admin7un/"
+          target: "/home/admin.sevenunique.com/"
 
-      - name: 🧩 Extract and Deploy on Server
-        uses: appleboy/ssh-action@master
+      - name: 🧩 Extract + Deploy on EC2
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            rm -rf /home/admin7un/public_html/*
-            mkdir -p /home/admin7un/public_html
-            tar -xzvf /home/admin7un/build.tar.gz -C /home/admin7un/public_html
-            rm /home/admin7un/build.tar.gz
-            # Optional: list deployed video for sanity
-            find /home/admin7un/public_html -type f -iname "*.mp4" -exec ls -lh {} \;
+            DEPLOY_DIR="/home/admin.sevenunique.com/public_html"
+            TAR_FILE="/home/admin.sevenunique.com/build.tar.gz"
+
+            # cleanup old build
+            rm -rf $DEPLOY_DIR/*
+            mkdir -p $DEPLOY_DIR
+
+            # extract new build
+            tar -xzvf $TAR_FILE -C $DEPLOY_DIR
+
+            # remove tar after deploy
+            rm $TAR_FILE
+
+            # sanity check
+            ls -lh $DEPLOY_DIR
+            find $DEPLOY_DIR -maxdepth 1 -iname "*.mp4" -ls

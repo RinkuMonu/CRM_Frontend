@@ -1,5 +1,6 @@
 import axios from "axios";
 
+export const baseURLApi = `https://api.sevenunique.com/`; //for docx
 const api = axios.create({
   baseURL: `https://api.sevenunique.com/api`,
   // baseURL: `http://localhost:5050/api`,
@@ -46,13 +47,15 @@ export const getEmployees = ({ status = "All", search = "" } = {}) => {
 
 export const getLeaders = () => api.get("/admin/leaders");
 export const getFreeLeaders = () => api.get("/admin/leaders/free");
-export const getAdmins = () => api.get("/admin/admins");
+// export const getAdmins = () => api.get("/admin/admins");
+export const getAdmins = (params = {}) => api.get("/admin/admins", { params });
 export const getTeams = () => api.get("/admin/teams");
 
 export const getTeamMembers = (data) => api.get(`/admin/team/${data}/members`);
 export const addUser = (data) => api.post("/admin/user", data);
 export const updateUser = (id, data) => api.patch(`/admin/user/${id}`, data);
-export const updateUserDoc = (id, data) => api.put(`/admin/userDoc/${id}`, data);
+export const updateUserDoc = (id, data) =>
+  api.put(`/admin/userDoc/${id}`, data);
 export const addTeam = (data) => api.post("/admin/team", data);
 export const updateTeam = (id, data) => api.patch(`/admin/team/${id}`, data);
 export const getEmployee = (data) => api.get(`/admin/employee/${data}`);
@@ -120,6 +123,26 @@ export const viewLeaveApplications = (data) =>
   api.post("/employee/view-leave-applications", data);
 export const viewEmployeeSalary = (data) =>
   api.post("employee/view-salary", data);
+
+// ------------------ Asset Assignment -------------------
+
+// Create Asset Assignment
+export const assignAsset = (data) => api.post("/admin/assign-asset", data);
+
+// Get All Assigned Assets
+export const getAssignedAssets = () => api.get("/admin/get_all_assign_asset");
+
+// Get Assigned Asset By ID
+export const getAssignedAssetById = (id) =>
+  api.get(`/admin/get_all_assign_asset/${id}`);
+
+// Update Assigned Asset
+export const updateAssignedAsset = (id, data) =>
+  api.put(`/admin/update_assign_asset/${id}`, data);
+
+// Delete Assigned Asset
+export const deleteAssignedAsset = (id) =>
+  api.delete(`/admin/assign-asset/${id}`);
 
 // Task
 export const getTask = () => api.get("/task/my");

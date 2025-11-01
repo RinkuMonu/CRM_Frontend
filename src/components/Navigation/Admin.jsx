@@ -289,6 +289,20 @@ const Admin = () => {
                       : "text-secondary"
                   }`
                 }
+                to="/Assign_assest"
+              >
+                <i className="fas fa-book"></i>Assign Assest
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${
+                    isActive
+                      ? "active text-primary fw-bold bg-white rounded shadow-sm"
+                      : "text-secondary"
+                  }`
+                }
                 to="/assest"
               >
                 <i className="fas fa-book"></i>Assest

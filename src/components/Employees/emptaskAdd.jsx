@@ -27,12 +27,16 @@ function EmpTaskAdd() {
     assignedTo: "",
   });
   const [teamMembers, setTeamMembers] = useState([]);
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [exportLoading, setExportLoading] = useState(false);
+
   const [file, setFile] = useState(null);
   const { user } = useSelector((state) => state.authSlice);
-  console.log(user);
 
   const users = JSON.parse(localStorage.getItem("user"));
-  const userId = users?.id;
+  const userId = users ? users?.id : user.user.id;
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -127,6 +131,52 @@ function EmpTaskAdd() {
     searchEmployeeTask();
   }, []);
 
+  const handleConfirmExport = async () => {
+    if (!fromDate || !toDate) {
+      toast.error("Please select From & To date");
+      return;
+    }
+
+    try {
+      setExportLoading(true);
+
+      const token = JSON.parse(localStorage.getItem("accessToken") || "null");
+      console.log("Export Token:", token);
+
+      const res = await axios.get(
+        `http://localhost:5050/api/task/export/my?startDate=${fromDate}&endDate=${toDate}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept:
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          },
+        }
+      );
+
+      const blob = new Blob([res.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `My_Tasks_${fromDate}_to_${toDate}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      toast.success("Tasks exported successfully");
+      setShowExportModal(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to export tasks");
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   return (
     <>
       <div className="main-content">
@@ -140,13 +190,17 @@ function EmpTaskAdd() {
                 >
                   <div className="card-header d-flex justify-content-between">
                     <h4>Leader Leads</h4>
-                    <Button
-                      className="badge rounded bg-label-primary px-4 py-2"
-                      onClick={() => setShowModal(true)}
-                    >
-                      <i className="fas fa-plus mr-2"></i> Add Task
-                    </Button>
+                    <div className="d-flex gap-2">
+                      <Button className="" onClick={() => setShowModal(true)}>
+                        <i className="fas fa-plus mr-2"></i> Add Task
+                      </Button>
+                      <Button onClick={() => setShowExportModal(true)}>
+                        <i className="fas fa-file-excel me-2"></i>
+                        Export Tasks
+                      </Button>
+                    </div>
                   </div>
+
                   <div className="card-body">
                     <div className="row">
                       {/* Employee Select */}
@@ -154,19 +208,18 @@ function EmpTaskAdd() {
                         <label htmlFor="selectemployee" className="form-label">
                           Name
                         </label>
-                        <div 
-
-                        // name="assignedTo"
-                        className="form-control select2  py-2"
-                        // value={user.user.id}
-                        // onChange={(e) => setSelectedEmployee(e.target.value)}
-                        // required
+                        <div
+                          // name="assignedTo"
+                          className="form-control select2  py-2"
+                          // value={user.user.id}
+                          // onChange={(e) => setSelectedEmployee(e.target.value)}
+                          // required
                         >
                           {/* <option value="">{user.user.name}</option> */}
                           {/* {teamMembers?.map((member) => ( */}
 
                           {/* <option key={user.user.id} value={user.user.id}> */}
-                          {user.user.name}
+                          {user?.user?.name}
                           {/* </option> */}
                           {/* ))} */}
                         </div>
@@ -295,6 +348,57 @@ function EmpTaskAdd() {
             </Button>
           </Form>
         </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showExportModal}
+        onHide={() => setShowExportModal(false)}
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title>Export Tasks</Modal.Title>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setShowExportModal(false)}
+          />
+        </Modal.Header>
+
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>From Date</Form.Label>
+              <Form.Control
+                type="date"
+                value={fromDate}
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>To Date</Form.Label>
+              <Form.Control
+                type="date"
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowExportModal(false)}>
+            Cancel
+          </Button>
+
+          <Button
+            variant="success"
+            onClick={handleConfirmExport}
+            disabled={exportLoading}
+          >
+            {exportLoading ? "Exporting..." : "Export Excel"}
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

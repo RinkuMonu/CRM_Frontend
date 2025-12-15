@@ -144,7 +144,7 @@ function EmpTaskAdd() {
       console.log("Export Token:", token);
 
       const res = await axios.get(
-        `http://localhost:5050/api/task/export/my?startDate=${fromDate}&endDate=${toDate}`,
+        `https://api.sevenunique.com/api/task/export/my?startDate=${fromDate}&endDate=${toDate}`,
         {
           responseType: "blob",
           headers: {
